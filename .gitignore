@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Ignore tmp file for yuki hook api
+assets/xposed_init
+resources/META-INF/yukihookapi_init
