@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.hooker
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -11,6 +11,8 @@ import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.data.AnimFragmentShaderChen
 import java.lang.reflect.Method
 
 

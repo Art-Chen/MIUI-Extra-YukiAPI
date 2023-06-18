@@ -1,17 +1,18 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.view.activity
 
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import android.widget.Switch
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.MaterialToolbar
+import moe.chenxy.miuiextra.R
+import moe.chenxy.miuiextra.utils.ChenUtils
 import rikka.preference.MainSwitchPreference
 import rikka.widget.mainswitchbar.OnMainSwitchChangeListener
 

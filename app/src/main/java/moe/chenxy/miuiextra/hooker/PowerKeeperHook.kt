@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.hooker
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,6 +15,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import moe.chenxy.miuiextra.BuildConfig
 
 class PowerKeeperHook() {
     val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")

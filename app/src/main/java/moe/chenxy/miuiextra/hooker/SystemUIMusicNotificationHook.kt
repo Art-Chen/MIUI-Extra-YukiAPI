@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.hooker
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.Icon
@@ -9,6 +9,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import moe.chenxy.miuiextra.BuildConfig
 
 
 class SystemUIMusicNotificationHook {

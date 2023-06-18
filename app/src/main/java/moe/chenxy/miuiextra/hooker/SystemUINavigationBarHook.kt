@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.hooker
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -19,6 +19,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import moe.chenxy.miuiextra.BuildConfig
 import java.lang.reflect.Proxy
 import kotlin.math.abs
 

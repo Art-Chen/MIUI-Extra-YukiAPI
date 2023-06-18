@@ -1,6 +1,5 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.hooker
 
-import android.R.attr.classLoader
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -14,6 +13,7 @@ import android.os.VibrationEffect
 import android.util.Log
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import moe.chenxy.miuiextra.BuildConfig
 
 
 class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit /* Optional */ {

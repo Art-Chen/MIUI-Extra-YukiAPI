@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.view.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,21 +6,19 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import rikka.core.content.put
+import moe.chenxy.miuiextra.R
+import moe.chenxy.miuiextra.utils.ChenUtils
 import rikka.preference.MainSwitchPreference
 import rikka.widget.mainswitchbar.OnMainSwitchChangeListener
 
@@ -109,7 +107,8 @@ class VibratorEffectRemapActivity : AppCompatActivity() {
                 inputDialog
                     .setTitle(R.string.want_to_map_id)
                     .setView(chenView)
-                    .setPositiveButton(R.string.confirm
+                    .setPositiveButton(
+                        R.string.confirm
                     ) { _, _ ->
                         val mapBeforeText = mapBeforeEditText.text.toString()
                         val mapToText = mapToEditText.text.toString()
@@ -142,7 +141,8 @@ class VibratorEffectRemapActivity : AppCompatActivity() {
                 inputDialog
                     .setTitle("ID")
                     .setView(editText)
-                    .setPositiveButton(R.string.confirm
+                    .setPositiveButton(
+                        R.string.confirm
                     ) { _, _ ->
                         val idText = editText.text.toString()
                         var idInt = 0

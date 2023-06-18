@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.data
 
 class AnimFragmentShaderChen {
     companion object {

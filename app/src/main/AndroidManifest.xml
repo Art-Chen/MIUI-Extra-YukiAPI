@@ -10,24 +10,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.MiuiExtra">
         <activity
-            android:name=".VibratorRemapActivity"
+            android:name=".view.activity.VibratorRemapActivity"
             android:exported="false"
-            android:parentActivityName=".SettingsActivity"
+            android:parentActivityName=".view.activity.SettingsActivity"
             android:label="@string/title_activity_vibrator_remap">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".VibratorEffectRemapActivity"
+            android:name=".view.activity.VibratorEffectRemapActivity"
             android:exported="false"
-            android:parentActivityName=".SettingsActivity" />
+            android:parentActivityName=".view.activity.SettingsActivity" />
         <activity
-            android:name=".WallpaperZoomActivity"
+            android:name=".view.activity.WallpaperZoomActivity"
             android:exported="false"
-            android:parentActivityName=".SettingsActivity" />
+            android:parentActivityName=".view.activity.SettingsActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".view.activity.SettingsActivity"
             android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
@@ -39,7 +39,7 @@
         <activity-alias
             android:name=".SettingsActivityAlias"
             android:exported="true"
-            android:targetActivity=".SettingsActivity">
+            android:targetActivity=".view.activity.SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,17 +1,14 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.view.activity
 
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
@@ -19,8 +16,9 @@ import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import moe.chenxy.miuiextra.R
+import moe.chenxy.miuiextra.utils.ChenUtils
 import rikka.preference.MainSwitchPreference
-import rikka.widget.mainswitchbar.OnMainSwitchChangeListener
 
 class WallpaperZoomActivity : AppCompatActivity() {
 
@@ -76,7 +74,8 @@ class WallpaperZoomActivity : AppCompatActivity() {
                 inputDialog
                     .setTitle(R.string.wallpaper_scale_summary)
                     .setView(chenView)
-                    .setPositiveButton(R.string.confirm
+                    .setPositiveButton(
+                        R.string.confirm
                     ) { _, _ ->
                         val inputText = editText.text.toString()
                         var inputFloat: Float = 0.0f
@@ -97,11 +96,21 @@ class WallpaperZoomActivity : AppCompatActivity() {
                 return@setOnPreferenceClickListener true
             }
 
-            bindAnimationSeekBar(findPreference("wallpaper_zoomIn_stiffness_val"), 100, R.string.wallpaper_zoomIn_stiffness_summary)
-            bindAnimationSeekBar(findPreference("wallpaper_zoomOut_stiffness_val"), 100, R.string.wallpaper_zoomOut_stiffness_summary)
-            bindAnimationSeekBar(findPreference("wallpaper_zoomOut_start_velocity_val"), 1000, R.string.wallpaper_zoomOut_start_velocity_summary)
-            bindAnimationSeekBar(findPreference("wallpaper_zoomIn_start_velocity_val"), 1000, R.string.wallpaper_zoomIn_start_velocity_summary)
-            bindAnimationSeekBar(findPreference("wallpaper_zoomOut_val"), 10, R.string.wallpaper_zoomOut_summary)
+            bindAnimationSeekBar(findPreference("wallpaper_zoomIn_stiffness_val"), 100,
+                R.string.wallpaper_zoomIn_stiffness_summary
+            )
+            bindAnimationSeekBar(findPreference("wallpaper_zoomOut_stiffness_val"), 100,
+                R.string.wallpaper_zoomOut_stiffness_summary
+            )
+            bindAnimationSeekBar(findPreference("wallpaper_zoomOut_start_velocity_val"), 1000,
+                R.string.wallpaper_zoomOut_start_velocity_summary
+            )
+            bindAnimationSeekBar(findPreference("wallpaper_zoomIn_start_velocity_val"), 1000,
+                R.string.wallpaper_zoomIn_start_velocity_summary
+            )
+            bindAnimationSeekBar(findPreference("wallpaper_zoomOut_val"), 10,
+                R.string.wallpaper_zoomOut_summary
+            )
 
             val mainSwitch = findPreference<MainSwitchPreference>("enable_wallpaper_zoom_optimize")
             val category = findPreference<PreferenceCategory>("wallpaper_zoom_anim_custom_category")
@@ -112,7 +121,8 @@ class WallpaperZoomActivity : AppCompatActivity() {
                 } else {
                     preferenceScreen.addPreference(category!!)
                 }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("am force-stop com.miui.home")
                     }
@@ -127,7 +137,8 @@ class WallpaperZoomActivity : AppCompatActivity() {
             val syncWallpaperAnim = findPreference<SwitchPreferenceCompat>("sync_wallpaper_and_app_anim")
             syncWallpaperAnim?.setOnPreferenceChangeListener { preference, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("am force-stop com.miui.home")
                     }
@@ -169,7 +180,8 @@ class WallpaperZoomActivity : AppCompatActivity() {
                 inputDialog
                     .setTitle(title)
                     .setView(chenView)
-                    .setPositiveButton(R.string.confirm
+                    .setPositiveButton(
+                        R.string.confirm
                     ) { _, _ ->
                         val inputText = editText.text.toString()
                         var inputFloat = 0.0f

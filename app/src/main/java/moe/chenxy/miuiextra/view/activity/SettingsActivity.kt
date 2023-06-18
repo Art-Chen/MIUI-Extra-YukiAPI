@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.view.activity
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -12,21 +12,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginStart
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import rikka.insets.setInitialMargin
+import moe.chenxy.miuiextra.R
+import moe.chenxy.miuiextra.utils.ChenUtils
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -93,7 +91,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("miui_home_anim_enhance")?.setOnPreferenceChangeListener { _, _ ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("am force-stop com.miui.home")
                     }
@@ -103,7 +102,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("miui_unlock_anim_enhance")?.setOnPreferenceChangeListener { _, _ ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot_miui_home, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("am force-stop com.miui.home")
                     }
@@ -119,7 +119,8 @@ class SettingsActivity : AppCompatActivity() {
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
                 findPreference<SeekBarPreference>("miui_unlock_wallpaper_anim_fade_anim_val")!!.isEnabled =
                     newValue as Boolean
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.miui.miwallpaper")
                     }
@@ -129,7 +130,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("use_chen_screen_on_anim")?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.miui.miwallpaper")
                     }
@@ -154,7 +156,8 @@ class SettingsActivity : AppCompatActivity() {
                 autoTransparent?.isEnabled = newValue as Boolean
                 autoTransparentOnHome?.isEnabled = autoTransparent?.isChecked == true && newValue == true
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -165,7 +168,8 @@ class SettingsActivity : AppCompatActivity() {
 
             animTurboMode?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -175,7 +179,8 @@ class SettingsActivity : AppCompatActivity() {
 
             immersionMode?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -197,14 +202,19 @@ class SettingsActivity : AppCompatActivity() {
             val colorFadeOffCustom = findPreference<SeekBarPreference>("screen_off_color_fade_anim_val")
             val colorFadeCustom = findPreference<SwitchPreferenceCompat>("color_fade_anim_smoothly")
             if (colorFadeOffCustom != null) {
-                bindScreenOnOffClickAlert(colorFadeOffCustom, R.string.screen_off_color_fade_anim_val_title)
+                bindScreenOnOffClickAlert(colorFadeOffCustom,
+                    R.string.screen_off_color_fade_anim_val_title
+                )
             }
             if (colorFadeOnCustom != null) {
-                bindScreenOnOffClickAlert(colorFadeOnCustom, R.string.screen_on_color_fade_anim_val_title)
+                bindScreenOnOffClickAlert(colorFadeOnCustom,
+                    R.string.screen_on_color_fade_anim_val_title
+                )
             }
             findPreference<SeekBarPreference>("miui_unlock_wallpaper_anim_fade_anim_val")?.let {
                 bindScreenOnOffClickAlert(
-                    it, R.string.miui_unlock_wallpaper_anim_fade_anim_val_title)
+                    it, R.string.miui_unlock_wallpaper_anim_fade_anim_val_title
+                )
             }
 
             if (!colorFadeCustom?.isChecked!!) {
@@ -222,7 +232,8 @@ class SettingsActivity : AppCompatActivity() {
                     colorFadeOnCustom?.isEnabled = false
                     colorFadeOffCustom?.isEnabled = false
                 }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall system_server")
                     }
@@ -237,7 +248,8 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<SwitchPreferenceCompat>("music_notification_optimize")?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
                 findPreference<SwitchPreferenceCompat>("music_notification_optimize_foreground_color")?.isEnabled = newValue as Boolean
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -247,7 +259,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("music_notification_optimize_foreground_color")?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -257,7 +270,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("do_not_override_pending_transition")?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall system_server")
                     }
@@ -267,7 +281,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("disable_wallpaper_auto_darken")?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.miui.miwallpaper")
                     }
@@ -277,7 +292,8 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("use_chen_volume_animation")?.setOnPreferenceChangeListener { _, newValue ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -303,7 +319,8 @@ class SettingsActivity : AppCompatActivity() {
             preference.setOnPreferenceChangeListener { pref, newValue ->
                 pref.summary = "${(newValue as Int).toFloat() / scale} f"
                 this.context?.let { ChenUtils.performVibrateClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.android.systemui")
                     }
@@ -331,7 +348,8 @@ class SettingsActivity : AppCompatActivity() {
                 inputDialog
                     .setTitle(title)
                     .setView(chenView)
-                    .setPositiveButton(R.string.confirm
+                    .setPositiveButton(
+                        R.string.confirm
                     ) { _, _ ->
                         val inputText = editText.text.toString()
                         var inputInt = 0
@@ -402,7 +420,8 @@ class SettingsActivity : AppCompatActivity() {
 
             customModePerf.setOnPreferenceChangeListener { _, _ ->
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
-                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), R.string.may_need_reboot_PowerKeeper, Snackbar.LENGTH_LONG)
+                Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
+                    R.string.may_need_reboot_PowerKeeper, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
                         ChenUtils.execShell("killall com.miui.powerkeeper")
                         ChenUtils.execShell("killall com.xiaomi.misettings")

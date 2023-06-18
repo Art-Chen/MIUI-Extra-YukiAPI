@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.utils
 
 import android.content.Context
 import android.os.VibrationEffect

@@ -1,6 +1,5 @@
-package moe.chenxy.miuiextra
+package moe.chenxy.miuiextra.hooker
 
-import android.R.attr.classLoader
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,6 +15,7 @@ import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import moe.chenxy.miuiextra.BuildConfig
 import java.util.concurrent.AbstractExecutorService
 
 
