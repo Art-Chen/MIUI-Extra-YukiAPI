@@ -1,0 +1,40 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <rikka.preference.MainSwitchPreference
+        app:key="enable_vibrator_remap"
+        android:title="@string/enable_vibrator_remap_title" />
+
+    <PreferenceCategory app:title="@string/map_range_header" app:key="map_range_category">
+        <EditTextPreference
+            app:key="map_range_1_10"
+            app:defaultValue="5"
+            app:title="1 - 10 (ms)"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="map_range_11_20"
+            app:defaultValue="7"
+            app:title="11 - 20 (ms)"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="map_range_21_40"
+            app:defaultValue="8"
+            app:title="21 - 40 (ms)"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="map_range_41_70"
+            app:defaultValue="3"
+            app:title="41 - 70 (ms)"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="map_range_71_500"
+            app:defaultValue="1"
+            app:title="71 - 500 (ms)"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

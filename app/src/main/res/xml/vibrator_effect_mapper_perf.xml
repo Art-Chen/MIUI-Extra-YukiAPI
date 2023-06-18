@@ -1,0 +1,25 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <rikka.preference.MainSwitchPreference
+        app:key="enable_vibrator_effect_remap"
+        android:title="@string/enable_vibrator_effect_remap_title" />
+
+    <PreferenceCategory app:title="@string/effect_map_header" app:key="effect_map_category">
+        <!-- Placeholder for dynamic added config item -->
+    </PreferenceCategory>
+
+    <PreferenceCategory app:key="effect_map_options_category">
+        <Preference
+            app:key="add_new_effect_map"
+            app:title="@string/add_new"
+            app:icon="@drawable/baseline_list_add_24" />
+
+        <Preference
+            app:key="try_effect"
+            app:title="@string/try_effect"
+            app:icon="@drawable/baseline_try_24" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

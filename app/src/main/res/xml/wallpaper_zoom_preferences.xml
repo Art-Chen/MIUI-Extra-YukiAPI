@@ -1,0 +1,68 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <rikka.preference.MainSwitchPreference
+        app:key="enable_wallpaper_zoom_optimize"
+        android:title="@string/enable_wallpaper_zoom_optimize_title" />
+
+    <PreferenceCategory app:title="@string/wallpaper_zoom_anim_custom_header" app:key="wallpaper_zoom_anim_custom_category">
+        <SeekBarPreference
+            android:max="30000"
+            app:key="wallpaper_zoomIn_stiffness_val"
+            app:defaultValue="3263"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomIn_stiffness_summary" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="wallpaper_zoomIn_start_velocity_val"
+            app:defaultValue="0"
+            app:min="-3000"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomIn_start_velocity_summary" />
+        <SeekBarPreference
+            android:max="30000"
+            app:key="wallpaper_zoomOut_stiffness_val"
+            app:defaultValue="3263"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomOut_stiffness_summary" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="wallpaper_zoomOut_start_velocity_val"
+            app:defaultValue="662"
+            app:min="-3000"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomOut_start_velocity_summary" />
+        <SeekBarPreference
+            android:max="10"
+            app:key="wallpaper_zoomOut_val"
+            app:defaultValue="4"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomOut_summary" />
+
+<!--        <rikka.material.preference.MaterialSwitchPreference-->
+<!--            app:key="wallpaper_auto_zoom_on_lockscreen"-->
+<!--            app:title="@string/wallpaper_auto_zoom_on_lockscreen_title"-->
+<!--            app:summary="@string/wallpaper_auto_zoom_on_lockscreen_summary"/>-->
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="sync_wallpaper_and_app_anim"
+            app:title="@string/sync_wallpaper_and_app_anim_title"
+            app:summary="@string/sync_wallpaper_and_app_anim_summary"/>
+
+<!--        <rikka.material.preference.MaterialSwitchPreference-->
+<!--            app:key="no_zoom_out_when_recent_out"-->
+<!--            app:title="@string/no_zoom_out_when_recent_out_title"-->
+<!--            app:summary="@string/no_zoom_out_when_recent_out_summary"/>-->
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/wallpaper_zoom_anim_common_header" >
+        <SeekBarPreference
+            android:max="300"
+            app:key="wallpaper_scale_val"
+            app:defaultValue="120"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_scale_summary" />
+    </PreferenceCategory>
+</PreferenceScreen>

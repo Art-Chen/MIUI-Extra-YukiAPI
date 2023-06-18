@@ -1,0 +1,202 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/misc_header">
+
+        <Preference
+            app:key="vibrator_map"
+            app:summary="@string/vibrator_map_summary"
+            app:title="@string/vibrator_map_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:key="vibrator_effect_map"
+            app:summary="@string/vibrator_effect_map_summary"
+            app:title="@string/vibrator_effect_map_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:key="wallpaper_zoom"
+            app:title="@string/wallpaper_scale_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="miui_home_anim_enhance"
+            app:title="@string/miui_home_anim_enhance_title"
+            app:summary="@string/miui_home_anim_enhance_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="miui_unlock_anim_enhance"
+            app:title="@string/miui_unlock_anim_enhance_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="miui_unlock_wallpaper_anim_fade"
+            app:title="@string/miui_unlock_wallpaper_anim_fade_title"
+            app:summary="@string/miui_unlock_wallpaper_anim_fade_summary"/>
+
+        <SeekBarPreference
+            android:max="1000"
+            app:key="miui_unlock_wallpaper_anim_fade_anim_val"
+            app:defaultValue="450"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/miui_unlock_wallpaper_anim_fade_anim_val_title" />
+
+<!--        <rikka.material.preference.MaterialSwitchPreference-->
+<!--            app:key="not_hide_icon_when_enter_recent"-->
+<!--            app:title="@string/not_hide_icon_when_enter_recent_title"-->
+<!--            app:summary="@string/not_hide_icon_when_enter_recent_summary" />-->
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="color_fade_anim_smoothly"
+            app:title="@string/color_fade_anim_smoothly_title"
+            app:summary="@string/color_fade_anim_smoothly_summary"/>
+
+        <SeekBarPreference
+            android:max="2000"
+            app:key="screen_on_color_fade_anim_val"
+            app:defaultValue="800"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/screen_on_color_fade_anim_val_title" />
+
+        <SeekBarPreference
+            android:max="1000"
+            app:key="screen_off_color_fade_anim_val"
+            app:defaultValue="450"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/screen_off_color_fade_anim_val_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="use_chen_screen_on_anim"
+            app:title="@string/use_chen_screen_on_anim_title"
+            app:summary="@string/use_chen_screen_on_anim_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="disable_wallpaper_auto_darken"
+            app:title="@string/disable_wallpaper_auto_darken_title"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="do_not_override_pending_transition"
+            app:title="@string/do_not_override_pending_transition_title"
+            app:summary="@string/do_not_override_pending_transition_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="use_chen_volume_animation"
+            app:title="@string/use_chen_volume_animation_title"
+            app:summary="@string/use_chen_volume_animation_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/home_handle_header">
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="chen_home_handle_anim"
+            app:title="@string/chen_home_handle_anim_title"
+            app:summary="@string/chen_home_handle_anim_summary"/>
+
+        <SeekBarPreference
+            android:max="15"
+            app:key="home_handle_y_val"
+            app:shouldDisableView="true"
+            app:defaultValue="7"
+            app:min="-15"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_y_val_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="chen_home_handle_anim_turbo_mode"
+            app:title="@string/chen_home_handle_anim_turbo_mode_title"
+            app:summary="@string/chen_home_handle_anim_turbo_mode_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="chen_home_handle_no_space"
+            app:title="@string/chen_home_handle_no_space_title"
+            app:summary="@string/chen_home_handle_no_space_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="chen_home_handle_auto_transparent"
+            app:title="@string/chen_home_handle_auto_transparent_title"
+            app:summary="@string/chen_home_handle_auto_transparent_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="chen_home_handle_full_transparent_at_miuihome"
+            app:title="@string/chen_home_handle_full_transparent_at_miuihome_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/music_notification_header">
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="music_notification_optimize"
+            app:title="@string/music_notification_optimize_title"
+            app:summary="@string/music_notification_optimize_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="music_notification_optimize_foreground_color"
+            app:title="@string/music_notification_optimize_foreground_color_title"
+            app:summary="@string/music_notification_optimize_foreground_color_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/refresh_rate_header">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="force_enable_refresh_custom"
+            app:title="@string/force_miui_refresh_custom" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="force_disable_mibridge_dynamic_refresh_scene"
+            app:title="@string/force_disable_mibridge_refresh_scene_title"/>
+
+<!--        <Preference-->
+<!--            app:key="set_disable_mibridge_dynamic_refresh_scene_app"-->
+<!--            app:title="@string/set_disable_mibridge_dynamic_refresh_scene_app_title"-->
+<!--            app:summary="@string/set_disable_mibridge_dynamic_refresh_scene_app_summary"/>-->
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="force_current_refresh_rate"
+            app:summaryOff="@string/force_current_refresh_rate_off"
+            app:summaryOn="@string/force_current_refresh_rate_on"
+            app:title="@string/force_current_refresh_rate_title" />
+
+        <!--        <MultiSelectListPreference-->
+        <!--            app:key="m60HzTopApps"-->
+        <!--            app:summary="@string/force_60hz_apps_summary"-->
+        <!--            app:title="@string/force_60hz_apps">-->
+        <!--        </MultiSelectListPreference>-->
+        <!--        <MultiSelectListPreference-->
+        <!--            app:key="90Hz_GameApps"-->
+        <!--            app:summary="@string/m90Hz_game_apps_summary"-->
+        <!--            app:title="@string/m90Hz_game_apps">-->
+        <!--        </MultiSelectListPreference>-->
+        <!--        <MultiSelectListPreference-->
+        <!--            app:key="mVideoApps"-->
+        <!--            app:summary="@string/video_apps_summary"-->
+        <!--            app:title="@string/video_apps">-->
+        <!--        </MultiSelectListPreference>-->
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/about_me_header">
+        <Preference
+            app:title="@string/author_title"
+            app:summary="Art_Chen" />
+        <Preference
+            app:title="@string/coolapk_title"
+            app:summary="\@Art_Chen" />
+        <Preference
+            app:title="@string/weibo_title"
+            app:summary="\@Art_Chen琛琛" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://weibo.com/imchenxy"/>
+        </Preference>
+        <Preference
+            app:title="GitHub"
+            app:summary="Art-Chen" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/Art-Chen"/>
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/about_module_header">
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="hide_app_icon"
+            app:title="@string/hide_app_icon_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

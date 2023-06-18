@@ -1,0 +1,10 @@
+<resources>
+    <string-array name="xposedscope">
+        <item>com.miui.powerkeeper</item>
+        <item>android</item>
+        <item>com.miui.home</item>
+        <item>com.xiaomi.misettings</item>
+        <item>com.android.systemui</item>
+        <item>com.miui.miwallpaper</item>
+    </string-array>
+</resources>
