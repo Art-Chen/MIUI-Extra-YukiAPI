@@ -1,7 +1,6 @@
-package moe.chenxy.miuiextra.hooker
+package moe.chenxy.miuiextra.hooker.entity
 
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -9,54 +8,50 @@ import android.graphics.Insets
 import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
-import android.util.AttributeSet
 import android.util.Log
-import android.view.*
+import android.view.InputEvent
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
-import de.robv.android.xposed.XC_MethodHook
+import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.type.android.AttributeSetClass
+import com.highcapable.yukihookapi.hook.type.android.ContextClass
+import com.highcapable.yukihookapi.hook.type.android.LayoutInflaterClass
+import com.highcapable.yukihookapi.hook.type.android.ViewGroupClass
+import com.highcapable.yukihookapi.hook.type.java.IntType
+import com.highcapable.yukihookapi.hook.type.java.StringClass
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.callbacks.XC_LoadPackage
 import moe.chenxy.miuiextra.BuildConfig
 import java.lang.reflect.Proxy
 import kotlin.math.abs
 
 
-class SystemUINavigationBarHook {
-    val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
-    companion object {
-        @Volatile
-        @JvmStatic
-        var mIsInHome = false
-    }
-    fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam?) {
-        val classLoader = lpparam!!.classLoader
+object SystemUINavigationBarHook : YukiBaseHooker() {
+    private val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
+
+    @Volatile
+    var mIsInHome = false
+
+    override fun onHook() {
+        var mContext: Context? = null
+        var mHandler: Handler? = null
+
+        lateinit var mHomeHandle: View
+
+        var zoomValueAnimator: ValueAnimator? = null
+        var homeHandleXAnimator: ValueAnimator? = null
+        var homeHandleYAnimator: ValueAnimator? = null
+        val homeHandleAlphaAnimator = ValueAnimator()
+
         var mHomeHandleId: Int = -1
         var barHeight = 0
         var origBarHeight = 0
         val yOffset = mainPrefs.getInt("home_handle_y_val", 7)
-        XposedHelpers.findAndHookMethod("com.android.systemui.navigationbar.NavigationBarInflaterView",
-            classLoader,
-            "createView",
-            String::class.java,
-            ViewGroup::class.java,
-            LayoutInflater::class.java,
-            object : XC_MethodHook() {
-                @Throws(Throwable::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val str = param.args[0] as String
-                    if ("home_handle".equals(extractButton(str))) {
-                        mHomeHandleId = (param.result as View).id
-                    }
-                }
-            })
 
-        var mContext: Context? = null
-        var mHandler: Handler? = null
-        lateinit var mHomeHandle: View
-        var zoomValueAnimator: ValueAnimator? = null
         fun animateHomeHandleZoom(isZoom: Boolean) {
             if (zoomValueAnimator == null) {
                 zoomValueAnimator = ValueAnimator()
@@ -77,9 +72,6 @@ class SystemUINavigationBarHook {
 
             zoomValueAnimator!!.start()
         }
-
-        var homeHandleXAnimator: ValueAnimator? = null
-        var homeHandleYAnimator: ValueAnimator? = null
 
         fun animateHomeHandleX(duration: Long, offset: Float) {
             if (homeHandleXAnimator == null) {
@@ -116,7 +108,6 @@ class SystemUINavigationBarHook {
             animateHomeHandleY(600, yOffset.toFloat())
         }
 
-        val homeHandleAlphaAnimator = ValueAnimator()
         homeHandleAlphaAnimator.addUpdateListener {
             mHomeHandle.alpha = it.animatedValue as Float
         }
@@ -127,6 +118,7 @@ class SystemUINavigationBarHook {
             }
             homeHandleAlphaAnimator.start()
         }
+
         fun opacityHomeHandle(needOpacity: Boolean, needToTransparent: Boolean) {
             mainPrefs.reload()
             if (mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)) {
@@ -146,7 +138,8 @@ class SystemUINavigationBarHook {
                         return
                     }
                 }
-                homeHandleAlphaAnimator.duration = if (needToTransparent) 300 else if (needOpacity) 2000 else 400
+                homeHandleAlphaAnimator.duration =
+                    if (needToTransparent) 300 else if (needOpacity) 2000 else 400
 //                homeHandleAlphaAnimator.interpolator = PathInterpolator(0.39f, 0f, 0.11f, 1.02f)
                 homeHandleAlphaAnimator.setFloatValues(
                     mHomeHandle.alpha,
@@ -249,39 +242,63 @@ class SystemUINavigationBarHook {
             }
         }
 
-        XposedHelpers.findAndHookConstructor("com.android.systemui.navigationbar.NavigationBarInflaterView",
-            classLoader,
-            Context::class.java,
-            AttributeSet::class.java,
-            object : XC_MethodHook() {
-                @SuppressLint("PrivateApi")
-                @Throws(Throwable::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    mContext = param.args[0] as Context
+        // Hooks
+        "com.android.systemui.navigationbar.NavigationBarInflaterView".hook {
+            injectMember {
+                method {
+                    name = "createView"
+                    param(StringClass, ViewGroupClass, LayoutInflaterClass)
+                }
+                afterHook {
+                    val str = this.args[0] as String
+                    if ("home_handle" == extractButton(str)) {
+                        mHomeHandleId = (this.result as View).id
+                    }
+                }
+            }
+
+            injectMember {
+                constructor {
+                    param(ContextClass, AttributeSetClass)
+                }
+                afterHook {
+                    mContext = this.args[0] as Context
                     mHandler = Handler(Looper.getMainLooper())
 
-                    val miuiGestureListenerClass =
-                        Class.forName("com.android.keyguard.fod.MiuiGestureListener", true, classLoader)
-                    val miuiGestureMonitorClass =
-                        Class.forName("com.android.keyguard.fod.MiuiGestureMonitor", true, classLoader)
-                    val chenListener = Proxy.newProxyInstance(classLoader, arrayOf(miuiGestureListenerClass)) { _, _, args ->
+                    val miuiGestureListenerClass = "com.android.keyguard.fod.MiuiGestureListener".toClass()
+                    val miuiGestureMonitorClass = "com.android.keyguard.fod.MiuiGestureMonitor".toClass()
+                    val chenListener = Proxy.newProxyInstance(
+                        appClassLoader,
+                        arrayOf(miuiGestureListenerClass)
+                    ) { _, _, args ->
                         onInputEvent(args?.get(0) as InputEvent)
                     }
-                    val miuiGestureMonitorInstance = XposedHelpers.callStaticMethod(miuiGestureMonitorClass, "getInstance", mContext)
-                    Log.i("Art_Chen", "register chen pointer event listener when navigation bar view init")
-                    XposedHelpers.callMethod(miuiGestureMonitorInstance, "registerPointerEventListener", chenListener)
+                    val miuiGestureMonitorInstance = XposedHelpers.callStaticMethod(
+                        miuiGestureMonitorClass,
+                        "getInstance",
+                        mContext
+                    )
+                    Log.i(
+                        "Art_Chen",
+                        "register chen pointer event listener when navigation bar view init"
+                    )
+                    XposedHelpers.callMethod(
+                        miuiGestureMonitorInstance,
+                        "registerPointerEventListener",
+                        chenListener
+                    )
                 }
-            })
+            }
 
-        XposedHelpers.findAndHookMethod("com.android.systemui.navigationbar.NavigationBarInflaterView",
-            classLoader,
-            "inflateLayout",
-            String::class.java,
-            object : XC_MethodHook() {
-                @SuppressLint("PrivateApi")
-                @Throws(Throwable::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val mHorizontal = XposedHelpers.getObjectField(param.thisObject, "mHorizontal") as FrameLayout
+            injectMember {
+                method {
+                    name = "inflateLayout"
+                    param(StringClass)
+                }
+                afterHook {
+                    // init home handle status
+                    val mHorizontal =
+                        XposedHelpers.getObjectField(this.instance, "mHorizontal") as FrameLayout
                     mHomeHandle = mHorizontal.findViewById(mHomeHandleId)
                     mHomeHandle.translationY = yOffset.toFloat()
                     if (mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)) {
@@ -289,23 +306,24 @@ class SystemUINavigationBarHook {
                     }
                     animateHomeHandleToNormal()
                 }
-            })
+            }
+        }
 
-        XposedHelpers.findAndHookMethod("com.android.systemui.navigationbar.NavigationBar",
-            classLoader,
-            "getBarLayoutParamsForRotation",
-            Int::class.javaPrimitiveType,
-            object : XC_MethodHook() {
-                @SuppressLint("WrongConstant", "PrivateApi")
-                @Throws(Throwable::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val orientationFor = param.args[0] as Int
-                    val isTurboMode = mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)
-                    if (XposedHelpers.getIntField(param.thisObject, "mNavBarMode") != 2) {
-                        return
+        "com.android.systemui.navigationbar.NavigationBar".hook {
+            injectMember {
+                method {
+                    name = "getBarLayoutParamsForRotation"
+                    param(IntType)
+                }
+                afterHook {
+                    val orientationFor = this.args[0] as Int
+                    val isTurboMode =
+                        mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)
+                    if (XposedHelpers.getIntField(this.instance, "mNavBarMode") != 2) {
+                        return@afterHook
                     }
 
-                    val lp = param.result as WindowManager.LayoutParams
+                    val lp = this.result as WindowManager.LayoutParams
 
                     if (orientationFor == 0) {
                         origBarHeight = lp.height
@@ -314,44 +332,57 @@ class SystemUINavigationBarHook {
                     if (isTurboMode && orientationFor == 0) {
                         lp.height = lp.height * 2
                     }
-                    val insets = XposedHelpers.getObjectField(lp, "providedInternalInsets") as Array<Insets>
-                    if (mainPrefs.getBoolean("chen_home_handle_no_space", false) && orientationFor == 0) {
-                        insets[1] = Insets.of(0, lp.height, 0, 0);
+                    val insets =
+                        XposedHelpers.getObjectField(lp, "providedInternalInsets") as Array<Insets>
+                    if (mainPrefs.getBoolean(
+                            "chen_home_handle_no_space",
+                            false
+                        ) && orientationFor == 0
+                    ) {
+                        insets[1] = Insets.of(0, lp.height, 0, 0)
                         XposedHelpers.setObjectField(lp, "providedInternalInsets", insets)
                     } else if (isTurboMode) {
-                        insets[1] = Insets.of(0, lp.height - origBarHeight, 0, 0);
+                        insets[1] = Insets.of(0, lp.height - origBarHeight, 0, 0)
                         XposedHelpers.setObjectField(lp, "providedInternalInsets", insets)
                     }
                     if (orientationFor == 0) {
                         barHeight = lp.height
                     }
-                    Log.i("Art_Chen", "screenHeight is ${getScreenHeight(mContext!!)}, origBarHeight $origBarHeight, currentBarHeight $barHeight")
+                    Log.i(
+                        "Art_Chen",
+                        "screenHeight is ${getScreenHeight(mContext!!)}, origBarHeight $origBarHeight, currentBarHeight $barHeight"
+                    )
                 }
-            })
+            }
 
-        XposedHelpers.findAndHookMethod("com.android.systemui.navigationbar.NavigationBar",
-            classLoader,
-            "repositionNavigationBar",
-            Int::class.javaPrimitiveType,
-            object : XC_MethodHook() {
-                @Throws(Throwable::class)
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    orientation = param.args[0] as Int
+            injectMember {
+                method {
+                    name = "repositionNavigationBar"
+                    param(IntType)
                 }
-            })
+                beforeHook {
+                    orientation = this.args[0] as Int
+                }
+            }
 
-        XposedHelpers.findAndHookMethod(
-            "com.miui.systemui.util.MiuiActivityUtil",
-            classLoader,
-            "notifyListeners",
-            object : XC_MethodHook() {
-                @Throws(Throwable::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
+        }
+
+        "com.miui.systemui.util.MiuiActivityUtil".hook {
+            injectMember {
+                method {
+                    name = "notifyListeners"
+                }
+                afterHook {
                     mainPrefs.reload()
-                    val currentTopActivity = XposedHelpers.getObjectField(param.thisObject, "mTopActivity") as ComponentName
+                    val currentTopActivity = XposedHelpers.getObjectField(
+                        this.instance,
+                        "mTopActivity"
+                    ) as ComponentName
                     val intent = Intent("chen.action.top_activity.switched")
-                    val mUtilsContext = XposedHelpers.getObjectField(param.thisObject, "mContext") as Context
-                    val mEnabledAutoTransparent = mainPrefs.getBoolean("chen_home_handle_full_transparent_at_miuihome", false)
+                    val mUtilsContext =
+                        XposedHelpers.getObjectField(this.instance, "mContext") as Context
+                    val mEnabledAutoTransparent =
+                        mainPrefs.getBoolean("chen_home_handle_full_transparent_at_miuihome", false)
 
                     if (currentTopActivity.packageName == "com.miui.home") {
 //                        Log.i("Art_Chen", "Current Top Activity is MiuiHome, do sth")
@@ -371,7 +402,8 @@ class SystemUINavigationBarHook {
                     }
                     mUtilsContext.sendBroadcast(intent)
                 }
-            })
+            }
+        }
     }
 
     private fun getScreenHeight(context: Context): Int {

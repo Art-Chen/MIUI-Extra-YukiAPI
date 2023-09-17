@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp' version '1.8.20-1.0.11'
+    id 'com.google.devtools.ksp' version '1.8.22-1.0.11'
 }
 
 android {
@@ -40,7 +40,6 @@ configurations.all {
 
 dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-    compileOnly("de.robv.android.xposed:api:82")
     implementation 'androidx.core:core-ktx:1.10.1'
 //    implementation 'androidx.appcompat:appcompat:1.7.0-alpha01'
     implementation 'com.google.android.material:material:1.9.0'
@@ -56,6 +55,7 @@ dependencies {
     implementation("dev.rikka.rikkax.widget:mainswitchbar:1.0.2")
     implementation("dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0")
 
+    compileOnly("de.robv.android.xposed:api:82")
     implementation 'com.highcapable.yukihookapi:api:1.1.11'
     ksp 'com.highcapable.yukihookapi:ksp-xposed:1.1.11'
 }

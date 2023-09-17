@@ -1,20 +1,21 @@
-package moe.chenxy.miuiextra.hooker
+package moe.chenxy.miuiextra.hooker.entity
 
 import android.animation.ValueAnimator
 import android.content.pm.ApplicationInfo
 import android.util.Log
 import android.view.animation.PathInterpolator
 import android.widget.LinearLayout
-import de.robv.android.xposed.XC_MethodHook
+import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.type.java.IntType
+import com.highcapable.yukihookapi.hook.type.java.JavaClassLoader
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
-import de.robv.android.xposed.callbacks.XC_LoadPackage
 import moe.chenxy.miuiextra.BuildConfig
 
 
-class SystemUIPluginHook {
-    val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
-    fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
+object SystemUIPluginHook : YukiBaseHooker() {
+    private val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
+    override fun onHook() {
         var pluginLoaderClassLoader: ClassLoader? = null
 
         fun initPluginHook() {
@@ -29,21 +30,26 @@ class SystemUIPluginHook {
                 if (mDialogAnimator.isRunning)
                     mDialogAnimator.cancel()
 
-                mDialogAnimator.setFloatValues(mDialogView!!.translationY, if (isTop) -25f else 25f, 0f)
+                mDialogAnimator.setFloatValues(
+                    mDialogView!!.translationY,
+                    if (isTop) -25f else 25f,
+                    0f
+                )
                 mDialogAnimator.start()
             }
+
             var lastIsTopHaptic = false
             var lastIsBottomHaptic = false
             var lastIsContinueHaptic = false
-            XposedHelpers.findAndHookMethod("com.android.systemui.miui.volume.MiuiVolumeDialogImpl$1",
-                pluginLoaderClassLoader,
-                "onPerformHapticFeedback",
-                Int::class.javaPrimitiveType,
-                object : XC_MethodHook() {
-                    @Throws(Throwable::class)
-                    override fun beforeHookedMethod(param: MethodHookParam) {
-                        val i = param.args[0] as Int
-                        val thiz = XposedHelpers.getObjectField(param.thisObject, "this\$0")
+            findClass("com.android.systemui.miui.volume.MiuiVolumeDialogImpl$1", pluginLoaderClassLoader).hook {
+                injectMember {
+                    method {
+                        name = "onPerformHapticFeedback"
+                        param(IntType)
+                    }
+                    beforeHook {
+                        val i = this.args[0] as Int
+                        val thiz = XposedHelpers.getObjectField(this.instance, "this\$0")
                         mDialogView =
                             XposedHelpers.getObjectField(thiz, "mDialogView") as LinearLayout
                         val isContinueHaptic: Boolean = i and 1 > 0
@@ -59,34 +65,32 @@ class SystemUIPluginHook {
                         lastIsTopHaptic = isTopHaptic
                         lastIsBottomHaptic = isBottomHaptic
                     }
-
-                    @Throws(Throwable::class)
-                    override fun afterHookedMethod(param: MethodHookParam) {
-                        super.afterHookedMethod(param)
-                    }
-                })
+                }
+            }
         }
-        if (mainPrefs.getBoolean("use_chen_volume_animation",false)) {
-            XposedHelpers.findAndHookMethod("com.android.systemui.shared.plugins.PluginInstance\$Factory",
-                lpparam.classLoader,
-                "getClassLoader",
-                ApplicationInfo::class.java,
-                ClassLoader::class.java,
-                object : XC_MethodHook() {
-                    @Throws(Throwable::class)
-                    override fun afterHookedMethod(param: MethodHookParam) {
-                        val applicationInfo = param.args[0] as ApplicationInfo
+
+        if (mainPrefs.getBoolean("use_chen_volume_animation", false)) {
+            "com.android.systemui.shared.plugins.PluginInstance\$Factory".hook {
+                injectMember {
+                    method {
+                        name = "getClassLoader"
+                        param(ApplicationInfo::class.java, JavaClassLoader)
+                    }
+                    afterHook {
+                        val applicationInfo = this.args[0] as ApplicationInfo
                         if (applicationInfo.packageName == "miui.systemui.plugin") {
-                            if (pluginLoaderClassLoader != param.result as ClassLoader) {
-                                Log.i("Art_Chen", "ClassLoader Changed! re-init hook for SystemUIPlugin")
-                                pluginLoaderClassLoader = param.result as ClassLoader
+                            if (pluginLoaderClassLoader != this.result as ClassLoader) {
+                                Log.i(
+                                    "Art_Chen",
+                                    "ClassLoader Changed! re-init hook for SystemUIPlugin"
+                                )
+                                pluginLoaderClassLoader = this.result as ClassLoader
                                 initPluginHook()
                             }
                         }
                     }
-                })
+                }
+            }
         }
-
-
     }
 }
