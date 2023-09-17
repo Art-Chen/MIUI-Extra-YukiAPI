@@ -30,6 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    lintOptions {
+        baseline file("lint-baseline.xml")
+    }
     namespace 'moe.chenxy.miuiextra'
 }
 

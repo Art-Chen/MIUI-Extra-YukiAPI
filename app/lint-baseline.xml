@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="5" by="lint Giraffe | 2022.3.1">
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details.">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.core:core-ktx than 1.10.1 is available: 1.12.0">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.preference:preference than 1.2.0 is available: 1.2.1">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of dev.rikka.rikkax.appcompat:appcompat than 1.5.0.1 is available: 1.6.1">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of dev.rikka.rikkax.layoutinflater:layoutinflater than 1.2.0 is available: 1.3.0">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of dev.rikka.rikkax.material:material than 2.5.1 is available: 2.7.0">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of dev.rikka.rikkax.recyclerview:recyclerview-ktx than 1.3.1 is available: 1.3.2">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;title_activity_settings&quot; is not translated in &quot;zh&quot; (Chinese)">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="4"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;xposed_desc&quot; is not translated in &quot;zh&quot; (Chinese)">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="16"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;title_activity_vibrator_remap&quot; is not translated in &quot;zh&quot; (Chinese)">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="26"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;coolapk_title&quot; is not translated in &quot;zh&quot; (Chinese)">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="37"/>
+    </issue>
+
+    <issue
+        id="MissingTranslation"
+        message="&quot;weibo_title&quot; is not translated in &quot;zh&quot; (Chinese)">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="38"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`broadcastReceiver` \&#xA;is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected \&#xA;broadcasts registered for chen.miui.extra.update.colorfade">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\hooker\entity\SystemHooker.kt"
+            line="205"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`chenActivitySwitchBroadcastReceiver` \&#xA;is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected \&#xA;broadcasts registered for chen.action.top_activity.switched">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\hooker\entity\home\WallpaperZoomOptimizeHooker.kt"
+            line="177"/>
+    </issue>
+
+    <issue
+        id="WorldReadableFiles"
+        message="Using `MODE_WORLD_READABLE` when creating files can be risky, review carefully">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\view\activity\VibratorRemapActivity.kt"
+            line="40"/>
+    </issue>
+
+    <issue
+        id="WorldReadableFiles"
+        message="Using `MODE_WORLD_READABLE` when creating files can be risky, review carefully">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\view\activity\WallpaperZoomActivity.kt"
+            line="44"/>
+    </issue>
+
+    <issue
+        id="Recycle"
+        message="This animation should be started with `#start()`">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\hooker\entity\SystemUINavigationBarHook.kt"
+            line="57"/>
+    </issue>
+
+    <issue
+        id="Recycle"
+        message="This animation should be started with `#start()`">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\hooker\entity\SystemUINavigationBarHook.kt"
+            line="78"/>
+    </issue>
+
+    <issue
+        id="Recycle"
+        message="This animation should be started with `#start()`">
+        <location
+            file="src\main\java\moe\chenxy\miuiextra\hooker\entity\SystemUINavigationBarHook.kt"
+            line="92"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is always >= 31">
+        <location
+            file="build\generated\ksp\debug\java\com\highcapable\yukihookapi\thirdparty\me\weishu\reflection\BootstrapClass.java"
+            line="31"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; SDK_INT is never &lt; 31">
+        <location
+            file="build\generated\ksp\debug\java\com\highcapable\yukihookapi\thirdparty\me\weishu\reflection\Reflection.java"
+            line="38"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v24`) is unnecessary; `minSdkVersion` is 31. Merge all the resources in this folder into `drawable`.">
+        <location
+            file="src\main\res\drawable-v24"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 31. Merge all the resources in this folder into `mipmap-anydpi`.">
+        <location
+            file="src\main\res\mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (867 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="src\main\res\drawable\ic_baseline_miscellaneous_services_24.xml"
+            line="10"/>
+    </issue>
+
+    <issue
+        id="VectorPath"
+        message="Very long vector path (925 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector.">
+        <location
+            file="src\main\res\drawable\ic_baseline_miscellaneous_services_24.xml"
+            line="11"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.purple_200` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="3"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.purple_500` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="4"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.purple_700` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.teal_200` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="6"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.teal_700` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="7"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.white` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="9"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.home_secondary_outline_ambient_shadow_color` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="11"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.home_secondary_outline_spot_shadow_color` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.primary_text_material_inverse` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="14"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.secondary_text_material_inverse` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="15"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.primary_text_material` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="17"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.secondary_text_material` appears to be unused">
+        <location
+            file="src\main\res\values\colors.xml"
+            line="18"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_launcher_foreground` appears to be unused">
+        <location
+            file="src\main\res\drawable-v24\ic_launcher_foreground.xml"
+            line="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.integer.internal_fragment_bottom_insets` appears to be unused">
+        <location
+            file="src\main\res\values\integer.xml"
+            line="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.m90Hz_game_apps` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="18"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="17"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.m90Hz_game_apps_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="19"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="18"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.video_apps` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="20"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="19"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.video_apps_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="21"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="20"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.force_60hz_apps` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="22"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="21"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.force_60hz_apps_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="23"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="22"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.cancel` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="25"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="25"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.set_disable_mibridge_dynamic_refresh_scene_app_title` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="33"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="30"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.set_disable_mibridge_dynamic_refresh_scene_app_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="34"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="31"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.wallpaper_auto_zoom_on_lockscreen_title` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="68"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="65"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.wallpaper_auto_zoom_on_lockscreen_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="70"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="67"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.not_hide_icon_when_enter_recent_title` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="74"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="71"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.not_hide_icon_when_enter_recent_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="75"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="72"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.no_zoom_out_when_recent_out_title` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="78"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="75"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.no_zoom_out_when_recent_out_summary` appears to be unused">
+        <location
+            file="src\main\res\values\strings.xml"
+            line="79"/>
+        <location
+            file="src\main\res\values-zh-rCN\strings.xml"
+            line="76"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Widget_Design_SubtitleCollapsingToolbar` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="28"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="36"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.TextAppearance_Design_SubtitleCollapsingToolbar_ExpandedTitle` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="30"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="38"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.TextAppearance_Design_SubtitleCollapsingToolbar_ExpandedSubtitle` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="32"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="40"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.language_menu_style` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="36"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="44"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Widget_Button_TextButton_Dialog_FullWidth` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="39"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="47"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.ThemeOverlay_MaterialAlertDialog_Centered_FullWidthButtons` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="44"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="52"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.ThemeOverlay_MaterialAlertDialog_FullWidthButtons` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="51"/>
+        <location
+            file="src\main\res\values-night\themes.xml"
+            line="59"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.ThemeOverlay_Material_Dialog_ColorPicker` appears to be unused">
+        <location
+            file="src\main\res\values\themes.xml"
+            line="76"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Base_ThemeOverlay_AppCompat_Dark_ActionBar` appears to be unused">
+        <location
+            file="..\..\..\.gradle\caches\transforms-3\cebb16d35a3f29f7572112ba1c040471\transformed\appcompat-1.5.0.1-debug\res\values\values.xml"
+            line="500"/>
+        <location
+            file="src\main\res\values\themes.xml"
+            line="60"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive icon is missing a monochrome tag">
+        <location
+            file="src\main\res\mipmap-anydpi-v26\ic_launcher.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive roundIcon is missing a monochrome tag">
+        <location
+            file="src\main\res\mipmap-anydpi-v26\ic_launcher_round.xml"
+            line="2"/>
+    </issue>
+
+    <issue
+        id="Autofill"
+        message="Missing `autofillHints` attribute">
+        <location
+            file="src\main\res\layout\chen_edittext_dialog.xml"
+            line="6"/>
+    </issue>
+
+    <issue
+        id="KtxExtensionAvailable"
+        message="Add suffix `-ktx` to enable the Kotlin extensions for this library">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="LabelFor"
+        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`">
+        <location
+            file="src\main\res\layout\chen_edittext_dialog.xml"
+            line="6"/>
+    </issue>
+
+    <issue
+        id="LabelFor"
+        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`">
+        <location
+            file="src\main\res\layout\chen_effect_map_add_dialog.xml"
+            line="6"/>
+    </issue>
+
+    <issue
+        id="LabelFor"
+        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`">
+        <location
+            file="src\main\res\layout\chen_effect_map_add_dialog.xml"
+            line="24"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;->&quot;, should use `@string` resource">
+        <location
+            file="src\main\res\layout\chen_effect_map_add_dialog.xml"
+            line="22"/>
+    </issue>
+
+</issues>
