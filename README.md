@@ -2,7 +2,7 @@
 
 **Welcome to MIUI Extra's world!**
 
-`MIUI Extra` borns to make the MIUI Better. This modules will **not** connect to Internet and will always offline!
+`MIUI Extra` born to make the MIUI Better. This modules will **not** connect to Internet and will always offline!
 
 This modules optimized or added some features as below:
 - SystemUI
@@ -13,7 +13,7 @@ This modules optimized or added some features as below:
     - added support for change the offsetY
   - Media Notification
     - optimized original dirty color.
-    - fixup art image not update in sometimes.
+    - fix art image not update in sometimes.
   - Volume Panel
     - Add support for its animation
 
@@ -21,11 +21,11 @@ This modules optimized or added some features as below:
   - add support for remap the vibration (including Normal Vibration and Prebaked Vibration)
   - add support for change the maxWallpaperScale on runtime.
   - add support for change the Color Fade duration on runtime.
-  - add hack for drop application's overrided pending transition.
+  - add hack for drop application's override pending transition.
   - add support for bypass refresh rate settings by MiBridge
 
 - PowerKeeper & MiSettings
-  - support for enable custom high-refreshrate list feature (including official un-supported devices)
+  - support for enable custom high-RefreshRate list feature (including official un-supported devices)
   - add support for disable any refresh rate change that by PowerKeeper.
 
 - MiWallpaper
@@ -35,7 +35,7 @@ This modules optimized or added some features as below:
 
 - MiuiHome
   - optimized and support for wallpaper scale animations.
-  - add support for fixup the `appToHome` Animation will forceEnd when touch the screen again. (Welcome back! Breakable Animation)
+  - add support for fix the `appToHome` Animation will forceEnd when touch the screen again. (Welcome back! Breakable Animation)
   - optimized Unlock Animation(similar with @Cemiuiler but different params).
 
 
@@ -46,4 +46,4 @@ This modules optimized or added some features as below:
 - ❤ by All Users and @Art-Chen(https://github.com/Art-Chen)
 
 ## The End
-Use code or make contrubute is welcome! but please **mention this project** if you used code on your own project.
+Use code or make contribute is welcome! but Please **observe the licensing regulations** if you used code on your own project.
