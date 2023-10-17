@@ -27,6 +27,9 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
+                    android:elevation="0dp"
+                    app:titleTextAppearance="?attr/textAppearanceTitleMedium"
+                    android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
                     app:layout_collapseMode="pin"
                     app:title="@string/app_name" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
