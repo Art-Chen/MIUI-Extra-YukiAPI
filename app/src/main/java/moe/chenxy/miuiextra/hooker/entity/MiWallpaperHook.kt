@@ -12,6 +12,8 @@ import android.util.Log
 import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.field
+import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ValueAnimatorClass
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.IntType
@@ -27,7 +29,6 @@ object MiWallpaperHook : YukiBaseHooker() {
     var currentRevealValue = -1f
 
     private fun Context.getPackageInfoCompat(packageName: String, flag: Number = 0) = runCatching {
-        @Suppress("DEPRECATION")
         if (Build.VERSION.SDK_INT >= 33)
             packageManager?.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(flag.toLong()))
         else packageManager?.getPackageInfo(packageName, flag.toInt())
@@ -374,107 +375,42 @@ object MiWallpaperHook : YukiBaseHooker() {
             }
 
 
-            "com.miui.miwallpaper.container.openGL.DesktopAnimImageWallpaperRenderer".hook {
-                injectMember {
-                    method {
-                        name = "checkIsNeedCancelAnim"
-                    }
-                    beforeHook {
+            "com.miui.miwallpaper.container.openGL.DesktopAnimImageWallpaperRenderer".toClass().apply {
+
+                method {
+                    name = "checkIsNeedCancelAnim"
+                }.hook {
+                    before {
                         val mRevealValue =
                             XposedHelpers.getFloatField(this.instance, "mRevealValue")
                         if (mUseChenScreenOnAnim && mRevealValue != 0f) {
                             this.result = true
                         }
                     }
-                }.ignoredNoSuchMemberFailure()
+                }
 
-                injectMember {
-                    method {
-                        name = "setGLViewport"
-                    }
-                    beforeHook {
+                method {
+                    name = "setGLViewport"
+                }.hook {
+                    before {
                         val mRevealValue =
-                            this.field {
+                            field {
                                 name = "mRevealValue"
                                 superClass()
                             }.get(this.instance).any()
                         if (mUseChenScreenOnAnim && mRevealValue != 0f) {
                             // v1.9.0+ need set these to false to call the super method
-                            this.field {
+                            field {
                                 name("mWallpaperScaling")
                             }.get(this.instance).set(false)
 
-                            this.field {
+                            field {
                                 name("mIsResetScale")
                             }.get(this.instance).set(false)
                         }
                     }
                 }
             }
-
-            "com.miui.miwallpaper.wallpaperservice.impl.desktop.DesktopImageEngineImpl".hook {
-                injectMember {
-                    method {
-                        name = "onScreenTurningOn"
-                    }
-                    beforeHook {
-                        val mDesktopWallpaperRenderer = XposedHelpers.getObjectField(
-                            this.instance,
-                            "mDesktopWallpaperRenderer"
-                        )
-                        XposedHelpers.callMethod(
-                            mDesktopWallpaperRenderer,
-                            "resetRevealAnim",
-                            true
-                        )
-                    }
-                }
-            }
         }
     }
-
-
-//        XposedHelpers.findAndHookMethod(
-//            "com.miui.miwallpaper.container.openGL.AnimImageWallpaperRenderer",
-//            classLoader,
-//            "onDrawFrame",
-//            object : XC_MethodHook() {
-//                @Throws(Throwable::class)
-//                override fun beforeHookedMethod(param: MethodHookParam) {
-//                    val mRevealValue = XposedHelpers.getObjectField(param.thisObject, "mRevealValue") as Float
-
-//                    GLES20.glUniform1i(uBlurRadius, (10 * mRevealValue).toInt())
-//                    GLES20.glUniform2f(uBlurOffset, 0.001f, 0.001f)
-//                    GLES20.glUniform1f(uSumWeight, 1f)
-
-//                    Log.i("Art_Chen", "mRevealValue $mRevealValue , mScaleValue $mScaleValue")
-//                    val f2 = ((1.0f - mScaleValue) * 1.0f) + (mScaleValue * 1.2f);
-//                    val f3 = (1.0f - f2) / 2.0f;
-//                    val width = mSurfaceSize.width();
-//                    val height = mSurfaceSize.height();
-//                    GLES20.glUniform1f(uAlpha, currentAlpha)
-////                    GLES20.glUniform2f(uBlurOffset, 0.001f, 0.001f)
-////                    GLES20.glUniform1f(uSumWeight, 1f)
-//                    GLES20.glViewport(((mSurfaceSize.left + (width * f3)).toInt()), ((mSurfaceSize.top + (f3 * height)).toInt()), ((width * f2).toInt()), ((height * f2).toInt()));
-//                    param.result = 0
-//                }
-//            })
-
-
-//        XposedHelpers.findAndHookMethod(
-//            "com.miui.miwallpaper.container.openGL.AnimImageGLWallpaper",
-//            classLoader,
-//            "setupUniforms",
-//            object : XC_MethodHook() {
-//                @Throws(Throwable::class)
-//                override fun beforeHookedMethod(param: MethodHookParam) {
-//                    val mProgram = XposedHelpers.getObjectField(param.thisObject, "mProgram")
-//                    uBlurRadius = XposedHelpers.callMethod(mProgram, "getUniformHandle", "uBlurRadius") as Int
-//                    uBlurOffset = XposedHelpers.callMethod(mProgram, "getUniformHandle", "uBlurOffset") as Int
-//                    uSumWeight = XposedHelpers.callMethod(mProgram, "getUniformHandle", "uSumWeight") as Int
-//                    uAlpha = XposedHelpers.callMethod(mProgram, "getUniformHandle", "uAlpha") as Int
-//                }
-//            })
-
-
 }

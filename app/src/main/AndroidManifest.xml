@@ -12,8 +12,7 @@
         <activity
             android:name=".view.activity.VibratorRemapActivity"
             android:exported="false"
-            android:parentActivityName=".view.activity.SettingsActivity"
-            android:label="@string/title_activity_vibrator_remap">
+            android:parentActivityName=".view.activity.SettingsActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

@@ -1,6 +1,19 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        app:key="activate_status"
+        app:title="@string/activated"
+        app:singleLineTitle="true"
+        app:icon="@drawable/ic_round_check_circle"
+        app:enabled="false" />
+
+    <Preference
+        app:key="android_version_warn"
+        app:title="@string/unsupported_android_version"
+        app:icon="@drawable/ic_round_error_outline"
+        app:enabled="false" />
+
     <PreferenceCategory app:title="@string/misc_header">
 
         <Preference
@@ -36,6 +49,7 @@
         <SeekBarPreference
             android:max="1000"
             app:key="miui_unlock_wallpaper_anim_fade_anim_val"
+            app:dependency="miui_unlock_wallpaper_anim_fade"
             app:defaultValue="450"
             app:min="1"
             app:updatesContinuously="true"
@@ -54,6 +68,7 @@
         <SeekBarPreference
             android:max="2000"
             app:key="screen_on_color_fade_anim_val"
+            app:dependency="color_fade_anim_smoothly"
             app:defaultValue="800"
             app:min="1"
             app:updatesContinuously="true"
@@ -62,6 +77,7 @@
         <SeekBarPreference
             android:max="1000"
             app:key="screen_off_color_fade_anim_val"
+            app:dependency="color_fade_anim_smoothly"
             app:defaultValue="450"
             app:min="1"
             app:updatesContinuously="true"
@@ -96,6 +112,7 @@
         <SeekBarPreference
             android:max="15"
             app:key="home_handle_y_val"
+            app:dependency="chen_home_handle_anim"
             app:shouldDisableView="true"
             app:defaultValue="7"
             app:min="-15"
@@ -104,21 +121,25 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_anim_turbo_mode"
+            app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_anim_turbo_mode_title"
             app:summary="@string/chen_home_handle_anim_turbo_mode_summary"/>
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_no_space"
+            app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_no_space_title"
             app:summary="@string/chen_home_handle_no_space_summary"/>
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_auto_transparent"
+            app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_auto_transparent_title"
             app:summary="@string/chen_home_handle_auto_transparent_summary"/>
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_full_transparent_at_miuihome"
+            app:dependency="chen_home_handle_auto_transparent"
             app:title="@string/chen_home_handle_full_transparent_at_miuihome_title" />
     </PreferenceCategory>
 
@@ -130,6 +151,7 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="music_notification_optimize_foreground_color"
+            app:dependency="music_notification_optimize"
             app:title="@string/music_notification_optimize_foreground_color_title"
             app:summary="@string/music_notification_optimize_foreground_color_summary"/>
     </PreferenceCategory>
@@ -144,32 +166,11 @@
             app:key="force_disable_mibridge_dynamic_refresh_scene"
             app:title="@string/force_disable_mibridge_refresh_scene_title"/>
 
-<!--        <Preference-->
-<!--            app:key="set_disable_mibridge_dynamic_refresh_scene_app"-->
-<!--            app:title="@string/set_disable_mibridge_dynamic_refresh_scene_app_title"-->
-<!--            app:summary="@string/set_disable_mibridge_dynamic_refresh_scene_app_summary"/>-->
-
         <rikka.material.preference.MaterialSwitchPreference
             app:key="force_current_refresh_rate"
             app:summaryOff="@string/force_current_refresh_rate_off"
             app:summaryOn="@string/force_current_refresh_rate_on"
             app:title="@string/force_current_refresh_rate_title" />
-
-        <!--        <MultiSelectListPreference-->
-        <!--            app:key="m60HzTopApps"-->
-        <!--            app:summary="@string/force_60hz_apps_summary"-->
-        <!--            app:title="@string/force_60hz_apps">-->
-        <!--        </MultiSelectListPreference>-->
-        <!--        <MultiSelectListPreference-->
-        <!--            app:key="90Hz_GameApps"-->
-        <!--            app:summary="@string/m90Hz_game_apps_summary"-->
-        <!--            app:title="@string/m90Hz_game_apps">-->
-        <!--        </MultiSelectListPreference>-->
-        <!--        <MultiSelectListPreference-->
-        <!--            app:key="mVideoApps"-->
-        <!--            app:summary="@string/video_apps_summary"-->
-        <!--            app:title="@string/video_apps">-->
-        <!--        </MultiSelectListPreference>-->
 
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/about_me_header">

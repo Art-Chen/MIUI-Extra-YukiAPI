@@ -1,12 +1,18 @@
 package moe.chenxy.miuiextra.utils
 
 import android.content.Context
+import android.os.Build.VERSION
 import android.os.VibrationEffect
 import android.os.VibratorManager
 import java.io.DataOutputStream
 
 class ChenUtils {
     companion object {
+        enum class AndroidVersion(val releaseCode: Int) {
+            U(14),
+            T(13),
+            S(12),
+        }
         fun performVibrateClick(context: Context) {
             val vibrator = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibrator.defaultVibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
@@ -38,6 +44,20 @@ class ChenUtils {
             } catch (t: Throwable) {
                 t.printStackTrace()
             }
+        }
+
+        fun isAboveAndroidVersion(version: AndroidVersion) : Boolean {
+            val releaseCode = VERSION.RELEASE_OR_CODENAME
+            val releaseCodeInt = try {
+                releaseCode.toInt()
+            } catch (e: Exception) {
+                -1
+            }
+
+            if (releaseCodeInt != -1) {
+                return releaseCodeInt >= version.releaseCode
+            }
+            return false
         }
     }
 }

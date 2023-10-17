@@ -9,11 +9,11 @@
     <string name="vibrator_map_summary">Re Map Normal Vibrate to VibratorEffect</string>
     <string name="wallpaper_scale_title">Wallpaper Scale Settings</string>
     <string name="wallpaper_scale_summary">Customize the scale of wallpaper</string>
-    <string name="force_miui_refresh_custom">Enable MIUI Refresh Rate Customize</string>
-    <string name="force_current_refresh_rate_title">Disable MIUI Refresh Rate Policy</string>
-    <string name="force_current_refresh_rate_off">Refresh Rate will control by MIUI dynamically</string>
+    <string name="force_miui_refresh_custom">Enable HyperOS Refresh Rate Customize</string>
+    <string name="force_current_refresh_rate_title">Disable HyperOS Refresh Rate Policy</string>
+    <string name="force_current_refresh_rate_off">Refresh Rate will control by HyperOS dynamically</string>
     <string name="force_current_refresh_rate_on">Refresh Rate will keep to your settings</string>
-    <string name="xposed_desc">Make MIUI Great Again! @ Art_Chen</string>
+    <string name="xposed_desc">Let\'s roll to HyperOS\'s World! @ Art_Chen</string>
 
     <string name="m90Hz_game_apps">90Hz Game Apps</string>
     <string name="m90Hz_game_apps_summary">The games in this list will run at 90Hz, but otherwise 60Hz to avoid tearing</string>
@@ -23,7 +23,6 @@
     <string name="force_60hz_apps_summary">The application in this list will run at 60Hz, but otherwise keep the refresh rate you set(except Game and Video Apps)</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="title_activity_vibrator_remap">VibratorRemapActivity</string>
     <string name="map_range_header">Range to ID Map Settings</string>
     <string name="enable_vibrator_remap_title">Enable Vibrator Remap</string>
     <string name="may_need_reboot">This Settings may need reboot to apply</string>
@@ -36,8 +35,8 @@
     <string name="author_title">Author</string>
     <string name="coolapk_title">CoolAPK</string>
     <string name="weibo_title">Weibo</string>
-    <string name="miui_home_anim_enhance_title">MIUI Home Anim Enhance</string>
-    <string name="miui_home_anim_enhance_summary">Rework Break Anim and Icon Follow Anim (Experience) (Performance Dropped!)</string>
+    <string name="miui_home_anim_enhance_title">Home Anim Enhance</string>
+    <string name="miui_home_anim_enhance_summary">Enhance Animations for MiuiHome</string>
     <string name="reboot">Reboot</string>
     <string name="color_fade_anim_smoothly_title">Smooth Screen On / Off Anim</string>
     <string name="color_fade_anim_smoothly_summary">Make Color Fade Animation Slower Than MIUI Default Settings</string>
@@ -96,4 +95,8 @@
     <string name="music_notification_header">Music Notification</string>
     <string name="use_chen_volume_animation_title">Use Chen Volume View Animation</string>
     <string name="use_chen_volume_animation_summary">Let\'s smooth the Volume!</string>
+    <string name="unsupported_android_version">Only Android T(13) and Above is Supported! Some feature may not work as expected!!</string>
+    <string name="unsupported_xposed_version">Unsupported Xposed detected! Please install and active LSPosed!</string>
+    <string name="activated">Activated</string>
+    <string name="deactivated">Deactivated</string>
 </resources>

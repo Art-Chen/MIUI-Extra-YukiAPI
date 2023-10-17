@@ -2,16 +2,13 @@
         <style name="Theme.MiuiExtra" parent="Theme.MiuiExtra.Light" />
         <!-- Base application theme. -->
         <style name="Theme.MiuiExtra.Light" parent="Theme.Material3.DynamicColors.Light.Rikka">
+                <item name="colorPrimaryVariant">@color/material_grey_300</item>
                 <item name="android:statusBarColor">?android:colorBackground</item>
-                <item name="colorPrimaryVariant">@color/primary_dark_light_light_status_bar</item>
-                <!-- Customize your theme here. -->
-                <item name="android:windowTranslucentNavigation">true</item>
+                <item name="android:windowTranslucentStatus">true</item>
+                <item name="android:windowTranslucentNavigation">false</item>
                 <item name="android:windowLightStatusBar">true</item>
-                <!-- Preference title -->
                 <item name="android:textAppearanceListItem">?textAppearanceSubtitle1</item>
-                <!-- Preference category title -->
                 <item name="android:colorAccent">?colorPrimary</item>
-                <!-- Preference switch -->
                 <item name="android:colorControlActivated">?colorPrimary</item>
                 <item name="android:windowActionBar">false</item>
                 <item name="android:windowNoTitle">true</item>
@@ -55,7 +52,6 @@
                 <item name="buttonBarNegativeButtonStyle">@style/Widget.Button.TextButton.Dialog.FullWidth</item>
                 <item name="buttonBarNeutralButtonStyle">@style/Widget.Button.TextButton.Dialog.FullWidth</item>
         </style>
-
 
         <style name="Base.ThemeOverlay.AppCompat.Dark.ActionBar" tools:override="true">
                 <item name="android:colorControlNormal">?android:attr/textColorPrimary</item>
