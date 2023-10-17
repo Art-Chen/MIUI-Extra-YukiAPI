@@ -95,7 +95,6 @@
     <string name="use_chen_volume_animation_summary">享受由爱与琛驱动的音量调节栏动画吧(可能只支持线性马达的机型，不要问为什么，问就是懒)</string>
     <string name="unsupported_android_version">不支持的Android版本! 仅支持Android T(13)以上版本! 有些特性可能无法按照预期工作!!</string>
     <string name="unsupported_xposed_version">检测到不支持的Xposed版本! 请安装LSPosed并激活该模块! (强制重启该模块后生效)</string>
-    <string name="welcome">欢迎来到MIUI Extra的世界</string>
     <string name="activated">模块已激活</string>
     <string name="deactivated">模块未激活</string>
 </resources>
