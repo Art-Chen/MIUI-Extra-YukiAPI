@@ -318,14 +318,16 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun listenMiuiCustomMode(customModePerf: SwitchPreferenceCompat) {
-            if (Settings.System.getString(context?.contentResolver, "custom_mode_switch") == "true") {
-                customModePerf.isChecked = true;
+            val isNativeSupported = Settings.Global.getString(context?.contentResolver, "custom_mode_is_native_supported") == "true"
+            if (Settings.System.getString(context?.contentResolver, "custom_mode_switch") == "true" && isNativeSupported) {
+                // Only set Checked when native supported. this solved custom mode can't disable after enabled
+                customModePerf.isChecked = true
             }
 
             if (Settings.System.getString(context?.contentResolver, "custom_mode_is_chen_policy") == "true") {
                 customModePerf.summaryOn = "Using Chen Custom Policy Mode"
             } else {
-                customModePerf.summaryOn = "Using MIUI Official Policy Mode"
+                customModePerf.summaryOn = "Using MIUI Official Policy Mode" + if (isNativeSupported) " (Native Supported)" else " (Force Enabled)"
             }
 
             customModePerf.setOnPreferenceChangeListener { _, _ ->

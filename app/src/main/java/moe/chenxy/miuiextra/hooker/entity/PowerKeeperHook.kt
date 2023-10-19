@@ -10,6 +10,8 @@ import android.util.ArrayMap
 import android.util.ArraySet
 import android.util.Log
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import com.highcapable.yukihookapi.hook.type.android.LooperClass
 import com.highcapable.yukihookapi.hook.type.android.MessageClass
@@ -29,13 +31,13 @@ object PowerKeeperHook : YukiBaseHooker() {
     override fun onHook() {
         val isOldVersion = getIsNonSupportedVersion()
         mainPrefs.reload()
-        "com.miui.powerkeeper.statemachine.DisplayFrameSetting".hook {
+
+        "com.miui.powerkeeper.statemachine.DisplayFrameSetting".toClass().apply {
             // Init for Chen Policy
-            injectMember {
-                constructor {
-                    param(ContextClass, LooperClass)
-                }
-                afterHook {
+            constructor {
+                param(ContextClass, LooperClass)
+            }.hook {
+                after {
                     mainPrefs.reload()
                     val mContext =
                         XposedHelpers.getObjectField(this.instance, "mContext") as Context
@@ -143,16 +145,23 @@ object PowerKeeperHook : YukiBaseHooker() {
 
             // Force Enable Custom Mode if PowerKeeper supported this
             if (!isOldVersion) {
-                injectMember {
-                    method {
-                        name = "parseCustomModeSwitchFromDb"
-                        param(StringClass)
-                    }
-                    afterHook {
+                method {
+                    name = "parseCustomModeSwitchFromDb"
+                    param(StringClass)
+                }.hook {
+                    after {
                         val mIsCustomFpsSwitch =
                             XposedHelpers.getObjectField(this.instance, "mIsCustomFpsSwitch")
                         val mIsNativeSupported =
                             mIsCustomFpsSwitch != null && (mIsCustomFpsSwitch as String) == "true"
+                        val mContext = XposedHelpers.getObjectField(
+                            this.instance,
+                            "mContext"
+                        ) as Context
+
+                        if (mIsNativeSupported) {
+                            Settings.Global.putString(mContext.contentResolver, "custom_mode_is_native_supported", "true")
+                        }
                         mainPrefs.reload()
 
                         if (mainPrefs.getBoolean(
@@ -160,10 +169,6 @@ object PowerKeeperHook : YukiBaseHooker() {
                                 false
                             ) && !mIsNativeSupported
                         ) {
-                            val mContext = XposedHelpers.getObjectField(
-                                this.instance,
-                                "mContext"
-                            ) as Context
                             Settings.System.putString(
                                 mContext.contentResolver,
                                 "custom_mode_switch",
@@ -176,16 +181,15 @@ object PowerKeeperHook : YukiBaseHooker() {
                             )
                         }
                     }
-                }.ignoredNoSuchMemberFailure()
+                }
             }
             
             // Disable Miui Refresh Rate Policy
-            injectMember { 
-                method { 
-                    name = "setScreenEffect"
-                    param(StringClass, IntType, IntType)
-                }
-                beforeHook {
+            method {
+                name = "setScreenEffect"
+                param(StringClass, IntType, IntType)
+            }.hook {
+                before {
                     val cookie = this.args[2] as Int
                     val fps = this.args[1] as Int
                     mainPrefs.reload()
@@ -237,12 +241,11 @@ object PowerKeeperHook : YukiBaseHooker() {
 
             // Get App Refresh Rate Policy from Cloud if using Chen Policy
             if (isOldVersion && mainPrefs.getBoolean("force_enable_refresh_custom", false)) {
-                injectMember {
-                    method {
-                        name = "handleMessage"
-                        param(MessageClass)
-                    }
-                    afterHook {
+                method {
+                    name = "handleMessage"
+                    param(MessageClass)
+                }.hook {
+                    after {
                         // 3 == Game 4 == Apps 5 == Video
                         val message = this.args[0] as Message
                         if (message.what == 4) {
@@ -258,22 +261,20 @@ object PowerKeeperHook : YukiBaseHooker() {
                         }
                     }
                 }
+            }
 
-                injectMember {
-                    method {
-                        name = "onPkgExistentChanged"
-                        param("com.miui.powerkeeper.event.EventsAggregator\$EventResult")
-                    }
-                    afterHook {
-                        val mContext =
-                            XposedHelpers.getObjectField(this.instance, "mContext") as Context
-                        setAllCustomAppToTopApp(mContext)
-                    }
+            method {
+                name = "onPkgExistentChanged"
+                param("com.miui.powerkeeper.event.EventsAggregator\$EventResult")
+            }.hook {
+                after {
+                    val mContext =
+                        XposedHelpers.getObjectField(this.instance, "mContext") as Context
+                    setAllCustomAppToTopApp(mContext)
                 }
             }
         }
     }
-
 
     private fun setCurrentUserFpsAsFinal(thiz: Any) {
         val mUserFPS = XposedHelpers.getIntField(thiz, "mUserFps")
@@ -351,7 +352,7 @@ object PowerKeeperHook : YukiBaseHooker() {
         XposedHelpers.setObjectField(mThiz, "mTopApps", mCurrentTopApps)
     }
 
-    fun addNewBlackListAppsToList(context: Context, packageName: String) {
+    private fun addNewBlackListAppsToList(context: Context, packageName: String) {
         val listStr = Settings.Global.getString(context.contentResolver, SETTINGS_CUSTOM_ARRAY_KEY)
         val listArr = listStrToArr(listStr)
         if (!listArr.contains(packageName)) {
@@ -370,7 +371,7 @@ object PowerKeeperHook : YukiBaseHooker() {
         }
     }
 
-    fun removeAppsFromList(context: Context, packageName: String) {
+    private fun removeAppsFromList(context: Context, packageName: String) {
         val listStr = Settings.Global.getString(context.contentResolver, SETTINGS_CUSTOM_ARRAY_KEY)
         val listArr = listStrToArr(listStr)
         if (listArr.contains(packageName)) {
@@ -387,7 +388,7 @@ object PowerKeeperHook : YukiBaseHooker() {
         )
     }
 
-    fun listArrToStr(list: ArrayList<String>): String {
+    private fun listArrToStr(list: ArrayList<String>): String {
         return list.joinToString(separator = ",")
     }
 
@@ -395,13 +396,13 @@ object PowerKeeperHook : YukiBaseHooker() {
         return ArrayList(listStr.split(","))
     }
 
-    fun checkAppInBlackList(context: Context, pkgName: String): Boolean {
+    private fun checkAppInBlackList(context: Context, pkgName: String): Boolean {
         val listStr = Settings.Global.getString(context.contentResolver, SETTINGS_CUSTOM_ARRAY_KEY)
         val list = listStrToArr(listStr)
         return list.contains(pkgName)
     }
 
-    fun setAllCustomAppToTopApp(context: Context) {
+    private fun setAllCustomAppToTopApp(context: Context) {
         val listStr = Settings.Global.getString(context.contentResolver, SETTINGS_CUSTOM_ARRAY_KEY)
 
         if (mCustomTopApps.isEmpty()) {
