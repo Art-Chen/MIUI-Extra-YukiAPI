@@ -6,8 +6,10 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -16,12 +18,15 @@ import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import moe.chenxy.miuiextra.R
 import moe.chenxy.miuiextra.utils.ChenUtils
 import rikka.preference.MainSwitchPreference
 import rikka.widget.mainswitchbar.OnMainSwitchChangeListener
 
+const val MAX_EFFECT_ID = 400
 class VibratorEffectRemapActivity : AppCompatActivity() {
 
     @SuppressLint("WorldReadableFiles")
@@ -98,37 +103,38 @@ class VibratorEffectRemapActivity : AppCompatActivity() {
 
             findPreference<Preference>("add_new_effect_map")?.setOnPreferenceClickListener {
                 val chenView = LayoutInflater.from(activity).inflate(R.layout.chen_effect_map_add_dialog, null)
-                val mapBeforeEditText = chenView.findViewById<EditText>(R.id.chen_effect_map_before)
-                val mapToEditText = chenView.findViewById<EditText>(R.id.chen_effect_map_to)
-                mapBeforeEditText.inputType = (InputType.TYPE_CLASS_NUMBER)
-                mapToEditText.inputType = (InputType.TYPE_CLASS_NUMBER)
+
+                val mapBeforePicker = chenView.findViewById<NumberPicker>(R.id.chen_effect_map_from)
+                val mapToPicker = chenView.findViewById<NumberPicker>(R.id.chen_effect_map_to)
+                mapBeforePicker.maxValue = MAX_EFFECT_ID
+                mapBeforePicker.minValue = 0
+
+                mapToPicker.maxValue = MAX_EFFECT_ID
+                mapToPicker.minValue = 0
+
+                mapBeforePicker.setOnValueChangedListener { _, _, _ -> ChenUtils.performVibrateAnyIndex(requireContext(), mapBeforePicker.value) }
+                mapToPicker.setOnValueChangedListener { _, _, _ -> ChenUtils.performVibrateAnyIndex(requireContext(), mapToPicker.value) }
 
                 val inputDialog = MaterialAlertDialogBuilder(this.requireContext())
+                inputDialog.setOnDismissListener { ChenUtils.cancelAnyVibration(requireContext()) }
                 inputDialog
                     .setTitle(R.string.want_to_map_id)
                     .setView(chenView)
                     .setPositiveButton(
                         R.string.confirm
                     ) { _, _ ->
-                        val mapBeforeText = mapBeforeEditText.text.toString()
-                        val mapToText = mapToEditText.text.toString()
-                        var mapBeforeInt = 0
-                        var mapToInt = 0
-
-                        if (mapBeforeText.isNotEmpty() && mapToText.isNotEmpty()) {
-                            mapBeforeInt = mapBeforeText.toInt()
-                            mapToInt = mapToText.toInt()
+                        if (mapBeforePicker.value == mapToPicker.value) {
+                            Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), "Before and After are the same!! ignored!!", Snackbar.LENGTH_LONG)
+                                .show()
+                            return@setPositiveButton
                         }
-
-                        if (mapToInt < 0 && mapBeforeInt < 0) {
-                            Toast.makeText(
-                                this.context,
-                                "Input Value Invalid!!",
-                                Toast.LENGTH_SHORT
-                            ).show();
-                        } else {
-                            addNewRemapItem(mapBeforeInt, mapToInt)
-                        }
+                        addNewRemapItem(mapBeforePicker.value, mapToPicker.value)
+                        Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout), "Mapped ${mapBeforePicker.value} to ${mapToPicker.value}", Snackbar.LENGTH_LONG)
+                            .setAction("Try it!") {
+                                ChenUtils.performVibrateAnyIndex(it.context, mapBeforePicker.value)
+                            }
+                            .show()
+                        this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
                     }
                 inputDialog.show()
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
@@ -137,30 +143,23 @@ class VibratorEffectRemapActivity : AppCompatActivity() {
 
             findPreference<Preference>("try_effect")?.setOnPreferenceClickListener {
                 val inputDialog = MaterialAlertDialogBuilder(this.requireContext())
-                val editText = EditText(context)
+                val chenView = LayoutInflater.from(activity).inflate(R.layout.chen_haptic_effect_try_layout, null)
+                val numberPicker = chenView.findViewById<NumberPicker>(R.id.effect_picker)
+                val tryBtn = chenView.findViewById<MaterialButton>(R.id.try_effect_btn)
+
+                numberPicker.maxValue = MAX_EFFECT_ID // set the max id to 400, the id will no t over than 400 if mi isn't crazy
+                numberPicker.minValue = 0
+
+                numberPicker.setOnValueChangedListener { _, _, _ -> ChenUtils.performVibrateClick(requireContext()) }
+
+                tryBtn.setOnClickListener {
+                    ChenUtils.performVibrateAnyIndex(requireContext(), numberPicker.value)
+                }
+
                 inputDialog
-                    .setTitle("ID")
-                    .setView(editText)
-                    .setPositiveButton(
-                        R.string.confirm
-                    ) { _, _ ->
-                        val idText = editText.text.toString()
-                        var idInt = 0
-
-                        if (idText.isNotEmpty()) {
-                            idInt = idText.toInt()
-                        }
-
-                        if (idInt < 0) {
-                            Toast.makeText(
-                                this.context,
-                                "Input Value Invalid!!",
-                                Toast.LENGTH_SHORT
-                            ).show();
-                        } else {
-                            ChenUtils.performVibrateAnyIndex(requireContext(), idInt)
-                        }
-                    }
+                    .setTitle(R.string.try_effect)
+                    .setView(chenView)
+                    .setPositiveButton(R.string.confirm) { _, _ -> }
                 inputDialog.show()
                 return@setOnPreferenceClickListener true
             }

@@ -28,6 +28,11 @@ class ChenUtils {
             vibrator.defaultVibrator.vibrate(VibrationEffect.createPredefined(id))
         }
 
+        fun cancelAnyVibration(context: Context) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibrator.cancel()
+        }
+
         fun lerp(start: Float, stop: Float, amount: Float): Float {
             return start + (stop - start) * amount
         }

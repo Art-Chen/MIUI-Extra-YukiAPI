@@ -3,15 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/chen_effect_map_before"
-        android:layout_marginStart="20dp"
-        android:layout_weight="2"
+    <NumberPicker
+        android:id="@+id/chen_effect_map_from"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:autofillHints=""
-        android:inputType="number" />
+        android:layout_weight="2"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:scrollbars="none" />
 
     <TextView
         android:layout_weight="1"
@@ -21,14 +20,13 @@
         android:textSize="18sp"
         android:text="->" />
 
-    <EditText
+    <NumberPicker
         android:id="@+id/chen_effect_map_to"
-        android:layout_marginEnd="20dp"
-        android:layout_weight="2"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:autofillHints=""
-        android:inputType="number" />
+        android:layout_weight="2"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:scrollbars="none" />
 
 </LinearLayout>

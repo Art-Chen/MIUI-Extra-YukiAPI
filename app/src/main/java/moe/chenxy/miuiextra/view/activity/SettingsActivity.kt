@@ -27,6 +27,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
+import androidx.preference.TwoStatePreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import moe.chenxy.miuiextra.R
@@ -101,7 +102,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
-            this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
+            if (preference is TwoStatePreference) {
+                this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
+            }
             return super.onPreferenceTreeClick(preference)
         }
 
@@ -331,7 +334,6 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             customModePerf.setOnPreferenceChangeListener { _, _ ->
-                this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
                 Snackbar.make(requireActivity().findViewById(R.id.settings_root_layout),
                     R.string.may_need_reboot_PowerKeeper, Snackbar.LENGTH_LONG)
                     .setAction(R.string.reboot) { _ ->
