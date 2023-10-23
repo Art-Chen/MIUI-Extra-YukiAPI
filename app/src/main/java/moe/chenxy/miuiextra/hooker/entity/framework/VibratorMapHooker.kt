@@ -3,6 +3,7 @@ package moe.chenxy.miuiextra.hooker.entity.framework
 import android.os.VibrationEffect
 import android.util.Log
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.LongType
 import de.robv.android.xposed.XSharedPreferences
@@ -23,14 +24,13 @@ object VibratorMapHooker : YukiBaseHooker(){
     var needRemap = false
     
     override fun onHook() {
-        "com.android.server.vibrator.VibratorController".hook {
-            injectMember {
-                // Hook for Normal Vibrator Remap
-                method {
-                    name = "on"
-                    param(LongType, LongType)
-                }
-                beforeHook {
+        "com.android.server.vibrator.VibratorController".toClass().apply {
+            // Hook for Normal Vibrator Remap
+            method {
+                name = "on"
+                param(LongType, LongType)
+            }.hook {
+                before {
                     val millis = this.args[0] as Long
                     val vibrationId = this.args[1] as Long
                     vibratorPrefs.reload()
@@ -49,12 +49,11 @@ object VibratorMapHooker : YukiBaseHooker(){
             }
 
             // Remap Prebaked Vibrate
-            injectMember {
-                method {
-                    name = "on"
-                    param("android.os.vibrator.PrebakedSegment", LongType)
-                }
-                beforeHook {
+            method {
+                name = "on"
+                param("android.os.vibrator.PrebakedSegment", LongType)
+            }.hook {
+                before {
                     initEffectMap()
                     if (vibratorEffectPrefs.getBoolean("enable_vibrator_effect_remap", false)) {
                         val mPrebakedSegment = this.args[0]
@@ -78,14 +77,14 @@ object VibratorMapHooker : YukiBaseHooker(){
                 }
             }
 
-            injectMember {
-                method {
-                    name = "setAmplitude"
-                    param(FloatType)
-                }
-                beforeHook {
+            // This fixed Kernel Panic on Xiaomi 13 Ultra issue
+            method {
+                name = "setAmplitude"
+                param(FloatType)
+            }.hook {
+                before {
                     if (needRemap) {
-                        Log.i(
+                        Log.v(
                             "Art_Chen",
                             "should not set amplitude if we need map to effect vibrator, ignored this set"
                         )
@@ -95,32 +94,33 @@ object VibratorMapHooker : YukiBaseHooker(){
             }
         }
 
-        "com.android.server.vibrator.SetAmplitudeVibratorStep".hook {
-            injectMember {
-                method {
-                    name = "startVibrating"
-                    param(LongType)
-                }
-                beforeHook {
-                    val millis = this.args[0] as Long
+        "com.android.server.vibrator.SetAmplitudeVibratorStep".toClass().method {
+            name = "startVibrating"
+            param(LongType)
+        }.hook {
+            before {
+                val millis = this.args[0] as Long
+                if (vibratorPrefs.hasFileChanged()) {
                     vibratorPrefs.reload()
-                    needRemap =
-                        vibratorPrefs.getBoolean("enable_vibrator_remap", false) && millis < 500
                 }
+
+                needRemap =
+                    vibratorPrefs.getBoolean("enable_vibrator_remap", false) && millis < 500
             }
         }
     }
 
 
     private fun mapMillisRangeToID(millis: Long): Long {
-        if (millis in 1..10) return vibratorPrefs.getString("map_range_1_10", "5")!!.toLong()
-        if (millis in 11..20) return vibratorPrefs.getString("map_range_11_20", "7")!!.toLong()
-        if (millis in 21..40) return vibratorPrefs.getString("map_range_21_40", "8")!!.toLong()
-        if (millis in 41..70) return vibratorPrefs.getString("map_range_41_70", "3")!!.toLong()
-        if (millis in 71..500) return vibratorPrefs.getString("map_range_71_500", "1")!!.toLong()
-
         // Default to VibrationEffect.CLICK
-        return VibrationEffect.EFFECT_CLICK.toLong()
+        return when (millis) {
+            in 1..10 -> vibratorPrefs.getString("map_range_1_10", "5")!!.toLong()
+            in 11..20 -> vibratorPrefs.getString("map_range_11_20", "7")!!.toLong()
+            in 21..40 -> vibratorPrefs.getString("map_range_21_40", "8")!!.toLong()
+            in 41..70 -> vibratorPrefs.getString("map_range_41_70", "3")!!.toLong()
+            in 71..500 -> vibratorPrefs.getString("map_range_71_500", "1")!!.toLong()
+            else -> VibrationEffect.EFFECT_CLICK.toLong()
+        }
     }
 
     private fun initEffectMap() {

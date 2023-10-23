@@ -21,23 +21,23 @@ import java.util.concurrent.AbstractExecutorService
 
 
 object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
-    var mSpringAnimation: Any? = null
-    var zoomInStiffness =
+    private var mSpringAnimation: Any? = null
+    private var zoomInStiffness =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_stiffness_val", 3263).toFloat() / 100
-    var zoomOutStiffness =
+    private var zoomOutStiffness =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_stiffness_val", 3263).toFloat() / 100
-    var zoomOutStartVelocity =
+    private var zoomOutStartVelocity =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_start_velocity_val", 662).toFloat() / 1000
-    var zoomInStartVelocity =
+    private var zoomInStartVelocity =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_start_velocity_val", 0).toFloat() / 1000
     private var zoomOut =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_val", 4).toFloat() / 10
-    var wallpaperZoomThiz: Any? = null
-    var mZoomedIn = false
-    var mZoomedOut = 1.0f
+    private var wallpaperZoomThiz: Any? = null
+    private var mZoomedIn = false
+    private var mZoomedOut = 1.0f
 
-    var isInHome = true
-    var lastScreenState = Display.STATE_ON
+    private var isInHome = true
+    private var lastScreenState = Display.STATE_ON
 
     override fun onHook() {
         "com.miui.home.launcher.wallpaper.WallpaperZoomManager".hook {

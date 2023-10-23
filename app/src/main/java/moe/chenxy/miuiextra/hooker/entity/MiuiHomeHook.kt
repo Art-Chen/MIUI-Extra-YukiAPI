@@ -2,6 +2,7 @@ package moe.chenxy.miuiextra.hooker.entity
 
 import android.util.Log
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.IntType
@@ -14,7 +15,7 @@ import moe.chenxy.miuiextra.hooker.entity.home.WallpaperZoomOptimizeHooker
 
 object MiuiHomeHook : YukiBaseHooker() {
     var mAppToHomeAnim2Bak: Any? = null
-    val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
+    private val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
     val zoomPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_wallpaper_zoom_settings")
 
     enum class AnimType {
@@ -34,24 +35,21 @@ object MiuiHomeHook : YukiBaseHooker() {
         }
 
         if (mainPrefs.getBoolean("miui_unlock_anim_enhance", false)) {
-            "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Phone".hook {
-                injectMember {
-                    method {
-                        name = "getSpringAnimator"
-                        param(ViewClass, IntType, FloatType, FloatType, FloatType, FloatType)
+            "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Phone".toClass().method {
+                name = "getSpringAnimator"
+                param(ViewClass, IntType, FloatType, FloatType, FloatType, FloatType)
+            }.hook {
+                after {
+                    val springAnimation = this.result
+                    if (this.args[2] == -1500.0f) {
+                        XposedHelpers.callMethod(
+                            springAnimation,
+                            "setDampingResponse",
+                            0.68f,
+                            0.55f
+                        )
                     }
-                    afterHook {
-                        val springAnimation = this.result
-                        if (this.args[2] == -1500.0f) {
-                            XposedHelpers.callMethod(
-                                springAnimation,
-                                "setDampingResponse",
-                                0.68f,
-                                0.55f
-                            )
-                        }
-                        this.result = springAnimation
-                    }
+                    this.result = springAnimation
                 }
             }
         }

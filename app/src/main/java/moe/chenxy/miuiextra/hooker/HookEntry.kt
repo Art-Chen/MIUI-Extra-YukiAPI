@@ -1,6 +1,5 @@
 package moe.chenxy.miuiextra.hooker
 
-import android.util.Log
 import com.highcapable.yukihookapi.YukiHookAPI
 import com.highcapable.yukihookapi.YukiHookAPI.configs
 import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
@@ -12,9 +11,9 @@ import moe.chenxy.miuiextra.hooker.entity.MiuiHomeHook
 import moe.chenxy.miuiextra.hooker.entity.MiuiSettingsHook
 import moe.chenxy.miuiextra.hooker.entity.PowerKeeperHook
 import moe.chenxy.miuiextra.hooker.entity.SystemHooker
-import moe.chenxy.miuiextra.hooker.entity.SystemUIMusicNotificationHook
-import moe.chenxy.miuiextra.hooker.entity.SystemUINavigationBarHook
-import moe.chenxy.miuiextra.hooker.entity.SystemUIPluginHook
+import moe.chenxy.miuiextra.hooker.entity.systemui.NavigationBarHooker
+import moe.chenxy.miuiextra.hooker.entity.systemui.SystemUIPluginHook
+import moe.chenxy.miuiextra.hooker.entity.systemui.SystemUIMainHooker
 
 @InjectYukiHookWithXposed
 object HookEntry : IYukiHookXposedInit {
@@ -23,18 +22,7 @@ object HookEntry : IYukiHookXposedInit {
     override fun onHook() = YukiHookAPI.encase {
         mainPrefs.reload()
         loadSystem(SystemHooker)
-        if (mainPrefs.getBoolean("chen_home_handle_anim", false)) {
-            loadApp("com.android.systemui", SystemUINavigationBarHook)
-        }
-        loadApp("com.android.systemui", SystemUIPluginHook)
-        if (mainPrefs.getBoolean("music_notification_optimize", false)) {
-            // Newer MIUI replaced Music Notification design, it will not work after it, so ignored all failure
-            try {
-                loadApp("com.android.systemui", SystemUIMusicNotificationHook)
-            } catch (e: Throwable) {
-                Log.w("Art_Chen", "Failed to load SystemUIMusicNotificationHook. This version of SystemUI may not supported!")
-            }
-        }
+        loadApp("com.android.systemui", SystemUIMainHooker)
         loadApp("com.miui.powerkeeper", PowerKeeperHook)
         loadApp("com.miui.home", MiuiHomeHook)
         loadApp("com.xiaomi.misettings", MiuiSettingsHook)

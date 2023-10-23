@@ -1,4 +1,4 @@
-package moe.chenxy.miuiextra.hooker.entity
+package moe.chenxy.miuiextra.hooker.entity.systemui
 
 import android.animation.ValueAnimator
 import android.content.ComponentName
@@ -30,7 +30,7 @@ import java.lang.reflect.Proxy
 import kotlin.math.abs
 
 
-object SystemUINavigationBarHook : YukiBaseHooker() {
+object NavigationBarHooker : YukiBaseHooker() {
     private val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
 
     @Volatile
