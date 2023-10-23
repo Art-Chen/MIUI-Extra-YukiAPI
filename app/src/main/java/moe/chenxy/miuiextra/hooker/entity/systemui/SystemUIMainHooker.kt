@@ -24,5 +24,7 @@ object SystemUIMainHooker : YukiBaseHooker() {
         if (mainPrefs.getBoolean("chen_home_handle_anim", false)) {
             loadHooker(NavigationBarHooker)
         }
+
+        loadHooker(StatusBarBlurUtilsHooker)
     }
 }

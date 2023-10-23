@@ -9,12 +9,13 @@ import com.highcapable.yukihookapi.hook.type.java.IntType
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.hooker.entity.home.AnimationEnhanceHooker
 import moe.chenxy.miuiextra.hooker.entity.home.IconLaunchAnimHooker
 import moe.chenxy.miuiextra.hooker.entity.home.WallpaperZoomOptimizeHooker
+import moe.chenxy.miuiextra.utils.ChenUtils
 
 
 object MiuiHomeHook : YukiBaseHooker() {
-    var mAppToHomeAnim2Bak: Any? = null
     private val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
     val zoomPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_wallpaper_zoom_settings")
 
@@ -26,7 +27,13 @@ object MiuiHomeHook : YukiBaseHooker() {
     override fun onHook() {
         mainPrefs.reload()
         if (mainPrefs.getBoolean("miui_home_anim_enhance", false)) {
-            loadHooker(IconLaunchAnimHooker)
+            // MiuiHome is no needed hack this on U
+            if (!ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+                loadHooker(IconLaunchAnimHooker)
+            } else {
+                // Above U use new Enhancer
+                loadHooker(AnimationEnhanceHooker)
+            }
         }
 
 

@@ -1,17 +1,16 @@
 package moe.chenxy.miuiextra.hooker.entity.systemui
 
-import android.animation.ValueAnimator
+import android.R.attr.classLoader
 import android.content.pm.ApplicationInfo
 import android.util.Log
-import android.view.animation.PathInterpolator
-import android.widget.LinearLayout
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import com.highcapable.yukihookapi.hook.type.java.JavaClassLoader
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.utils.ChenUtils
 
 
 object SystemUIPluginHook : YukiBaseHooker() {
@@ -31,20 +30,43 @@ object SystemUIPluginHook : YukiBaseHooker() {
         }
 
         // Load plugin hooker
-        "com.android.systemui.shared.plugins.PluginInstance\$Factory".toClass().method {
-            name = "getClassLoader"
-            param(ApplicationInfo::class.java, JavaClassLoader)
-        }.hook {
-            after {
-                val applicationInfo = this.args[0] as ApplicationInfo
-                if (applicationInfo.packageName == "miui.systemui.plugin") {
-                    if (pluginLoaderClassLoader != this.result as ClassLoader) {
-                        Log.i(
-                            "Art_Chen",
-                            "ClassLoader Changed! re-init hook for SystemUIPlugin"
-                        )
-                        pluginLoaderClassLoader = this.result as ClassLoader
-                        initPluginHook()
+        if (!ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+            "com.android.systemui.shared.plugins.PluginInstance\$Factory".toClass().method {
+                name = "getClassLoader"
+                param(ApplicationInfo::class.java, JavaClassLoader)
+            }.hook {
+                after {
+                    val applicationInfo = this.args[0] as ApplicationInfo
+                    if (applicationInfo.packageName == "miui.systemui.plugin") {
+                        if (pluginLoaderClassLoader != this.result as ClassLoader) {
+                            Log.i(
+                                "Art_Chen",
+                                "ClassLoader Changed! re-init hook for SystemUIPlugin"
+                            )
+                            pluginLoaderClassLoader = this.result as ClassLoader
+                            initPluginHook()
+                        }
+                    }
+                }
+            }
+        } else {
+            // get Classloader for plugin on Android U
+            "com.android.systemui.shared.plugins.PluginInstance".toClass().method {
+                name = "loadPlugin"
+            }.hook {
+                after {
+                    val pkgName = XposedHelpers.callMethod(this.instance, "getPackage")
+                    if (pkgName == "miui.systemui.plugin") {
+                        val factory = XposedHelpers.getObjectField(this.instance, "mPluginFactory")
+                        val clsLoader = XposedHelpers.callMethod(XposedHelpers.getObjectField(factory, "mClassLoaderFactory"), "get") as ClassLoader
+                        if (pluginLoaderClassLoader != clsLoader) {
+                            Log.i(
+                                "Art_Chen",
+                                "ClassLoader Changed! re-init hook for SystemUIPlugin"
+                            )
+                            pluginLoaderClassLoader = clsLoader
+                            initPluginHook()
+                        }
                     }
                 }
             }

@@ -31,8 +31,8 @@
     <string name="set_disable_mibridge_dynamic_refresh_scene_app_summary">点按来设置拒绝通过MiBridge接口调整刷新率的App</string>
     <string name="about_me_header">关于我</string>
     <string name="author_title">作者</string>
-    <string name="miui_home_anim_enhance_title">MIUI 桌面动画增强!</string>
-    <string name="miui_home_anim_enhance_summary">回来吧！我的打断动画和图标跟随动画！</string>
+    <string name="miui_home_anim_enhance_title">桌面动画增强</string>
+    <string name="miui_home_anim_enhance_summary">增强打断、动画参数等细节</string>
     <string name="may_need_reboot_miui_home">此设置需要重启MiuiHome才能生效</string>
     <string name="may_need_reboot_PowerKeeper">此设置需要重启PowerKeeper才能生效</string>
     <string name="reboot">重启</string>

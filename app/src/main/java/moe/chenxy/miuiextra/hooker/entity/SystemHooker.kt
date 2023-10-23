@@ -115,7 +115,7 @@ object SystemHooker : YukiBaseHooker() {
             "com.android.server.wm.ActivityClientController".toClass().method {
                 name = "overridePendingTransition"
                 param(IBinderClass, StringClass, IntType, IntType, IntType)
-            }.hook { replaceTo(null) }
+            }.hook { intercept() }
         }
     }
 }
