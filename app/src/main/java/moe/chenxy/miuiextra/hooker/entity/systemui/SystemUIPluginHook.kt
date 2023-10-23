@@ -1,12 +1,10 @@
 package moe.chenxy.miuiextra.hooker.entity.systemui
 
-import android.R.attr.classLoader
 import android.content.pm.ApplicationInfo
 import android.util.Log
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.JavaClassLoader
-import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
@@ -62,7 +60,7 @@ object SystemUIPluginHook : YukiBaseHooker() {
                         if (pluginLoaderClassLoader != clsLoader) {
                             Log.i(
                                 "Art_Chen",
-                                "ClassLoader Changed! re-init hook for SystemUIPlugin"
+                                "[loadPlugin] initPluginHook"
                             )
                             pluginLoaderClassLoader = clsLoader
                             initPluginHook()

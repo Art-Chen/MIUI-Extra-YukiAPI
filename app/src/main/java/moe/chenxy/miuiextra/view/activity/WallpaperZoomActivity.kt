@@ -2,13 +2,16 @@ package moe.chenxy.miuiextra.view.activity
 
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
@@ -36,20 +39,16 @@ class WallpaperZoomActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setTitle(R.string.wallpaper_scale_title)
-
+        // Adapt transparent navbar
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.navigationBarColor = Color.TRANSPARENT
 
         try {
             // getSharedPreferences will hooked by LSPosed and change xml file path to /data/misc/edxp**
             // will not throw SecurityException
             getSharedPreferences("chen_wallpaper_zoom_settings", Context.MODE_WORLD_READABLE)
-        } catch (exception: SecurityException) {
-            AlertDialog.Builder(this)
-                .setMessage("Unsupported Xposed detected! Please install and active LSPosed!")
-                .setPositiveButton(
-                    "OK"
-                ) { _: DialogInterface?, _: Int -> finish() }
-                .setNegativeButton("Ignore", null)
-                .show()
+        } catch (_: SecurityException) {
         }
     }
 

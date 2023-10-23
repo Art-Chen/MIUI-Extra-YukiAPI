@@ -28,6 +28,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
 import androidx.preference.TwoStatePreference
+import androidx.preference.size
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import moe.chenxy.miuiextra.R
@@ -189,14 +190,27 @@ class SettingsActivity : AppCompatActivity() {
                 return@setOnPreferenceChangeListener true
             }
 
-            findPreference<SwitchPreferenceCompat>("music_notification_optimize")?.setOnPreferenceChangeListener { _, newValue ->
-                showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
-                return@setOnPreferenceChangeListener true
-            }
+            val musicNotificationOptimize = findPreference<SwitchPreferenceCompat>("music_notification_optimize")
+            val musicNotificationOptimizeForegroundColor = findPreference<SwitchPreferenceCompat>("music_notification_optimize_foreground_color")
+            if (!ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+                musicNotificationOptimize?.setOnPreferenceChangeListener { _, _ ->
+                    showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
+                    return@setOnPreferenceChangeListener true
+                }
 
-            findPreference<SwitchPreferenceCompat>("music_notification_optimize_foreground_color")?.setOnPreferenceChangeListener { _, newValue ->
-                showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
-                return@setOnPreferenceChangeListener true
+                musicNotificationOptimizeForegroundColor?.setOnPreferenceChangeListener { _, _ ->
+                    showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
+                    return@setOnPreferenceChangeListener true
+                }
+            } else {
+                // These options is unneeded for U
+                val group = musicNotificationOptimize?.parent
+                group?.removePreference(musicNotificationOptimize)
+                group?.removePreference(musicNotificationOptimizeForegroundColor!!)
+
+                if (group?.size == 0) {
+                    preferenceScreen.removePreference(group)
+                }
             }
 
             findPreference<SwitchPreferenceCompat>("do_not_override_pending_transition")?.setOnPreferenceChangeListener { _, newValue ->
