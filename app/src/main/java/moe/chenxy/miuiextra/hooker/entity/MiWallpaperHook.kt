@@ -28,11 +28,6 @@ object MiWallpaperHook : YukiBaseHooker() {
     private val mUseChenScreenOnAnim = mainPrefs.getBoolean("use_chen_screen_on_anim", false)
     var currentRevealValue = -1f
 
-    private fun Context.getPackageInfoCompat(packageName: String, flag: Number = 0) = runCatching {
-        if (Build.VERSION.SDK_INT >= 33)
-            packageManager?.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(flag.toLong()))
-        else packageManager?.getPackageInfo(packageName, flag.toInt())
-    }.getOrNull()
     override fun onHook() {
         var mIsShowingRevealBlack = false
         var mClassName = ""

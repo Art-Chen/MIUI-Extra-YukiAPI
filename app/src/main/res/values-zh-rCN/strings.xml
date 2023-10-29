@@ -97,4 +97,11 @@
     <string name="unsupported_xposed_version">检测到不支持的Xposed版本! 请安装LSPosed并激活该模块! (强制重启该模块后生效)</string>
     <string name="activated">模块已激活</string>
     <string name="deactivated">模块未激活</string>
+    <string name="status_bar_and_cc_header">通知栏与控制中心</string>
+    <string name="wallpaper_header">壁纸</string>
+    <string name="enable_blur_scale_title">模糊缩放效果</string>
+    <string name="blur_scale_effect_summary">下拉状态栏/控制中心时应用背景缩放效果</string>
+    <string name="force_disable_mi_blur_effect_title">禁用通控的背景模糊混色效果</string>
+    <string name="force_disable_mi_blur_effect_summary"><![CDATA[(BUG!) 这是一个workaround。因为大部分版本不支持模糊混色下的Scale效果.\n这将会导致横切控制中心和通知中心时模糊背景和图标出现异常！正确方式是关闭高级材质开关（但是会丢失通知模糊效果）。]]></string>
+    <string name="blur_scale_val_title">模糊缩放程度</string>
 </resources>

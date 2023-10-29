@@ -25,6 +25,8 @@ object SystemUIPluginHook : YukiBaseHooker() {
             if (mainPrefs.getBoolean("use_chen_volume_animation", false)) {
                 loadPluginHooker(ChenVolumePanelAnimator)
             }
+
+            loadPluginHooker(StatusBarBlurUtilsHooker.ControlCenterWindowViewHooker)
         }
 
         // Load plugin hooker

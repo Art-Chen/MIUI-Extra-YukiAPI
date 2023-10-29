@@ -12,7 +12,7 @@ android {
         minSdk 31
         targetSdk 34
         versionCode 14
-        versionName "2.7.0-U-Pre_Hyper"
+        versionName "2.6.9-U-Pre_Hyper"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

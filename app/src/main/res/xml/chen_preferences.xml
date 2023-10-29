@@ -28,10 +28,6 @@
             app:title="@string/vibrator_effect_map_title"
             app:useSimpleSummaryProvider="true" />
 
-        <Preference
-            app:key="wallpaper_zoom"
-            app:title="@string/wallpaper_scale_title" />
-
         <rikka.material.preference.MaterialSwitchPreference
             app:key="miui_home_anim_enhance"
             app:title="@string/miui_home_anim_enhance_title"
@@ -40,20 +36,6 @@
         <rikka.material.preference.MaterialSwitchPreference
             app:key="miui_unlock_anim_enhance"
             app:title="@string/miui_unlock_anim_enhance_title" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="miui_unlock_wallpaper_anim_fade"
-            app:title="@string/miui_unlock_wallpaper_anim_fade_title"
-            app:summary="@string/miui_unlock_wallpaper_anim_fade_summary"/>
-
-        <SeekBarPreference
-            android:max="1000"
-            app:key="miui_unlock_wallpaper_anim_fade_anim_val"
-            app:dependency="miui_unlock_wallpaper_anim_fade"
-            app:defaultValue="450"
-            app:min="1"
-            app:updatesContinuously="true"
-            app:title="@string/miui_unlock_wallpaper_anim_fade_anim_val_title" />
 
 <!--        <rikka.material.preference.MaterialSwitchPreference-->
 <!--            app:key="not_hide_icon_when_enter_recent"-->
@@ -84,6 +66,22 @@
             app:title="@string/screen_off_color_fade_anim_val_title" />
 
         <rikka.material.preference.MaterialSwitchPreference
+            app:key="do_not_override_pending_transition"
+            app:title="@string/do_not_override_pending_transition_title"
+            app:summary="@string/do_not_override_pending_transition_summary"/>
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="use_chen_volume_animation"
+            app:title="@string/use_chen_volume_animation_title"
+            app:summary="@string/use_chen_volume_animation_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/wallpaper_header">
+        <Preference
+            app:key="wallpaper_zoom"
+            app:title="@string/wallpaper_scale_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
             app:key="use_chen_screen_on_anim"
             app:title="@string/use_chen_screen_on_anim_title"
             app:summary="@string/use_chen_screen_on_anim_summary"/>
@@ -93,14 +91,18 @@
             app:title="@string/disable_wallpaper_auto_darken_title"/>
 
         <rikka.material.preference.MaterialSwitchPreference
-            app:key="do_not_override_pending_transition"
-            app:title="@string/do_not_override_pending_transition_title"
-            app:summary="@string/do_not_override_pending_transition_summary"/>
+            app:key="miui_unlock_wallpaper_anim_fade"
+            app:title="@string/miui_unlock_wallpaper_anim_fade_title"
+            app:summary="@string/miui_unlock_wallpaper_anim_fade_summary"/>
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="use_chen_volume_animation"
-            app:title="@string/use_chen_volume_animation_title"
-            app:summary="@string/use_chen_volume_animation_summary"/>
+        <SeekBarPreference
+            android:max="1000"
+            app:key="miui_unlock_wallpaper_anim_fade_anim_val"
+            app:dependency="miui_unlock_wallpaper_anim_fade"
+            app:defaultValue="450"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/miui_unlock_wallpaper_anim_fade_anim_val_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/home_handle_header">
@@ -172,6 +174,28 @@
             app:summaryOn="@string/force_current_refresh_rate_on"
             app:title="@string/force_current_refresh_rate_title" />
 
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/status_bar_and_cc_header" app:key="status_bar_and_cc_category">
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="use_blur_scale_effect"
+            app:title="@string/enable_blur_scale_title"
+            app:summary="@string/blur_scale_effect_summary" />
+
+        <SeekBarPreference
+            android:max="9"
+            app:key="blur_scale_val"
+            app:dependency="use_blur_scale_effect"
+            app:shouldDisableView="true"
+            app:defaultValue="7"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/blur_scale_val_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="force_disable_mi_blur_effect"
+            app:title="@string/force_disable_mi_blur_effect_title"
+            app:summary="@string/force_disable_mi_blur_effect_summary" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/about_me_header">
         <Preference

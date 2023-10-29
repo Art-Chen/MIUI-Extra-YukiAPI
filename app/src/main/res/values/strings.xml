@@ -99,4 +99,11 @@
     <string name="unsupported_xposed_version">Unsupported Xposed detected! Please install and active LSPosed!</string>
     <string name="activated">Activated</string>
     <string name="deactivated">Deactivated</string>
+    <string name="status_bar_and_cc_header"><![CDATA[Status Bar & Control Center]]></string>
+    <string name="wallpaper_header">Wallpaper</string>
+    <string name="enable_blur_scale_title">Use Blur Scale Effect</string>
+    <string name="blur_scale_effect_summary">Apply Scale effect when pull down the cc and status bar</string>
+    <string name="force_disable_mi_blur_effect_title">Disable Mi Blur Effect on StatusBar Background</string>
+    <string name="force_disable_mi_blur_effect_summary"><![CDATA[(BUG!) This is a workaround because some version may not supported blur scale when using mi blur effect.\nIt will let blur background dismiss when switch the NC -> CC by swipe]]></string>
+    <string name="blur_scale_val_title">Blur Scale degree</string>
 </resources>

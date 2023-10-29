@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.WindowCompat
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreferenceCompat
@@ -104,6 +105,10 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
             if (preference is TwoStatePreference) {
+                val category = preference.parent as PreferenceCategory
+                if (category.key == "status_bar_and_cc_category") {
+                    showRebootSnackBar(R.string.may_need_reboot, SHELL_RESTART_SYSTEMUI)
+                }
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
             }
             return super.onPreferenceTreeClick(preference)
@@ -234,6 +239,8 @@ class SettingsActivity : AppCompatActivity() {
                 setLauncherIconVisible(!(newValue as Boolean))
                 return@setOnPreferenceChangeListener true
             }
+
+            bindAnimationSeekBarNoEditText(findPreference("blur_scale_val"), 1)
         }
 
         private val setColorFadeSettings : Runnable = Runnable {
@@ -253,6 +260,8 @@ class SettingsActivity : AppCompatActivity() {
             preference?.summary = "${(preference?.value as Int).toFloat() / scale} f"
             preference.setOnPreferenceChangeListener { pref, newValue ->
                 pref.summary = "${(newValue as Int).toFloat() / scale} f"
+                ChenUtils.performVibrateHeavyClick(requireContext())
+
                 showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
                 return@setOnPreferenceChangeListener true
             }
@@ -266,6 +275,7 @@ class SettingsActivity : AppCompatActivity() {
                 mHandler.removeCallbacks(setColorFadeSettings)
                 preference.summary = "$newValue ms"
                 mHandler.postDelayed(setColorFadeSettings, 100)
+                ChenUtils.performVibrateHeavyClick(requireContext())
                 return@setOnPreferenceChangeListener true
             }
             preference.setOnPreferenceClickListener {
