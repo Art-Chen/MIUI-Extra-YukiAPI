@@ -112,7 +112,7 @@
             app:summary="@string/chen_home_handle_anim_summary"/>
 
         <SeekBarPreference
-            android:max="15"
+            android:max="20"
             app:key="home_handle_y_val"
             app:dependency="chen_home_handle_anim"
             app:shouldDisableView="true"
@@ -141,8 +141,12 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_full_transparent_at_miuihome"
-            app:dependency="chen_home_handle_auto_transparent"
             app:title="@string/chen_home_handle_full_transparent_at_miuihome_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="home_handle_scale_on_full_transparent"
+            app:dependency="chen_home_handle_anim"
+            app:title="@string/chen_home_handle_scale_on_full_transparent_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/music_notification_header">

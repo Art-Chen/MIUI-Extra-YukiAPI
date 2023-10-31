@@ -104,4 +104,5 @@
     <string name="force_disable_mi_blur_effect_title">禁用通控的背景模糊混色效果</string>
     <string name="force_disable_mi_blur_effect_summary"><![CDATA[(BUG!) 这是一个workaround。因为大部分版本不支持模糊混色下的Scale效果.\n这将会导致横切控制中心和通知中心时模糊背景和图标出现异常！正确方式是关闭高级材质开关（但是会丢失通知模糊效果）。]]></string>
     <string name="blur_scale_val_title">模糊缩放程度</string>
+    <string name="chen_home_handle_scale_on_full_transparent_title">小白条隐藏或出现时应用缩放效果</string>
 </resources>

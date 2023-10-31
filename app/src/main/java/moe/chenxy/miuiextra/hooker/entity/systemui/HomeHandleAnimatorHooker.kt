@@ -1,6 +1,7 @@
 package moe.chenxy.miuiextra.hooker.entity.systemui
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -9,14 +10,19 @@ import android.graphics.Point
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Display
 import android.view.InputEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
+import androidx.appcompat.widget.LinearLayoutCompat.OrientationMode
 import androidx.core.animation.doOnEnd
+import androidx.core.os.postDelayed
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.AttributeSetClass
 import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import com.highcapable.yukihookapi.hook.type.android.LayoutInflaterClass
@@ -26,17 +32,27 @@ import com.highcapable.yukihookapi.hook.type.java.StringClass
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.utils.ChenUtils
 import java.lang.reflect.Proxy
 import kotlin.math.abs
 
 
-object NavigationBarHooker : YukiBaseHooker() {
+object HomeHandleAnimatorHooker : YukiBaseHooker() {
     private val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
 
     @Volatile
     var mIsInHome = false
 
+    enum class ZoomType {
+        NORMAL,
+        NORMAL_FOR_OPACITY,
+        ZOOM_IN,
+        ZOOM_OUT
+    }
+
+    @SuppressLint("DiscouragedApi")
     override fun onHook() {
+        val isAboveU = ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)
         var mContext: Context? = null
         var mHandler: Handler? = null
 
@@ -51,20 +67,26 @@ object NavigationBarHooker : YukiBaseHooker() {
         var barHeight = 0
         var origBarHeight = 0
         val yOffset = mainPrefs.getInt("home_handle_y_val", 7)
-
-        fun animateHomeHandleZoom(isZoom: Boolean) {
+        val mEnabledHomeAutoTransparent =
+            mainPrefs.getBoolean("chen_home_handle_full_transparent_at_miuihome", false)
+        fun animateHomeHandleZoom(zoomType: ZoomType) {
             if (zoomValueAnimator == null) {
                 zoomValueAnimator = ValueAnimator()
                 zoomValueAnimator!!.interpolator = PathInterpolator(0.39f, 1.58f, 0.44f, 1.07f)
 
                 zoomValueAnimator!!.addUpdateListener {
-                    mHomeHandle.scaleY = it.animatedValue as Float + if (isZoom) 0.1f else 0f
+                    mHomeHandle.scaleY = it.animatedValue as Float + if (zoomType == ZoomType.ZOOM_IN) 0.1f else 0f
                     mHomeHandle.scaleX = it.animatedValue as Float
                 }
             }
 
-            zoomValueAnimator!!.duration = if (isZoom) 600 else 400
-            zoomValueAnimator!!.setFloatValues(mHomeHandle.scaleX, if (isZoom) 1.05f else 1.0f)
+            zoomValueAnimator!!.duration =
+                when (zoomType) {
+                    ZoomType.ZOOM_IN -> 600
+                    ZoomType.NORMAL_FOR_OPACITY, ZoomType.ZOOM_OUT -> 800
+                    else -> 400
+                }
+            zoomValueAnimator!!.setFloatValues(mHomeHandle.scaleX, if (zoomType == ZoomType.ZOOM_IN) 1.05f else if (zoomType == ZoomType.ZOOM_OUT) 0.9f else 1.0f)
             if (mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)) {
 //                Log.i("Art_Chen", "pivotY ${mHomeHandle.pivotY} barheight $barHeight")
                 mHomeHandle.pivotY = (barHeight - origBarHeight + origBarHeight / 2).toFloat()
@@ -108,56 +130,79 @@ object NavigationBarHooker : YukiBaseHooker() {
             animateHomeHandleY(600, yOffset.toFloat())
         }
 
-        homeHandleAlphaAnimator.addUpdateListener {
-            mHomeHandle.alpha = it.animatedValue as Float
-        }
-        var mPendingOpacityStatus = false
+        var mPendingOpacityStatus: Boolean
         val opacityHomeHandleRunnable = Runnable {
             if (homeHandleAlphaAnimator.isRunning) {
                 homeHandleAlphaAnimator.cancel()
             }
             homeHandleAlphaAnimator.start()
         }
+        homeHandleAlphaAnimator.addUpdateListener {
+            mHomeHandle.alpha = it.animatedValue as Float
+        }
 
         fun opacityHomeHandle(needOpacity: Boolean, needToTransparent: Boolean) {
             mainPrefs.reload()
-            if (mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)) {
-                val isHome = mIsInHome
-                if (homeHandleAlphaAnimator.isRunning) {
-                    if (isHome) {
-                        homeHandleAlphaAnimator.cancel()
-                    } else {
-                        mPendingOpacityStatus = needOpacity
-                        homeHandleAlphaAnimator.doOnEnd {
-                            it.removeAllListeners()
-                            homeHandleAlphaAnimator.addUpdateListener { it1 ->
-                                mHomeHandle.alpha = it1.animatedValue as Float
-                            }
-                            opacityHomeHandle(mPendingOpacityStatus, needToTransparent)
-                        }
-                        return
-                    }
-                }
-                homeHandleAlphaAnimator.duration =
-                    if (needToTransparent) 300 else if (needOpacity) 2000 else 400
-//                homeHandleAlphaAnimator.interpolator = PathInterpolator(0.39f, 0f, 0.11f, 1.02f)
-                homeHandleAlphaAnimator.setFloatValues(
-                    mHomeHandle.alpha,
-                    if (needToTransparent)
-                        0f
-                    else if (needOpacity)
-                        0.7f
-                    else
-                        1.0f
-                )
-                mHandler?.removeCallbacks(opacityHomeHandleRunnable)
-                if (needOpacity && !isHome) {
-                    mHandler?.postDelayed(opacityHomeHandleRunnable, 5000)
+            val autoTransparent = mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)
+            val useScaleEffect = mainPrefs.getBoolean("home_handle_scale_on_full_transparent", false)
+            val isHome = mIsInHome
+            if (!autoTransparent && needOpacity && !needToTransparent) {
+                return
+            }
+            if (homeHandleAlphaAnimator.isRunning) {
+                if (isHome) {
+                    homeHandleAlphaAnimator.cancel()
                 } else {
-                    mHandler?.post(opacityHomeHandleRunnable)
+                    mPendingOpacityStatus = needOpacity
+                    homeHandleAlphaAnimator.doOnEnd {
+                        it.removeAllListeners()
+                        homeHandleAlphaAnimator.addUpdateListener { it1 ->
+                            mHomeHandle.alpha = it1.animatedValue as Float
+                        }
+                        opacityHomeHandle(mPendingOpacityStatus, needToTransparent)
+                    }
+                    return
                 }
+            }
+            homeHandleAlphaAnimator.duration =
+                if (needToTransparent && isAboveU)
+                    600
+                else if (needToTransparent)
+                    300
+                else if (needOpacity && mHomeHandle.alpha != 0f)
+                    2000
+                else if (needOpacity)
+                    800
+                else
+                    400
+
+//                homeHandleAlphaAnimator.interpolator = PathInterpolator(0.39f, 0f, 0.11f, 1.02f)
+            homeHandleAlphaAnimator.setFloatValues(
+                mHomeHandle.alpha,
+                if (needToTransparent)
+                    0f
+                else if (needOpacity)
+                    0.7f
+                else
+                    1.0f
+            )
+            mHandler?.removeCallbacks(opacityHomeHandleRunnable)
+            val mScaleOnOpacity: Boolean =
+                useScaleEffect && (needToTransparent || mHomeHandle.alpha == 0f)
+            if (needOpacity && !isHome) {
+                mHandler?.postDelayed(opacityHomeHandleRunnable, 5000)
             } else {
-                mHomeHandle.alpha = 1.0f
+                mHandler?.post(opacityHomeHandleRunnable)
+            }
+            if (mScaleOnOpacity) {
+                if (!needToTransparent) {
+                    animateHomeHandleZoom(ZoomType.ZOOM_OUT)
+                    mHandler?.postDelayed(100) {
+                        animateHomeHandleZoom(ZoomType.NORMAL_FOR_OPACITY)
+                    }
+                } else {
+                    animateHomeHandleZoom(ZoomType.ZOOM_OUT)
+                }
             }
         }
 
@@ -178,15 +223,18 @@ object NavigationBarHooker : YukiBaseHooker() {
                     mHandler!!.post {
                         // onInputEvent will be done if mHandler post, so the original motionEvent will be recycled, so that we use the copy of event and recycle by ourself
                         val isNavigationBarArea: Boolean =
-                            if (getScreenRealHeight(mContext!!) - getScreenHeight(mContext!!) > 1) {
+                            if (getScreenRealHeight(mContext!!) - getScreenHeight(mContext!!) > 1 && !isAboveU) {
                                 motionEvent.y > getScreenHeight(mContext!!)
                             } else {
-                                Log.v(
-                                    "Art_Chen",
-                                    "Screen Height incorrect to calculate nav bar height, using fallback, value: ${
-                                        getScreenRealHeight(mContext!!) - origBarHeight
-                                    }"
-                                )
+                                // on U, look like the real height - orig bar height is better
+                                if (!isAboveU) {
+                                    Log.v(
+                                        "Art_Chen",
+                                        "Screen Height incorrect to calculate nav bar height, using fallback, value: ${
+                                            getScreenRealHeight(mContext!!) - origBarHeight
+                                        }"
+                                    )
+                                }
                                 motionEvent.y > getScreenRealHeight(mContext!!) - origBarHeight
                             }
 
@@ -199,7 +247,7 @@ object NavigationBarHooker : YukiBaseHooker() {
                                 if (!mIsInHome) {
                                     opacityHomeHandle(false, false)
                                 }
-                                animateHomeHandleZoom(true)
+                                animateHomeHandleZoom(ZoomType.ZOOM_IN)
                                 if (homeHandleXAnimator!!.isRunning) {
                                     homeHandleXAnimator!!.cancel()
                                     homeHandleYAnimator!!.cancel()
@@ -224,13 +272,22 @@ object NavigationBarHooker : YukiBaseHooker() {
                                 if (abs(offsetNeeded) < barHeight / 2 + 6) {
                                     mHomeHandle.translationY = offsetNeeded
                                 }
+                            } else if (orientation != 0) {
+                                // Let the Landscape has a little move effect instead of zero y offset.
+                                val offsetNeeded =
+                                    -(baseY - motionEvent.y) * 0.02f + yOffset.toFloat()
+                                if (abs(offsetNeeded) < barHeight / 2 + 6) {
+                                    mHomeHandle.translationY = offsetNeeded
+                                }
                             }
                             mHomeHandle.translationX = -(baseX - motionEvent.x) * 0.2f
                         }
 
                         if (motionEvent.actionMasked == MotionEvent.ACTION_UP && motionTriggered) {
                             animateHomeHandleToNormal()
-                            animateHomeHandleZoom(false)
+                            if (!mEnabledHomeAutoTransparent || !mIsInHome) {
+                                animateHomeHandleZoom(ZoomType.NORMAL)
+                            }
                             if (!mIsInHome) {
                                 opacityHomeHandle(true, false)
                             }
@@ -243,84 +300,73 @@ object NavigationBarHooker : YukiBaseHooker() {
         }
 
         // Hooks
-        "com.android.systemui.navigationbar.NavigationBarInflaterView".hook {
-            injectMember {
+        "com.android.systemui.navigationbar.NavigationBarInflaterView".toClass().apply {
+            if (!isAboveU) {
                 method {
                     name = "createView"
                     param(StringClass, ViewGroupClass, LayoutInflaterClass)
-                }
-                afterHook {
-                    val str = this.args[0] as String
-                    if ("home_handle" == extractButton(str)) {
-                        mHomeHandleId = (this.result as View).id
+                }.hook {
+                    after {
+                        val str = this.args[0] as String
+                        if ("home_handle" == extractButton(str)) {
+                            mHomeHandleId = (this.result as View).id
+                        }
                     }
                 }
             }
 
-            injectMember {
-                constructor {
-                    param(ContextClass, AttributeSetClass)
-                }
-                afterHook {
+            constructor {
+                param(ContextClass, AttributeSetClass)
+            }.hook {
+                after {
                     mContext = this.args[0] as Context
                     mHandler = Handler(Looper.getMainLooper())
 
-                    val miuiGestureListenerClass = "com.android.keyguard.fod.MiuiGestureListener".toClass()
-                    val miuiGestureMonitorClass = "com.android.keyguard.fod.MiuiGestureMonitor".toClass()
-                    val chenListener = Proxy.newProxyInstance(
-                        appClassLoader,
-                        arrayOf(miuiGestureListenerClass)
-                    ) { _, _, args ->
-                        onInputEvent(args?.get(0) as InputEvent)
+                    appClassLoader?.let { ChenInputEventDispatcher.init(mContext!!, it) }
+
+                    if (ChenInputEventDispatcher.isInited()) {
+                        ChenInputEventDispatcher.registerInputEventListener(object : ChenInputEventListener {
+                            override fun onInputEvent(inputEvent: InputEvent) {
+                                onInputEvent(inputEvent)
+                            }
+                        })
+                        Log.i("Art_Chen", "ChenInputEventDispatcher registered!")
                     }
-                    val miuiGestureMonitorInstance = XposedHelpers.callStaticMethod(
-                        miuiGestureMonitorClass,
-                        "getInstance",
-                        mContext
-                    )
-                    Log.i(
-                        "Art_Chen",
-                        "register chen pointer event listener when navigation bar view init"
-                    )
-                    XposedHelpers.callMethod(
-                        miuiGestureMonitorInstance,
-                        "registerPointerEventListener",
-                        chenListener
-                    )
                 }
             }
 
-            injectMember {
-                method {
-                    name = "inflateLayout"
-                    param(StringClass)
-                }
-                afterHook {
+            method {
+                name = "inflateLayout"
+                param(StringClass)
+            }.hook {
+                after {
                     // init home handle status
                     val mHorizontal =
                         XposedHelpers.getObjectField(this.instance, "mHorizontal") as FrameLayout
+                    val autoTransparent = mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)
+                    if (isAboveU && mHomeHandleId == -1) {
+                        mHomeHandleId =
+                            appResources!!.getIdentifier("home_handle", "id", appContext?.packageName)
+                    }
                     mHomeHandle = mHorizontal.findViewById(mHomeHandleId)
                     mHomeHandle.translationY = yOffset.toFloat()
-                    if (mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)) {
-                        mHomeHandle.alpha = if (mIsInHome) 0f else 0.7f
-                    }
+                    mHomeHandle.alpha = if (mIsInHome) 0f else if (autoTransparent) 0.7f else 1f
                     animateHomeHandleToNormal()
                 }
             }
         }
 
-        "com.android.systemui.navigationbar.NavigationBar".hook {
-            injectMember {
-                method {
-                    name = "getBarLayoutParamsForRotation"
-                    param(IntType)
-                }
-                afterHook {
+        "com.android.systemui.navigationbar.NavigationBar".toClass().apply {
+            method {
+                name = "getBarLayoutParamsForRotation"
+                param(IntType)
+            }.hook {
+                after {
                     val orientationFor = this.args[0] as Int
                     val isTurboMode =
                         mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)
                     if (XposedHelpers.getIntField(this.instance, "mNavBarMode") != 2) {
-                        return@afterHook
+                        return@after
                     }
 
                     val lp = this.result as WindowManager.LayoutParams
@@ -332,76 +378,113 @@ object NavigationBarHooker : YukiBaseHooker() {
                     if (isTurboMode && orientationFor == 0) {
                         lp.height = lp.height * 2
                     }
-                    val insets =
-                        XposedHelpers.getObjectField(lp, "providedInternalInsets") as Array<Insets>
+
+                    lateinit var inset: Insets
+                    lateinit var insets: Array<Insets>
+                    lateinit var insetsProviderArr: Array<*>
+                    lateinit var insetsProviderOverride: Any
+                    if (!isAboveU) {
+                        insets =
+                            XposedHelpers.getObjectField(
+                                lp,
+                                "providedInternalInsets"
+                            ) as Array<Insets>
+
+                        inset = insets[1]
+                    } else {
+                        // is U
+                        insetsProviderArr = XposedHelpers.getObjectField(lp, "providedInsets") as Array<*>
+                        insetsProviderOverride = insetsProviderArr[0]!!
+                        inset = XposedHelpers.callMethod(insetsProviderOverride, "getInsetsSize") as Insets
+                    }
+
                     if (mainPrefs.getBoolean(
                             "chen_home_handle_no_space",
                             false
                         ) && orientationFor == 0
                     ) {
-                        insets[1] = Insets.of(0, lp.height, 0, 0)
-                        XposedHelpers.setObjectField(lp, "providedInternalInsets", insets)
+                        inset = if (isAboveU) {
+                            Insets.of(inset.left, 0, inset.right, 0)
+                        } else {
+                            Insets.of(inset.left, lp.height, inset.right, 0)
+                        }
                     } else if (isTurboMode) {
-                        insets[1] = Insets.of(0, lp.height - origBarHeight, 0, 0)
-                        XposedHelpers.setObjectField(lp, "providedInternalInsets", insets)
+                        inset = if (isAboveU) {
+                            Insets.of(inset.left, inset.top, inset.right, origBarHeight)
+                        } else {
+                            Insets.of(inset.left, lp.height - origBarHeight, inset.right, 0)
+                        }
                     }
                     if (orientationFor == 0) {
                         barHeight = lp.height
                     }
+
+                    // Apply Inset
+                    if (!isAboveU) {
+                        insets[1] = inset
+                        XposedHelpers.setObjectField(lp, "providedInternalInsets", insets)
+                    } else {
+                        XposedHelpers.callMethod(insetsProviderOverride, "setInsetsSize", inset)
+                        XposedHelpers.setObjectField(lp, "providedInsets", insetsProviderArr)
+                    }
                     Log.i(
                         "Art_Chen",
-                        "screenHeight is ${getScreenHeight(mContext!!)}, origBarHeight $origBarHeight, currentBarHeight $barHeight"
+                        "screenHeight is ${getScreenHeight(mContext!!)}, realScreenHeight is ${getScreenRealHeight(mContext!!)}, origBarHeight $origBarHeight, currentBarHeight $barHeight"
                     )
                 }
             }
 
-            injectMember {
-                method {
-                    name = "repositionNavigationBar"
-                    param(IntType)
-                }
-                beforeHook {
+            method {
+                name = "repositionNavigationBar"
+                param(IntType)
+            }.hook {
+                before {
                     orientation = this.args[0] as Int
                 }
             }
-
         }
 
-        "com.miui.systemui.util.MiuiActivityUtil".hook {
-            injectMember {
-                method {
+        val activityChangedNotify =
+            if (!ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+                "com.miui.systemui.util.MiuiActivityUtil".toClass().method {
                     name = "notifyListeners"
                 }
-                afterHook {
-                    mainPrefs.reload()
-                    val currentTopActivity = XposedHelpers.getObjectField(
-                        this.instance,
-                        "mTopActivity"
-                    ) as ComponentName
-                    val intent = Intent("chen.action.top_activity.switched")
-                    val mUtilsContext =
-                        XposedHelpers.getObjectField(this.instance, "mContext") as Context
-                    val mEnabledAutoTransparent =
-                        mainPrefs.getBoolean("chen_home_handle_full_transparent_at_miuihome", false)
-
-                    if (currentTopActivity.packageName == "com.miui.home") {
-//                        Log.i("Art_Chen", "Current Top Activity is MiuiHome, do sth")
-                        intent.putExtra("isEnteredHome", true)
-                        if (mEnabledAutoTransparent) {
-                            mIsInHome = true
-                            opacityHomeHandle(needOpacity = true, needToTransparent = true)
-                        }
-                    } else {
-//                        Log.i("Art_Chen", "Current Top Activity is Not MiuiHome!")
-                        intent.putExtra("isEnteredHome", false)
-                        if (mEnabledAutoTransparent) {
-                            opacityHomeHandle(needOpacity = false, needToTransparent = false)
-                            opacityHomeHandle(needOpacity = true, needToTransparent = false)
-                        }
-                        mIsInHome = false
-                    }
-                    mUtilsContext.sendBroadcast(intent)
+            } else {
+                // on U
+                "com.miui.systemui.functions.MiuiTopActivityObserver".toClass().method {
+                    name = "notifyListeners"
                 }
+            }
+
+        activityChangedNotify.hook {
+            after {
+                mainPrefs.reload()
+                val currentTopActivity = XposedHelpers.getObjectField(
+                    this.instance,
+                    "mTopActivity"
+                ) as ComponentName
+                val intent = Intent("chen.action.top_activity.switched")
+                val mUtilsContext =
+                    XposedHelpers.getObjectField(this.instance, "mContext") as Context
+
+
+                if (currentTopActivity.packageName == "com.miui.home") {
+//                        Log.i("Art_Chen", "Current Top Activity is MiuiHome, do sth")
+                    intent.putExtra("isEnteredHome", true)
+                    if (mEnabledHomeAutoTransparent) {
+                        mIsInHome = true
+                        opacityHomeHandle(needOpacity = true, needToTransparent = true)
+                    }
+                } else {
+//                        Log.i("Art_Chen", "Current Top Activity is Not MiuiHome!")
+                    intent.putExtra("isEnteredHome", false)
+                    if (mEnabledHomeAutoTransparent) {
+                        opacityHomeHandle(needOpacity = false, needToTransparent = false)
+                        opacityHomeHandle(needOpacity = true, needToTransparent = false)
+                    }
+                    mIsInHome = false
+                }
+                mUtilsContext.sendBroadcast(intent)
             }
         }
     }

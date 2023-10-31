@@ -11,9 +11,8 @@ import moe.chenxy.miuiextra.hooker.entity.MiuiHomeHook
 import moe.chenxy.miuiextra.hooker.entity.MiuiSettingsHook
 import moe.chenxy.miuiextra.hooker.entity.PowerKeeperHook
 import moe.chenxy.miuiextra.hooker.entity.SystemHooker
-import moe.chenxy.miuiextra.hooker.entity.systemui.NavigationBarHooker
-import moe.chenxy.miuiextra.hooker.entity.systemui.SystemUIPluginHook
 import moe.chenxy.miuiextra.hooker.entity.systemui.SystemUIMainHooker
+import moe.chenxy.miuiextra.utils.ChenUtils
 
 @InjectYukiHookWithXposed
 object HookEntry : IYukiHookXposedInit {
@@ -25,7 +24,10 @@ object HookEntry : IYukiHookXposedInit {
         loadApp("com.android.systemui", SystemUIMainHooker)
         loadApp("com.miui.powerkeeper", PowerKeeperHook)
         loadApp("com.miui.home", MiuiHomeHook)
-        loadApp("com.xiaomi.misettings", MiuiSettingsHook)
+        if (!ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+            // disabled miui settings hook on u. PowerKeeper will contain native support on every device.
+            loadApp("com.xiaomi.misettings", MiuiSettingsHook)
+        }
         loadApp("com.miui.miwallpaper", MiWallpaperHook)
 
     }
