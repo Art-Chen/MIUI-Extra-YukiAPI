@@ -107,4 +107,5 @@
     <string name="force_disable_mi_blur_effect_summary"><![CDATA[(BUG!) This is a workaround because some version may not supported blur scale when using mi blur effect.\nIt will let blur background dismiss when switch the NC -> CC by swipe]]></string>
     <string name="blur_scale_val_title">Blur Scale degree</string>
     <string name="chen_home_handle_scale_on_full_transparent_title">Scale home handle when dismiss or appeared</string>
+    <string name="chen_home_handle_blur_effect_title">Apply Mi Blur Effect on Home Handle</string>
 </resources>

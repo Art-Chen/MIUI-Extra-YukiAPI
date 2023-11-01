@@ -141,12 +141,18 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_full_transparent_at_miuihome"
+            app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_full_transparent_at_miuihome_title" />
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="home_handle_scale_on_full_transparent"
             app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_scale_on_full_transparent_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="chen_home_handle_blur_effect"
+            app:dependency="chen_home_handle_anim"
+            app:title="@string/chen_home_handle_blur_effect_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/music_notification_header">

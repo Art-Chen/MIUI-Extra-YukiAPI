@@ -9,9 +9,9 @@
     <string name="vibrator_map_summary">重映射普通震动为特效震动（线性马达震动）</string>
     <string name="wallpaper_scale_title">壁纸缩放设置</string>
     <string name="wallpaper_scale_summary">自定义壁纸缩放比例</string>
-    <string name="force_miui_refresh_custom">启用MIUI自定义高刷新率特性</string>
-    <string name="force_current_refresh_rate_title">禁用MIUI刷新率策略</string>
-    <string name="force_current_refresh_rate_off">刷新率将由MIUI动态控制</string>
+    <string name="force_miui_refresh_custom">启用自定义高刷新率特性</string>
+    <string name="force_current_refresh_rate_title">禁用刷新率策略</string>
+    <string name="force_current_refresh_rate_off">刷新率将由系统动态控制</string>
     <string name="force_current_refresh_rate_on">刷新率将保持为您的设置</string>
 
     <string name="m90Hz_game_apps">90Hz 游戏应用</string>
@@ -38,8 +38,8 @@
     <string name="reboot">重启</string>
     <string name="color_fade_anim_smoothly_title">更舒服的亮灭屏动画</string>
     <string name="color_fade_anim_smoothly_summary">让Color Fade动画比MIUI原来的设置更慢一些 (俺的动画!!!!)</string>
-    <string name="music_notification_optimize_title">优化MIUI音乐通知</string>
-    <string name="music_notification_optimize_summary">修复MIUI异常的歌曲切换动画和App不规范导致的专辑图不同步问题</string>
+    <string name="music_notification_optimize_title">优化音乐通知</string>
+    <string name="music_notification_optimize_summary">修复异常的歌曲切换动画和App不规范导致的专辑图不同步问题</string>
     <string name="music_notification_optimize_foreground_color_title">优化音乐通知的文字和按钮的颜色</string>
     <string name="music_notification_optimize_foreground_color_summary">使用Monet颜色而不是从专辑图取的糟糕的动态颜色来提高可读性</string>
     <string name="enable_vibrator_effect_remap_title">启用特效震动重映射</string>
@@ -86,9 +86,9 @@
     <string name="chen_home_handle_auto_transparent_title">小白条自动透明</string>
     <string name="chen_home_handle_auto_transparent_summary">将默认半透明小白条，并在触摸小白条时恢复正常</string>
     <string name="do_not_override_pending_transition_title">阻止应用设置自己的Pending过渡动画</string>
-    <string name="do_not_override_pending_transition_summary">将使用MIUI动画替换掉某些App设置的不优雅的过场动画(可能破坏应用本身的设计，慎用)</string>
+    <string name="do_not_override_pending_transition_summary">将使用系统动画替换掉某些App设置的不优雅的过场动画(可能破坏应用本身的设计，慎用)</string>
     <string name="disable_wallpaper_auto_darken_title">禁用壁纸自动压暗</string>
-    <string name="chen_home_handle_full_transparent_at_miuihome_title">回到MIUI桌面时隐藏小白条</string>
+    <string name="chen_home_handle_full_transparent_at_miuihome_title">回到桌面时隐藏小白条</string>
     <string name="home_handle_header">小白条与手势栏</string>
     <string name="music_notification_header">音乐通知</string>
     <string name="use_chen_volume_animation_title">动起来吧!音量调节栏!</string>
@@ -105,4 +105,5 @@
     <string name="force_disable_mi_blur_effect_summary"><![CDATA[(BUG!) 这是一个workaround。因为大部分版本不支持模糊混色下的Scale效果.\n这将会导致横切控制中心和通知中心时模糊背景和图标出现异常！正确方式是关闭高级材质开关（但是会丢失通知模糊效果）。]]></string>
     <string name="blur_scale_val_title">模糊缩放程度</string>
     <string name="chen_home_handle_scale_on_full_transparent_title">小白条隐藏或出现时应用缩放效果</string>
+    <string name="chen_home_handle_blur_effect_title">在小白条上应用模糊材质(需要开启高级材质)</string>
 </resources>

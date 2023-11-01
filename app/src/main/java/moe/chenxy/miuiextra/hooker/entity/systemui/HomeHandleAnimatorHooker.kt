@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Handler
@@ -27,11 +28,17 @@ import com.highcapable.yukihookapi.hook.type.android.AttributeSetClass
 import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import com.highcapable.yukihookapi.hook.type.android.LayoutInflaterClass
 import com.highcapable.yukihookapi.hook.type.android.ViewGroupClass
+import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import com.highcapable.yukihookapi.hook.type.java.StringClass
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.isSupportMiBlur
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.setMiBackgroundBlurModeCompat
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.setMiBackgroundBlurRadius
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.setMiViewBlurMode
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.setPassWindowBlurEnabledCompat
 import moe.chenxy.miuiextra.utils.ChenUtils
 import java.lang.reflect.Proxy
 import kotlin.math.abs
@@ -67,8 +74,13 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var barHeight = 0
         var origBarHeight = 0
         val yOffset = mainPrefs.getInt("home_handle_y_val", 7)
-        val mEnabledHomeAutoTransparent =
+        var mEnabledHomeAutoTransparent =
             mainPrefs.getBoolean("chen_home_handle_full_transparent_at_miuihome", false)
+        var useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
+        var mLightColor = -1
+        var mDarkColor = -1
+        var mNavigationHandle : Any? = null
+        var currentIntensity = -1;
         fun animateHomeHandleZoom(zoomType: ZoomType) {
             if (zoomValueAnimator == null) {
                 zoomValueAnimator = ValueAnimator()
@@ -130,7 +142,15 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             animateHomeHandleY(600, yOffset.toFloat())
         }
 
+        fun setDarkIntensity(int: Int) {
+            if (mNavigationHandle != null) {
+                XposedHelpers.callMethod(mNavigationHandle, "setDarkIntensity", int)
+            }
+        }
+
         var mPendingOpacityStatus: Boolean
+        var isTransparent = false
+        val maxBlurRadius = 20
         val opacityHomeHandleRunnable = Runnable {
             if (homeHandleAlphaAnimator.isRunning) {
                 homeHandleAlphaAnimator.cancel()
@@ -138,15 +158,25 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             homeHandleAlphaAnimator.start()
         }
         homeHandleAlphaAnimator.addUpdateListener {
-            mHomeHandle.alpha = it.animatedValue as Float
+            if (!useMiBlur || !mHomeHandle.isSupportMiBlur() || mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)) {
+                mHomeHandle.alpha = it.animatedValue as Float
+            } else {
+                if (isTransparent) {
+                    mHomeHandle.alpha = it.animatedValue as Float
+                } else if (mHomeHandle.alpha == 0f) {
+                    mHomeHandle.alpha = 1f
+                }
+                mHomeHandle.setMiBackgroundBlurRadius(((it.animatedValue as Float) * maxBlurRadius).toInt())
+            }
         }
 
         fun opacityHomeHandle(needOpacity: Boolean, needToTransparent: Boolean) {
             mainPrefs.reload()
             val autoTransparent = mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)
             val useScaleEffect = mainPrefs.getBoolean("home_handle_scale_on_full_transparent", false)
+            useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
             val isHome = mIsInHome
-            if (!autoTransparent && needOpacity && !needToTransparent) {
+            if (!autoTransparent && needOpacity && !needToTransparent && !useMiBlur) {
                 return
             }
             if (homeHandleAlphaAnimator.isRunning) {
@@ -157,7 +187,16 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     homeHandleAlphaAnimator.doOnEnd {
                         it.removeAllListeners()
                         homeHandleAlphaAnimator.addUpdateListener { it1 ->
-                            mHomeHandle.alpha = it1.animatedValue as Float
+                            if (!useMiBlur || !mHomeHandle.isSupportMiBlur()) {
+                                mHomeHandle.alpha = it1.animatedValue as Float
+                            } else {
+                                if (isTransparent) {
+                                    mHomeHandle.alpha = it1.animatedValue as Float
+                                } else if (mHomeHandle.alpha == 0f) {
+                                    mHomeHandle.alpha = 1f
+                                }
+                                mHomeHandle.setMiBackgroundBlurRadius(((it1.animatedValue as Float) * maxBlurRadius).toInt())
+                            }
                         }
                         opacityHomeHandle(mPendingOpacityStatus, needToTransparent)
                     }
@@ -176,6 +215,29 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 else
                     400
 
+            if (needOpacity && !needToTransparent && useMiBlur) {
+                if (mHomeHandle.isSupportMiBlur()) {
+                    mHomeHandle.alpha = 1f
+                    mDarkColor = 0x55191919.toInt()
+                    mLightColor = 0x77ffffff.toInt()
+                    mHomeHandle.setMiBackgroundBlurModeCompat(1)
+                    mHomeHandle.setPassWindowBlurEnabledCompat(true)
+                    mHomeHandle.setMiViewBlurMode(2)
+                    mHomeHandle.setMiBackgroundBlurRadius(maxBlurRadius)
+//                        setDarkIntensity(currentIntensity)
+                }
+            } else {
+                if (mHomeHandle.isSupportMiBlur()) {
+                    mDarkColor = 0xcc191919.toInt()
+                    mLightColor = 0xb3ffffff.toInt()
+                    mHomeHandle.setMiBackgroundBlurModeCompat(0)
+                    mHomeHandle.setPassWindowBlurEnabledCompat(false)
+//                    mHomeHandle.setMiViewBlurMode(1)
+                    mHomeHandle.setMiBackgroundBlurRadius(0)
+                }
+            }
+
+            isTransparent = needToTransparent
 //                homeHandleAlphaAnimator.interpolator = PathInterpolator(0.39f, 0f, 0.11f, 1.02f)
             homeHandleAlphaAnimator.setFloatValues(
                 mHomeHandle.alpha,
@@ -350,7 +412,13 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     }
                     mHomeHandle = mHorizontal.findViewById(mHomeHandleId)
                     mHomeHandle.translationY = yOffset.toFloat()
-                    mHomeHandle.alpha = if (mIsInHome) 0f else if (autoTransparent) 0.7f else 1f
+                    if (!useMiBlur || !mHomeHandle.isSupportMiBlur()) {
+                        mHomeHandle.alpha = if (mIsInHome) 0f else if (autoTransparent) 0.7f else 1f
+                    } else {
+                        mHomeHandle.alpha = if (mIsInHome) 0f else 1f
+                        // init mi blur
+                        opacityHomeHandle(true, false)
+                    }
                     animateHomeHandleToNormal()
                 }
             }
@@ -466,7 +534,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 val intent = Intent("chen.action.top_activity.switched")
                 val mUtilsContext =
                     XposedHelpers.getObjectField(this.instance, "mContext") as Context
-
+                mEnabledHomeAutoTransparent = mainPrefs.getBoolean("chen_home_handle_full_transparent_at_miuihome", false)
 
                 if (currentTopActivity.packageName == "com.miui.home") {
 //                        Log.i("Art_Chen", "Current Top Activity is MiuiHome, do sth")
@@ -485,6 +553,23 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     mIsInHome = false
                 }
                 mUtilsContext.sendBroadcast(intent)
+            }
+        }
+
+        "com.android.systemui.navigationbar.gestural.NavigationHandle".toClass().method {
+            name = "setDarkIntensity"
+            param(FloatType)
+        }.hook {
+            before {
+                if (mDarkColor == -1) {
+                    mDarkColor = XposedHelpers.getIntField(this.instance, "mDarkColor")
+                    mLightColor = XposedHelpers.getIntField(this.instance, "mLightColor")
+                    mNavigationHandle = this.instance
+                } else {
+                    XposedHelpers.setIntField(this.instance, "mDarkColor", mDarkColor)
+                    XposedHelpers.setIntField(this.instance, "mLightColor", mLightColor)
+                }
+                currentIntensity = this.args[0] as Int
             }
         }
     }
