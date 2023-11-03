@@ -106,8 +106,9 @@ class SettingsActivity : AppCompatActivity() {
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
             if (preference is TwoStatePreference) {
                 val category = preference.parent as PreferenceCategory
-                if (category.key == "status_bar_and_cc_category") {
-                    showRebootSnackBar(R.string.may_need_reboot, SHELL_RESTART_SYSTEMUI)
+                when (category.key) {
+                    "wallpaper_settings" -> showRebootSnackBar(R.string.may_need_reboot, SHELL_RESTART_MI_WALLPAPER)
+                    "status_bar_and_cc_category", "home_handle" -> showRebootSnackBar(R.string.may_need_reboot, SHELL_RESTART_SYSTEMUI)
                 }
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
             }
@@ -148,28 +149,7 @@ class SettingsActivity : AppCompatActivity() {
                 return@setOnPreferenceChangeListener true
             }
 
-            findPreference<SwitchPreferenceCompat>("use_chen_screen_on_anim")?.setOnPreferenceChangeListener { _, _ ->
-                showRebootSnackBar(null, SHELL_RESTART_MI_WALLPAPER)
-                return@setOnPreferenceChangeListener true
-            }
-
-            val animTurboMode = findPreference<SwitchPreferenceCompat>("chen_home_handle_anim_turbo_mode")
-            val immersionMode = findPreference<SwitchPreferenceCompat>("chen_home_handle_no_space")
-            findPreference<SwitchPreferenceCompat>("chen_home_handle_anim")?.setOnPreferenceChangeListener { _, _ ->
-                showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
-                return@setOnPreferenceChangeListener true
-            }
             bindAnimationSeekBarNoEditText(findPreference("home_handle_y_val"), 1)
-
-            animTurboMode?.setOnPreferenceChangeListener { _, _ ->
-                showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
-                return@setOnPreferenceChangeListener true
-            }
-
-            immersionMode?.setOnPreferenceChangeListener { _, _ ->
-                showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
-                return@setOnPreferenceChangeListener true
-            }
 
             val colorFadeOnCustom = findPreference<SeekBarPreference>("screen_on_color_fade_anim_val")
             val colorFadeOffCustom = findPreference<SeekBarPreference>("screen_off_color_fade_anim_val")
@@ -220,11 +200,6 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<SwitchPreferenceCompat>("do_not_override_pending_transition")?.setOnPreferenceChangeListener { _, newValue ->
                 showRebootSnackBar(null, null)
-                return@setOnPreferenceChangeListener true
-            }
-
-            findPreference<SwitchPreferenceCompat>("disable_wallpaper_auto_darken")?.setOnPreferenceChangeListener { _, newValue ->
-                showRebootSnackBar(null, SHELL_RESTART_MI_WALLPAPER)
                 return@setOnPreferenceChangeListener true
             }
 

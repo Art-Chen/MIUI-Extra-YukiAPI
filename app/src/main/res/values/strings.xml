@@ -108,4 +108,10 @@
     <string name="blur_scale_val_title">Blur Scale degree</string>
     <string name="chen_home_handle_scale_on_full_transparent_title">Scale home handle when dismiss or appeared</string>
     <string name="chen_home_handle_blur_effect_title">Apply Mi Blur Effect on Home Handle</string>
+    <string name="chen_volume_animation_effect_title">Volume Animation Effect</string>
+    <string name="shift">Shift</string>
+    <string name="stretch">Stretch</string>
+    <string name="shift_and_stretch">Shift and Stretch</string>
+    <string name="scale">Scale</string>
+    <string name="shift_and_scale">Shift and Scale</string>
 </resources>

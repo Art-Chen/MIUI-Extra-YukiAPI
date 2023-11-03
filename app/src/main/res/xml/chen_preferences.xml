@@ -74,9 +74,17 @@
             app:key="use_chen_volume_animation"
             app:title="@string/use_chen_volume_animation_title"
             app:summary="@string/use_chen_volume_animation_summary"/>
+
+        <rikka.preference.SimpleMenuPreference
+            app:key="chen_volume_animation_effect"
+            app:dependency="use_chen_volume_animation"
+            app:title="@string/chen_volume_animation_effect_title"
+            app:entries="@array/volume_animation_effect_entries"
+            app:summary="%s"
+            app:entryValues="@array/volume_animation_effect_values" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/wallpaper_header">
+    <PreferenceCategory app:title="@string/wallpaper_header" app:key="wallpaper_settings">
         <Preference
             app:key="wallpaper_zoom"
             app:title="@string/wallpaper_scale_title" />
@@ -105,7 +113,7 @@
             app:title="@string/miui_unlock_wallpaper_anim_fade_anim_val_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/home_handle_header">
+    <PreferenceCategory app:title="@string/home_handle_header" app:key="home_handle">
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_anim"
             app:title="@string/chen_home_handle_anim_title"

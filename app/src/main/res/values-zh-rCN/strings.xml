@@ -106,4 +106,10 @@
     <string name="blur_scale_val_title">模糊缩放程度</string>
     <string name="chen_home_handle_scale_on_full_transparent_title">小白条隐藏或出现时应用缩放效果</string>
     <string name="chen_home_handle_blur_effect_title">在小白条上应用模糊材质(需要开启高级材质)</string>
+    <string name="chen_volume_animation_effect_title">音量条动画效果</string>
+    <string name="shift">位移</string>
+    <string name="stretch">拉伸</string>
+    <string name="shift_and_stretch">位移 + 拉伸</string>
+    <string name="scale">缩放</string>
+    <string name="shift_and_scale">位移 + 缩放</string>
 </resources>

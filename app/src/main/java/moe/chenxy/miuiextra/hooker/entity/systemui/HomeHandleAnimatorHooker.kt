@@ -80,7 +80,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var mLightColor = -1
         var mDarkColor = -1
         var mNavigationHandle : Any? = null
-        var currentIntensity = -1;
+        var currentIntensity = 0f
         fun animateHomeHandleZoom(zoomType: ZoomType) {
             if (zoomValueAnimator == null) {
                 zoomValueAnimator = ValueAnimator()
@@ -569,7 +569,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     XposedHelpers.setIntField(this.instance, "mDarkColor", mDarkColor)
                     XposedHelpers.setIntField(this.instance, "mLightColor", mLightColor)
                 }
-                currentIntensity = this.args[0] as Int
+                currentIntensity = this.args[0] as Float
             }
         }
     }
