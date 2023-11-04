@@ -216,6 +216,7 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             bindAnimationSeekBarNoEditText(findPreference("blur_scale_val"), 1)
+            bindAnimationSeekBarNoEditText(findPreference("home_handle_auto_trans_alpha_val"), 1)
         }
 
         private val setColorFadeSettings : Runnable = Runnable {

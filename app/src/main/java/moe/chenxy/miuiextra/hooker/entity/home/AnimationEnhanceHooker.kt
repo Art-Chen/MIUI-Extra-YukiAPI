@@ -12,12 +12,6 @@ object AnimationEnhanceHooker : YukiBaseHooker() {
         // Force enable breakable anim support
         "com.miui.home.launcher.common.DeviceLevelUtils".toClass().apply {
             method {
-                name = "supportBreakOpenAnim"
-            }.hook {
-                replaceToTrue()
-            }
-
-            method {
                 name = "isUseSimpleAnim"
             }.hook {
                 replaceToFalse()

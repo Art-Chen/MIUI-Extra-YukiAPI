@@ -80,7 +80,6 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var mLightColor = -1
         var mDarkColor = -1
         var mNavigationHandle : Any? = null
-        var currentIntensity = 0f
         fun animateHomeHandleZoom(zoomType: ZoomType) {
             if (zoomValueAnimator == null) {
                 zoomValueAnimator = ValueAnimator()
@@ -174,6 +173,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             mainPrefs.reload()
             val autoTransparent = mainPrefs.getBoolean("chen_home_handle_auto_transparent", false)
             val useScaleEffect = mainPrefs.getBoolean("home_handle_scale_on_full_transparent", false)
+            val transDegree = mainPrefs.getInt("home_handle_auto_trans_alpha_val", 30)
             useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
             val isHome = mIsInHome
             if (!autoTransparent && needOpacity && !needToTransparent && !useMiBlur) {
@@ -244,7 +244,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 if (needToTransparent)
                     0f
                 else if (needOpacity)
-                    0.7f
+                    1 - (transDegree.toFloat() / 100)
                 else
                     1.0f
             )
@@ -569,7 +569,6 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     XposedHelpers.setIntField(this.instance, "mDarkColor", mDarkColor)
                     XposedHelpers.setIntField(this.instance, "mLightColor", mLightColor)
                 }
-                currentIntensity = this.args[0] as Float
             }
         }
     }

@@ -112,4 +112,5 @@
     <string name="shift_and_stretch">位移 + 拉伸</string>
     <string name="scale">缩放</string>
     <string name="shift_and_scale">位移 + 缩放</string>
+    <string name="home_handle_auto_trans_alphaval_title">自动透明程度</string>
 </resources>

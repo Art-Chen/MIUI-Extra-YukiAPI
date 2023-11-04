@@ -114,4 +114,5 @@
     <string name="shift_and_stretch">Shift and Stretch</string>
     <string name="scale">Scale</string>
     <string name="shift_and_scale">Shift and Scale</string>
+    <string name="home_handle_auto_trans_alphaval_title">Auto Transparent Degree</string>
 </resources>

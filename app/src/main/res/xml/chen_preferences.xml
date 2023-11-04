@@ -89,28 +89,28 @@
             app:key="wallpaper_zoom"
             app:title="@string/wallpaper_scale_title" />
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="use_chen_screen_on_anim"
-            app:title="@string/use_chen_screen_on_anim_title"
-            app:summary="@string/use_chen_screen_on_anim_summary"/>
+<!--        <rikka.material.preference.MaterialSwitchPreference-->
+<!--            app:key="use_chen_screen_on_anim"-->
+<!--            app:title="@string/use_chen_screen_on_anim_title"-->
+<!--            app:summary="@string/use_chen_screen_on_anim_summary"/>-->
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="disable_wallpaper_auto_darken"
             app:title="@string/disable_wallpaper_auto_darken_title"/>
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="miui_unlock_wallpaper_anim_fade"
-            app:title="@string/miui_unlock_wallpaper_anim_fade_title"
-            app:summary="@string/miui_unlock_wallpaper_anim_fade_summary"/>
+<!--        <rikka.material.preference.MaterialSwitchPreference-->
+<!--            app:key="miui_unlock_wallpaper_anim_fade"-->
+<!--            app:title="@string/miui_unlock_wallpaper_anim_fade_title"-->
+<!--            app:summary="@string/miui_unlock_wallpaper_anim_fade_summary"/>-->
 
-        <SeekBarPreference
-            android:max="1000"
-            app:key="miui_unlock_wallpaper_anim_fade_anim_val"
-            app:dependency="miui_unlock_wallpaper_anim_fade"
-            app:defaultValue="450"
-            app:min="1"
-            app:updatesContinuously="true"
-            app:title="@string/miui_unlock_wallpaper_anim_fade_anim_val_title" />
+<!--        <SeekBarPreference-->
+<!--            android:max="1000"-->
+<!--            app:key="miui_unlock_wallpaper_anim_fade_anim_val"-->
+<!--            app:dependency="miui_unlock_wallpaper_anim_fade"-->
+<!--            app:defaultValue="450"-->
+<!--            app:min="1"-->
+<!--            app:updatesContinuously="true"-->
+<!--            app:title="@string/miui_unlock_wallpaper_anim_fade_anim_val_title" />-->
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/home_handle_header" app:key="home_handle">
@@ -146,6 +146,15 @@
             app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_auto_transparent_title"
             app:summary="@string/chen_home_handle_auto_transparent_summary"/>
+
+        <SeekBarPreference
+            android:max="100"
+            app:key="home_handle_auto_trans_alpha_val"
+            app:dependency="chen_home_handle_auto_transparent"
+            app:defaultValue="30"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_auto_trans_alphaval_title" />
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_full_transparent_at_miuihome"

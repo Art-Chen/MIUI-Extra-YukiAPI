@@ -1,6 +1,7 @@
 package moe.chenxy.miuiextra.hooker.entity
 
 import android.util.Log
+import androidx.dynamicanimation.animation.SpringAnimation
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
@@ -48,13 +49,17 @@ object MiuiHomeHook : YukiBaseHooker() {
             }.hook {
                 after {
                     val springAnimation = this.result
+                    val springAnimationReal = XposedHelpers.getObjectField(springAnimation, "mSpringAnimation") as SpringAnimation
                     if (this.args[2] == -1500.0f) {
-                        XposedHelpers.callMethod(
-                            springAnimation,
-                            "setDampingResponse",
-                            0.68f,
-                            0.55f
-                        )
+//                        XposedHelpers.callMethod(
+//                            springAnimation,
+//                            "setDampingResponse",
+//                            0.68f,
+//                            0.55f
+//                        )
+                        springAnimationReal.spring.stiffness = 100f
+                        springAnimationReal.spring.dampingRatio = 1.5f
+                        springAnimationReal.setStartVelocity(5f)
                     }
                     this.result = springAnimation
                 }
