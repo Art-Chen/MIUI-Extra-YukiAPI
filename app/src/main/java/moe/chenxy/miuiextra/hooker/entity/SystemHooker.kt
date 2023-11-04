@@ -115,7 +115,15 @@ object SystemHooker : YukiBaseHooker() {
             "com.android.server.wm.ActivityClientController".toClass().method {
                 name = "overridePendingTransition"
                 param(IBinderClass, StringClass, IntType, IntType, IntType)
-            }.hook { intercept() }
+            }.hook {
+                before {
+                    Log.v("Art_Chen", "overridePendingTransition pkgName ${this.args[1]} enterAnim ${this.args[2]} exit ${this.args[3]}")
+                    // Skip if exit Anim is not null.
+                    if (this.args[2] != 0 && this.args[3] != 0) {
+                        this.result = null
+                    }
+                }
+            }
         }
     }
 }

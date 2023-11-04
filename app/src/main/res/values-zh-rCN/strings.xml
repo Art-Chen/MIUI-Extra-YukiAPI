@@ -63,7 +63,7 @@
     <string name="wallpaper_zoomIn_start_velocity_summary">放大动画开始速度</string>
     <string name="wallpaper_zoomOut_summary">缩小动画程度</string>
     <string name="wallpaper_auto_zoom_on_lockscreen_title">锁屏时自动缩放壁纸</string>
-    <string name="miui_unlock_anim_enhance_title">优化解锁时的图标飞入动画</string>
+    <string name="miui_unlock_anim_enhance_title">解锁时的图标飞入动画</string>
     <string name="wallpaper_auto_zoom_on_lockscreen_summary">仅在锁屏和桌面壁纸使用同一壁纸的情况下支持</string>
     <string name="miui_unlock_wallpaper_anim_fade_title">解锁到桌面壁纸时使用淡入动画</string>
     <string name="miui_unlock_wallpaper_anim_fade_summary">如果锁屏壁纸和桌面壁纸不同时，使用淡入动画而不是缩放动画来切换到桌面壁纸</string>
@@ -113,4 +113,5 @@
     <string name="scale">缩放</string>
     <string name="shift_and_scale">位移 + 缩放</string>
     <string name="home_handle_auto_trans_alphaval_title">自动透明程度</string>
+    <string name="defaults">默认</string>
 </resources>

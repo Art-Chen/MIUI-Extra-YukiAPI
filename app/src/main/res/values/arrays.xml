@@ -17,4 +17,14 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+    <string-array name="miui_unlock_anim_enhance_entries">
+        <item>@string/defaults</item>
+        <item>Effect 1</item>
+        <item>Effect 2</item>
+    </string-array>
+    <string-array name="miui_unlock_anim_enhance_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

@@ -33,9 +33,13 @@
             app:title="@string/miui_home_anim_enhance_title"
             app:summary="@string/miui_home_anim_enhance_summary"/>
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="miui_unlock_anim_enhance"
-            app:title="@string/miui_unlock_anim_enhance_title" />
+        <rikka.preference.SimpleMenuPreference
+            app:key="miui_unlock_anim_enhance_menu"
+            app:title="@string/miui_unlock_anim_enhance_title"
+            app:entries="@array/miui_unlock_anim_enhance_entries"
+            app:defaultValue="0"
+            app:summary="%s"
+            app:entryValues="@array/miui_unlock_anim_enhance_values" />
 
 <!--        <rikka.material.preference.MaterialSwitchPreference-->
 <!--            app:key="not_hide_icon_when_enter_recent"-->
@@ -80,6 +84,7 @@
             app:dependency="use_chen_volume_animation"
             app:title="@string/chen_volume_animation_effect_title"
             app:entries="@array/volume_animation_effect_entries"
+            app:defaultValue="0"
             app:summary="%s"
             app:entryValues="@array/volume_animation_effect_values" />
     </PreferenceCategory>

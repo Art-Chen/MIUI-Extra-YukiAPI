@@ -34,6 +34,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import moe.chenxy.miuiextra.R
 import moe.chenxy.miuiextra.utils.ChenUtils
+import rikka.preference.SimpleMenuPreference
 import kotlin.system.exitProcess
 
 private var isActivated = false
@@ -135,11 +136,6 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("wallpaper_zoom")?.intent = Intent(context, WallpaperZoomActivity::class.java)
 
             findPreference<SwitchPreferenceCompat>("miui_home_anim_enhance")?.setOnPreferenceChangeListener { _, _ ->
-                showRebootSnackBar(R.string.may_need_reboot_miui_home, SHELL_RESTART_MIUI_HOME)
-                return@setOnPreferenceChangeListener true
-            }
-
-            findPreference<SwitchPreferenceCompat>("miui_unlock_anim_enhance")?.setOnPreferenceChangeListener { _, _ ->
                 showRebootSnackBar(R.string.may_need_reboot_miui_home, SHELL_RESTART_MIUI_HOME)
                 return@setOnPreferenceChangeListener true
             }

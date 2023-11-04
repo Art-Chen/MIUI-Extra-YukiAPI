@@ -65,7 +65,7 @@
     <string name="wallpaper_zoomIn_stiffness_summary">Zoom In Animation Stiffness</string>
     <string name="wallpaper_zoomOut_summary">Zoom Out Animation Degree</string>
     <string name="wallpaper_auto_zoom_on_lockscreen_title">Auto Zoom on LockScreen</string>
-    <string name="miui_unlock_anim_enhance_title">Unlock Anim Optimize</string>
+    <string name="miui_unlock_anim_enhance_title">Unlock Anim</string>
     <string name="wallpaper_auto_zoom_on_lockscreen_summary">Only Support if the desktop wallpaper same as the keyguard</string>
     <string name="miui_unlock_wallpaper_anim_fade_title">Use Fade Effect For Desktop Wallpaper</string>
     <string name="miui_unlock_wallpaper_anim_fade_summary">Replace the scale animation to fade animation when unlock if the keyguard wallpaper differ than desktop used</string>
@@ -115,4 +115,5 @@
     <string name="scale">Scale</string>
     <string name="shift_and_scale">Shift and Scale</string>
     <string name="home_handle_auto_trans_alphaval_title">Auto Transparent Degree</string>
+    <string name="defaults">Default</string>
 </resources>

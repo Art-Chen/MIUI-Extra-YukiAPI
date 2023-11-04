@@ -5,6 +5,7 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
+import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import de.robv.android.xposed.XSharedPreferences
@@ -42,24 +43,36 @@ object MiuiHomeHook : YukiBaseHooker() {
             loadHooker(WallpaperZoomOptimizeHooker)
         }
 
-        if (mainPrefs.getBoolean("miui_unlock_anim_enhance", false)) {
-            "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Phone".toClass().method {
+
+        "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Phone".toClass().apply {
+            method {
                 name = "getSpringAnimator"
                 param(ViewClass, IntType, FloatType, FloatType, FloatType, FloatType)
             }.hook {
                 after {
+                    mainPrefs.reload()
+                    val mode = mainPrefs.getString("miui_unlock_anim_enhance_menu", "0")?.toInt()
                     val springAnimation = this.result
-                    val springAnimationReal = XposedHelpers.getObjectField(springAnimation, "mSpringAnimation") as SpringAnimation
                     if (this.args[2] == -1500.0f) {
-//                        XposedHelpers.callMethod(
-//                            springAnimation,
-//                            "setDampingResponse",
-//                            0.68f,
-//                            0.55f
-//                        )
-                        springAnimationReal.spring.stiffness = 100f
-                        springAnimationReal.spring.dampingRatio = 1.5f
-                        springAnimationReal.setStartVelocity(5f)
+                        var dumping = 0.78f
+                        var response = 0.35f
+                        when (mode) {
+                            1 -> {
+                                dumping = 0.68f
+                                response = 0.6f
+                            }
+                            2 -> {
+                                dumping = 1.5f
+                                response = 0.3f
+                            }
+                        }
+                        XposedHelpers.callMethod(
+                            springAnimation,
+                            "setDampingResponse",
+                            dumping,
+                            response
+                        )
+
                     }
                     this.result = springAnimation
                 }
