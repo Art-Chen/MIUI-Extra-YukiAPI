@@ -1,22 +1,23 @@
 package moe.chenxy.miuiextra.hooker.entity.systemui
 
 import android.view.View
+import com.highcapable.yukihookapi.hook.factory.toClassOrNull
 import de.robv.android.xposed.XposedHelpers
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.isSupportMiBlur
 import moe.chenxy.miuiextra.hooker.entity.systemui.StatusBarBlurUtilsHooker.toClass
 import moe.chenxy.miuiextra.utils.ChenUtils
 
 object MiBlurCompatUtils {
-    private const val blurCompatCls = "com.miui.systemui.util.MiBlurCompat"
+    private val blurCompatCls = "com.miui.systemui.util.MiBlurCompat".toClassOrNull()
 
     @JvmStatic
     fun View.setPassWindowBlurEnabledCompat(enable: Boolean) =
-        if (ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+        blurCompatCls?.let {
             XposedHelpers.callStaticMethod(
-                blurCompatCls.toClass(), "setPassWindowBlurEnabledCompat", this, enable
+                it, "setPassWindowBlurEnabledCompat", this, enable
             )
-        } else {
-
         }
+
 
     @JvmStatic
     fun View.setMiBackgroundBlurModeCompat(mode: Int) = XposedHelpers.callMethod(
@@ -32,13 +33,11 @@ object MiBlurCompatUtils {
 
     @JvmStatic
     fun View.isSupportMiBlur() =
-        if (ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.U)) {
+        blurCompatCls?.let {
             XposedHelpers.callStaticMethod(
-                blurCompatCls.toClass(),
+                it,
                 "getBackgroundBlurOpened",
                 this.context
             ) as Boolean
-        } else {
-            false
-        }
+        } ?: false
 }

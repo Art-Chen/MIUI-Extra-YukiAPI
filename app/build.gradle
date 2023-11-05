@@ -11,8 +11,8 @@ android {
         applicationId "moe.chenxy.miuiextra"
         minSdk 31
         targetSdk 34
-        versionCode 14
-        versionName "2.6.9-U-Pre_Hyper"
+        versionCode 16
+        versionName "2.6.9.2-U-Pre_Hyper"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
