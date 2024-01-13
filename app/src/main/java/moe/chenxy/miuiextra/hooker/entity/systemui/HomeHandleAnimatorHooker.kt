@@ -205,7 +205,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             }
             homeHandleAlphaAnimator.duration =
                 if (needToTransparent && isAboveU)
-                    600
+                    1000
                 else if (needToTransparent)
                     300
                 else if (needOpacity && mHomeHandle.alpha != 0f)
@@ -222,18 +222,16 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     mLightColor = 0x77ffffff.toInt()
                     mHomeHandle.setMiBackgroundBlurModeCompat(1)
                     mHomeHandle.setPassWindowBlurEnabledCompat(true)
-                    mHomeHandle.setMiViewBlurMode(2)
                     mHomeHandle.setMiBackgroundBlurRadius(maxBlurRadius)
+                    mHomeHandle.setMiViewBlurMode(2)
 //                        setDarkIntensity(currentIntensity)
                 }
             } else {
                 if (mHomeHandle.isSupportMiBlur()) {
                     mDarkColor = 0xcc191919.toInt()
                     mLightColor = 0xb3ffffff.toInt()
-                    mHomeHandle.setMiBackgroundBlurModeCompat(0)
                     mHomeHandle.setPassWindowBlurEnabledCompat(false)
-//                    mHomeHandle.setMiViewBlurMode(1)
-                    mHomeHandle.setMiBackgroundBlurRadius(0)
+                    mHomeHandle.setMiBackgroundBlurModeCompat(0)
                 }
             }
 

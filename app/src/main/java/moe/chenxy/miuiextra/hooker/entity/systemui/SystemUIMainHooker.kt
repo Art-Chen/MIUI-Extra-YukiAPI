@@ -8,6 +8,7 @@ import moe.chenxy.miuiextra.BuildConfig
 object SystemUIMainHooker : YukiBaseHooker() {
     override fun onHook() {
         val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
+        MiBlurCompatUtils.classLoader = this.appClassLoader
 
         loadHooker(SystemUIPluginHook)
 
