@@ -14,6 +14,7 @@ import com.highcapable.yukihookapi.hook.type.java.IntType
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.getPassWindowBlurEnabled
 
 val mainPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "chen_main_settings")
 val useBlurScale = mainPrefs.getBoolean("use_blur_scale_effect", false)
@@ -73,10 +74,20 @@ object StatusBarBlurUtilsHooker : YukiBaseHooker() {
                 before {
                     val blurRatio = this.args[0] as Float
                     val view = this.args[1] as View
-                    val useBlur = XposedHelpers.callMethod(this.instance, "getUseBlur") as Boolean
                     val blurCompatCls = "com.miui.systemui.util.MiBlurCompat".toClass()
+                    val blurDisabled =
+                        try {
+                            XposedHelpers.getBooleanField(this.instance, "blurDisabledBySettings")
+                                    || !(XposedHelpers.getBooleanField(this.instance, "blurFeatureSupportedOnDevice"))
+                        } catch (e: Exception) {
+                            try {
+                                !(XposedHelpers.callMethod(this.instance, "getUseBlur") as Boolean)
+                            } catch (e1: Exception) {
+                                false
+                            }
+                        }
 
-                    if (useBlur) {
+                    if (!blurDisabled) {
                         if (disableMiBlur) {
                             val dimColorRGB =
                                 XposedHelpers.getIntField(this.instance, "dimColorRGB")
@@ -118,11 +129,21 @@ object StatusBarBlurUtilsHooker : YukiBaseHooker() {
                     after {
                         val blurRatio = this.args[0] as Float
                         val view = this.args[1] as View
-                        val useBlur =
-                            XposedHelpers.callMethod(this.instance, "getUseBlur") as Boolean
+                        val blurDisabled =
+                            try {
+                                XposedHelpers.getBooleanField(this.instance, "blurDisabledBySettings")
+                                        || !(XposedHelpers.getBooleanField(this.instance, "blurFeatureSupportedOnDevice"))
+                            } catch (e: Exception) {
+                                try {
+                                    !(XposedHelpers.callMethod(this.instance, "getUseBlur") as Boolean)
+                                } catch (e1: Exception) {
+                                    false
+                                }
+                            }
+
                         val blurCompatCls = "com.miui.systemui.util.MiBlurCompat".toClassOrNull()
 
-                        if (useBlur && useBlurScale) {
+                        if (!blurDisabled && useBlurScale) {
                             blurCompatCls?.apply {
                                 val isMiBlur = XposedHelpers.callStaticMethod(
                                     this,

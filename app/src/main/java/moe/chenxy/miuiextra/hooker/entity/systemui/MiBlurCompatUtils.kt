@@ -18,6 +18,10 @@ object MiBlurCompatUtils {
             )
         }
 
+    @JvmStatic
+    fun View.getPassWindowBlurEnabled() =
+        XposedHelpers.callMethod(this, "getPassWindowBlurEnabled") as Boolean
+
 
     @JvmStatic
     fun View.setMiBackgroundBlurModeCompat(mode: Int) = XposedHelpers.callMethod(
