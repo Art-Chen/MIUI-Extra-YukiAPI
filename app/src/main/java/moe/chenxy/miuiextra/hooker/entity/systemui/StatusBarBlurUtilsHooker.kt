@@ -5,6 +5,7 @@ import android.view.SurfaceControl
 import android.view.View
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.factory.toClassOrNull
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import com.highcapable.yukihookapi.hook.type.defined.VagueType
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
@@ -113,18 +114,33 @@ object StatusBarBlurUtilsHooker : YukiBaseHooker() {
 
                 }
 
-                after {
-                    val blurRatio = this.args[0] as Float
-                    val view = this.args[1] as View
-                    val useBlur = XposedHelpers.callMethod(this.instance, "getUseBlur") as Boolean
-                    val blurCompatCls = "com.miui.systemui.util.MiBlurCompat".toClass()
+                if (!disableMiBlur) {
+                    after {
+                        val blurRatio = this.args[0] as Float
+                        val view = this.args[1] as View
+                        val useBlur =
+                            XposedHelpers.callMethod(this.instance, "getUseBlur") as Boolean
+                        val blurCompatCls = "com.miui.systemui.util.MiBlurCompat".toClassOrNull()
 
-                    if (useBlur && useBlurScale) {
-                        val isMiBlur = XposedHelpers.callStaticMethod(blurCompatCls, "getBackgroundBlurOpened", view.context) as Boolean
-                        if (isMiBlur && view.isAttachedToWindow) {
-                            try {
-                                XposedHelpers.callMethod(view, "setMiBackgroundBlurScaleRatio", blurRatio / (15 - blurScaleVal))
-                            } catch (_: Exception) {}
+                        if (useBlur && useBlurScale) {
+                            blurCompatCls?.apply {
+                                val isMiBlur = XposedHelpers.callStaticMethod(
+                                    this,
+                                    "getBackgroundBlurOpened",
+                                    view.context
+                                ) as Boolean
+                                if (isMiBlur && view.isAttachedToWindow) {
+                                    try {
+                                        XposedHelpers.callMethod(
+                                            view,
+                                            "setMiBackgroundBlurScaleRatio",
+                                            blurRatio / (15 - blurScaleVal)
+                                        )
+                                    } catch (_: Exception) {
+                                    }
+                                }
+                            }
+
                         }
                     }
                 }
