@@ -273,6 +273,9 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var motionTriggered = false
         val isBoostMode = mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)
         var orientation = 0
+        // Cache Screen Height. IPC is expensive
+        var screenRealHeight = -1
+        var screenHeight = -1
         fun onInputEvent(inputEvent: InputEvent) {
             if (inputEvent is MotionEvent) {
                 // obtain the event to local runnable to fix the race condition
@@ -283,21 +286,25 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
 //                        )
                 if (mHandler != null) {
                     mHandler!!.post {
+                        if (screenRealHeight == -1) {
+                            screenRealHeight = getScreenRealHeight(mContext!!)
+                            screenHeight = getScreenHeight(mContext!!)
+                        }
                         // onInputEvent will be done if mHandler post, so the original motionEvent will be recycled, so that we use the copy of event and recycle by ourself
                         val isNavigationBarArea: Boolean =
-                            if (getScreenRealHeight(mContext!!) - getScreenHeight(mContext!!) > 1 && !isAboveU) {
-                                motionEvent.y > getScreenHeight(mContext!!)
+                            if (screenRealHeight - screenHeight > 1 && !isAboveU) {
+                                motionEvent.y > screenHeight
                             } else {
                                 // on U, look like the real height - orig bar height is better
                                 if (!isAboveU) {
                                     Log.v(
                                         "Art_Chen",
                                         "Screen Height incorrect to calculate nav bar height, using fallback, value: ${
-                                            getScreenRealHeight(mContext!!) - origBarHeight
+                                            screenRealHeight - origBarHeight
                                         }"
                                     )
                                 }
-                                motionEvent.y > getScreenRealHeight(mContext!!) - origBarHeight
+                                motionEvent.y > screenRealHeight - origBarHeight
                             }
 
                         if (isNavigationBarArea) {
@@ -499,6 +506,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         "Art_Chen",
                         "screenHeight is ${getScreenHeight(mContext!!)}, realScreenHeight is ${getScreenRealHeight(mContext!!)}, origBarHeight $origBarHeight, currentBarHeight $barHeight"
                     )
+                    screenHeight = getScreenHeight(mContext!!)
+                    screenRealHeight = getScreenRealHeight(mContext!!)
                 }
             }
 
