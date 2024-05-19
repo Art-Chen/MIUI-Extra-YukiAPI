@@ -1,0 +1,136 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/normal_state_title" app:key="anim_on_normal">
+        <SeekBarPreference
+            android:max="100"
+            app:key="home_handle_setting_transdegree_normal"
+            app:defaultValue="30"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_auto_trans_alphaval_title" />
+        <SeekBarPreference
+            android:max="200"
+            app:key="home_handle_setting_scalex_normal"
+            app:defaultValue="100"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_scale_x_title" />
+        <SeekBarPreference
+            android:max="200"
+            app:key="home_handle_setting_scaley_normal"
+            app:defaultValue="100"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_scale_y_title" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_alpha_normal"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_alpha" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_scale_normal"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_scale" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_xy_normal"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_xy" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/pressed_state_title" app:key="anim_on_pressed">
+        <SeekBarPreference
+            android:max="100"
+            app:key="home_handle_setting_transdegree_pressed"
+            app:defaultValue="30"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_auto_trans_alphaval_title" />
+        <SeekBarPreference
+            android:max="200"
+            app:key="home_handle_setting_scalex_pressed"
+            app:defaultValue="100"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_scale_x_title" />
+        <SeekBarPreference
+            android:max="200"
+            app:key="home_handle_setting_scaley_pressed"
+            app:defaultValue="100"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_scale_y_title" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_alpha_pressed"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_alpha" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_scale_pressed"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_scale" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_xy_pressed"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_xy" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/home_state_title" app:key="anim_on_home">
+        <SeekBarPreference
+            android:max="100"
+            app:key="home_handle_setting_transdegree_home"
+            app:defaultValue="30"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_auto_trans_alphaval_title" />
+        <SeekBarPreference
+            android:max="200"
+            app:key="home_handle_setting_scalex_home"
+            app:defaultValue="100"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_scale_x_title" />
+        <SeekBarPreference
+            android:max="200"
+            app:key="home_handle_setting_scaley_home"
+            app:defaultValue="100"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_scale_y_title" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_alpha_home"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_alpha" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_scale_home"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_scale" />
+        <SeekBarPreference
+            android:max="3000"
+            app:key="home_handle_setting_duration_xy_home"
+            app:defaultValue="600"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_anim_duration_xy" />
+    </PreferenceCategory>
+</PreferenceScreen>

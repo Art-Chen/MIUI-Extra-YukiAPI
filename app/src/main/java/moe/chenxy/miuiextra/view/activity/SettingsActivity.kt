@@ -42,8 +42,6 @@ const val SHELL_RESTART_MIUI_HOME = "am force-stop com.miui.home"
 const val SHELL_RESTART_SYSTEMUI = "killall com.android.systemui"
 const val SHELL_RESTART_MI_WALLPAPER = "killall com.miui.miwallpaper"
 class SettingsActivity : AppCompatActivity() {
-
-
     @SuppressLint("WorldReadableFiles")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +82,6 @@ class SettingsActivity : AppCompatActivity() {
 //                .show()
             isActivated = false
         }
-
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -134,6 +131,7 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("vibrator_map")?.intent = Intent(context, VibratorRemapActivity::class.java)
             findPreference<Preference>("vibrator_effect_map")?.intent = Intent(context, VibratorEffectRemapActivity::class.java)
             findPreference<Preference>("wallpaper_zoom")?.intent = Intent(context, WallpaperZoomActivity::class.java)
+            findPreference<Preference>("home_handle_anim_custom")?.intent = Intent(context, HomeHandleCustomActivity::class.java)
 
             findPreference<SwitchPreferenceCompat>("miui_home_anim_enhance")?.setOnPreferenceChangeListener { _, _ ->
                 showRebootSnackBar(R.string.may_need_reboot_miui_home, SHELL_RESTART_MIUI_HOME)
@@ -212,7 +210,6 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             bindAnimationSeekBarNoEditText(findPreference("blur_scale_val"), 1)
-            bindAnimationSeekBarNoEditText(findPreference("home_handle_auto_trans_alpha_val"), 1)
         }
 
         private val setColorFadeSettings : Runnable = Runnable {

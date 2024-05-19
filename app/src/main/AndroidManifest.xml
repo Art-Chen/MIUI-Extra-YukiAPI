@@ -26,6 +26,10 @@
             android:exported="false"
             android:parentActivityName=".view.activity.SettingsActivity" />
         <activity
+            android:name=".view.activity.HomeHandleCustomActivity"
+            android:exported="false"
+            android:parentActivityName=".view.activity.SettingsActivity" />
+        <activity
             android:name=".view.activity.SettingsActivity"
             android:launchMode="singleTask"
             android:exported="true">

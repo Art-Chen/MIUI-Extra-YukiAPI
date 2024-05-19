@@ -37,7 +37,7 @@
     <string name="may_need_reboot_PowerKeeper">此设置需要重启PowerKeeper才能生效</string>
     <string name="reboot">重启</string>
     <string name="color_fade_anim_smoothly_title">更舒服的亮灭屏动画</string>
-    <string name="color_fade_anim_smoothly_summary">让Color Fade动画比MIUI原来的设置更慢一些 (俺的动画!!!!)</string>
+    <string name="color_fade_anim_smoothly_summary">让Color Fade动画比HyperOS原来的设置更慢一些 (俺的动画!!!!)</string>
     <string name="music_notification_optimize_title">优化音乐通知</string>
     <string name="music_notification_optimize_summary">修复异常的歌曲切换动画和App不规范导致的专辑图不同步问题</string>
     <string name="music_notification_optimize_foreground_color_title">优化音乐通知的文字和按钮的颜色</string>
@@ -114,4 +114,14 @@
     <string name="shift_and_scale">位移 + 缩放</string>
     <string name="home_handle_auto_trans_alphaval_title">自动透明程度</string>
     <string name="defaults">默认</string>
+    <string name="home_handle_anim_custom_title">自定义小白条动画</string>
+    <string name="normal_state_title">默认时</string>
+    <string name="pressed_state_title">按下时</string>
+    <string name="home_state_title">在桌面时</string>
+    <string name="home_handle_scale_x_title">横向缩放</string>
+    <string name="home_handle_scale_y_title">纵向缩放</string>
+    <string name="home_handle_anim_duration_alpha">透明或模糊动画时长</string>
+    <string name="home_handle_anim_duration_scale">缩放动画时长</string>
+    <string name="home_handle_anim_duration_xy">位移动画时长</string>
+    <string name="home_handle_disable_move_event_title">禁用小白条跟手位移</string>
 </resources>

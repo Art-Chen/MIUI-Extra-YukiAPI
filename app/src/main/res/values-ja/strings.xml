@@ -38,7 +38,7 @@
   <string name="miui_home_anim_enhance_summary">システムランチャーのアニメーションを強化します</string>
   <string name="reboot">再起動</string>
   <string name="color_fade_anim_smoothly_title">スムーズな ON/OFF アニメーション</string>
-  <string name="color_fade_anim_smoothly_summary">カラーフェードアニメーションを MIUI のデフォルト設定より遅くします</string>
+  <string name="color_fade_anim_smoothly_summary">カラーフェードアニメーションを HyperOS のデフォルト設定より遅くします</string>
   <string name="music_notification_optimize_title">MIUI ミュージック通知の最適化</string>
   <string name="music_notification_optimize_summary">アーティスト変更時のアニメーションを壊さずにアートワークを素早く更新します</string>
   <string name="music_notification_optimize_foreground_color_title"><![CDATA[テキストとボタンの色を最適化]]></string>
@@ -87,7 +87,7 @@
   <string name="chen_home_handle_auto_transparent_title">ホームハンドルを自動で透過する</string>
   <string name="chen_home_handle_auto_transparent_summary">ホームハンドルはデフォルトで透過され、タッチをすると変化します</string>
   <string name="do_not_override_pending_transition_title">アプリがトランジションアニメーションを上書きしないようにする</string>
-  <string name="do_not_override_pending_transition_summary">一部のアプリでのダーティーなアニメーションを MIUI スタイルに戻す事ができます</string>
+  <string name="do_not_override_pending_transition_summary">一部のアプリでのダーティーなアニメーションを HyperOS スタイルに戻す事ができます</string>
   <string name="disable_wallpaper_auto_darken_title">壁紙の自動暗転を無効化する</string>
   <string name="chen_home_handle_full_transparent_at_miuihome_title">ホーム画面でホームハンドルを透過する</string>
   <string name="home_handle_header">ホームハンドル</string>

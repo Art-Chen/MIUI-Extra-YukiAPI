@@ -62,7 +62,7 @@ object VibratorMapHooker : YukiBaseHooker(){
                             XposedHelpers.callMethod(mPrebakedSegment, "getEffectId") as Int
 
                         if (mEffectMap.containsKey(effectId)) {
-                            Log.i(
+                            Log.v(
                                 "Art_Chen",
                                 "[Effect Vibrate Mapper] mapped $effectId to ${mEffectMap[effectId]}"
                             )

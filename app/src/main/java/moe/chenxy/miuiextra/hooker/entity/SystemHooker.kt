@@ -22,6 +22,7 @@ import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
 import moe.chenxy.miuiextra.hooker.entity.SystemHooker.toClass
+import moe.chenxy.miuiextra.hooker.entity.framework.StartingWindowOptimize
 import moe.chenxy.miuiextra.hooker.entity.framework.VibratorMapHooker
 
 object SystemHooker : YukiBaseHooker() {
@@ -32,6 +33,7 @@ object SystemHooker : YukiBaseHooker() {
     override fun onHook() {
         // Vibrator Mapper
         loadHooker(VibratorMapHooker)
+        loadHooker(StartingWindowOptimize)
 
         // Hook for Wallpaper Scale Settings
         "com.android.server.wm.WallpaperController".toClass().method {

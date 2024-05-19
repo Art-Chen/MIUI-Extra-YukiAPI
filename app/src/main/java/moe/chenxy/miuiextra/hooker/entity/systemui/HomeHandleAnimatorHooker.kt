@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.InputEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
@@ -60,15 +61,15 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         val xyAnimDuration: Long,
     )
 
-    lateinit var zoomXAnimator: ValueAnimator
-    lateinit var zoomYAnimator: ValueAnimator
-    lateinit var xAnimator: ValueAnimator
-    lateinit var yAnimator: ValueAnimator
-    lateinit var alphaAnimator: ValueAnimator
+    private lateinit var zoomXAnimator: ValueAnimator
+    private lateinit var zoomYAnimator: ValueAnimator
+    private lateinit var xAnimator: ValueAnimator
+    private lateinit var yAnimator: ValueAnimator
+    private lateinit var alphaAnimator: ValueAnimator
     
-    lateinit var normalSettings: HomeHandleSettings
-    lateinit var pressedSettings: HomeHandleSettings
-    lateinit var onHomeSettings: HomeHandleSettings
+    private lateinit var normalSettings: HomeHandleSettings
+    private lateinit var pressedSettings: HomeHandleSettings
+    private lateinit var onHomeSettings: HomeHandleSettings
 
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
@@ -86,6 +87,9 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var mLightColor = -1
         var mDarkColor = -1
         var mNavigationHandle : Any? = null
+        var isHidden = false
+        var lastIsHidden = false
+        var disableHomeHandleMovement = mainPrefs.getBoolean("home_handle_disable_move_event", false)
 
         fun getSetting(type: EventType): HomeHandleSettings {
             return HomeHandleSettings(
@@ -94,20 +98,22 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     .toFloat() / 100,
                 mainPrefs.getInt("home_handle_setting_scaley_${type.name.lowercase()}", 100)
                     .toFloat() / 100,
-                mainPrefs.getLong("home_handle_setting_duration_alpha_${type.name.lowercase()}", 600),
-                mainPrefs.getLong("home_handle_setting_duration_scale_${type.name.lowercase()}", 600),
-                mainPrefs.getLong("home_handle_setting_duration_xy_${type.name.lowercase()}", 600),
+                mainPrefs.getInt("home_handle_setting_duration_alpha_${type.name.lowercase()}", 600).toLong(),
+                mainPrefs.getInt("home_handle_setting_duration_scale_${type.name.lowercase()}", 600).toLong(),
+                mainPrefs.getInt("home_handle_setting_duration_xy_${type.name.lowercase()}", 600).toLong(),
             )
         }
 
-        fun updateSettings() {
-            if (mainPrefs.hasFileChanged()) {
+        fun updateSettings(force: Boolean = false) {
+            if (force || mainPrefs.hasFileChanged()) {
                 mainPrefs.reload()
                 normalSettings = getSetting(EventType.NORMAL)
                 pressedSettings = getSetting(EventType.PRESSED)
                 onHomeSettings = getSetting(EventType.HOME)
-            }
 
+                disableHomeHandleMovement = mainPrefs.getBoolean("home_handle_disable_move_event", false)
+                useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
+            }
         }
 
         fun animateZoomTo(scaleX: Float, scaleY: Float, duration: Long) {
@@ -124,6 +130,11 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     mHomeHandle.scaleY = it.animatedValue as Float
                 }
             }
+
+            mHomeHandle.pivotX = (mHomeHandle.width / 2).toFloat()
+            if (mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)) {
+                mHomeHandle.pivotY = barHeight - origBarHeight + origBarHeight / 2f
+            }
             if (zoomXAnimator.isRunning) zoomXAnimator.cancel()
             if (zoomYAnimator.isRunning) zoomYAnimator.cancel()
 
@@ -131,10 +142,6 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             zoomYAnimator.setFloatValues(mHomeHandle.scaleY, scaleY)
             zoomXAnimator.duration = duration
             zoomYAnimator.duration = duration
-
-            if (mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)) {
-                mHomeHandle.pivotY = (barHeight - origBarHeight + origBarHeight / 2).toFloat()
-            }
 
             zoomXAnimator.start()
             zoomYAnimator.start()
@@ -185,6 +192,11 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             yAnimator.start()
         }
 
+        fun cancelHomeHandleXYAnim() {
+            xAnimator.cancel()
+            yAnimator.cancel()
+        }
+
         fun animateHomeHandleXYToNormal() {
             animateHomeHandleX(normalSettings.xyAnimDuration, 0f)
             animateHomeHandleY(normalSettings.xyAnimDuration, yOffset.toFloat())
@@ -196,7 +208,6 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             }
         }
 
-        var isAppliedMiBlur = true
         var currBlurRadius = 0
         val opacityHomeHandleRunnable = Runnable {
             if (alphaAnimator.isRunning) {
@@ -211,32 +222,42 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 mHomeHandle.alpha = it.animatedValue as Float
             } else {
                 // Adjust Blur Radius
-                currBlurRadius = (1 - (it.animatedValue as Float) * 10).toInt()
+                currBlurRadius = (it.animatedValue as Float).toInt()
                 mHomeHandle.setMiBackgroundBlurRadius(currBlurRadius)
             }
         }
 
-        fun opacityTo(to: Float, duration: Long) {
+        fun opacityTo(to: Float, duration: Long, forceAlpha: Boolean = false) {
             if (!this::alphaAnimator.isInitialized) {
                 alphaAnimator = ValueAnimator()
             }
+            if (alphaAnimator.isRunning) alphaAnimator.end()
+
             alphaAnimator.duration = duration
-            alphaAnimator.addUpdateListener(doOnOpacityUpdate)
+
+            if (forceAlpha)
+                alphaAnimator.addUpdateListener {
+                    mHomeHandle.alpha = it.animatedValue as Float
+                }
+            else
+                alphaAnimator.addUpdateListener(doOnOpacityUpdate)
+
             alphaAnimator.start()
         }
 
+        var lastOpacityType: EventType
         fun opacityHomeHandle(type: EventType) {
+            var notStart = false
             updateSettings()
 
-            useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
-            val isHome = mIsInHome
+            lastOpacityType = type
 
             if (!this::alphaAnimator.isInitialized) {
                 alphaAnimator = ValueAnimator()
             }
 
             if (alphaAnimator.isRunning) {
-                if (isHome) {
+                if (mIsInHome) {
                     alphaAnimator.cancel()
                 } else {
                     alphaAnimator.doOnEnd {
@@ -252,34 +273,42 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 when {
                     type == EventType.HOME
                         // Normal or Press to Home
-                        -> onHomeSettings.alphaAnimDuration
+                    -> onHomeSettings.alphaAnimDuration
+
                     type == EventType.NORMAL && mHomeHandle.alpha != 0f
                         // Pressed to Normal
-                        -> normalSettings.alphaAnimDuration * 2
+                    -> normalSettings.alphaAnimDuration * 2
+
                     type == EventType.NORMAL
                         // Home to Normal
-                        -> normalSettings.alphaAnimDuration
+                    -> normalSettings.alphaAnimDuration
+
                     else
                         // Normal to Press
-                        -> pressedSettings.alphaAnimDuration
+                    -> pressedSettings.alphaAnimDuration
                 }
 
-            if (type != EventType.HOME && useMiBlur && !isAppliedMiBlur) {
+            if (useMiBlur) {
                 if (mHomeHandle.isSupportMiBlur()) {
                     mHomeHandle.alpha = 1f
                     mDarkColor = 0x55191919
                     mLightColor = 0x77ffffff
                     mHomeHandle.setMiBackgroundBlurModeCompat(1)
-                    mHomeHandle.setPassWindowBlurEnabledCompat(true)
                     mHomeHandle.setMiViewBlurMode(2)
                     mHomeHandle.setMiBackgroundBlurRadius(normalSettings.transDegree)
+                    mHomeHandle.setPassWindowBlurEnabledCompat(true)
 //                        setDarkIntensity(currentIntensity)
-                    isAppliedMiBlur = true
+
+                    alphaAnimator.doOnEnd {
+                        if (currBlurRadius == 0) {
+                            // Clear Blur if radius == 0
+                            mHomeHandle.setPassWindowBlurEnabledCompat(false)
+                        }
+                    }
                 }
-            } else if (!useMiBlur && isAppliedMiBlur) {
-                isAppliedMiBlur = false
-                mDarkColor = 0xff191919.toInt()
-                mLightColor = 0xffffffff.toInt()
+            } else {
+                mDarkColor = 0xee191919.toInt()
+                mLightColor = 0xddffffff.toInt()
 //                mHomeHandle.setMiBackgroundBlurModeCompat(0)
 //                mHomeHandle.setMiViewBlurMode(2)
                 mHomeHandle.setMiBackgroundBlurRadius(0)
@@ -287,32 +316,40 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             }
 
             if (useMiBlur) {
+                val to = when (type) {
+                    EventType.HOME -> onHomeSettings.transDegree.toFloat()
+                    EventType.NORMAL -> normalSettings.transDegree.toFloat()
+                    else -> pressedSettings.transDegree.toFloat()
+                }
+                if (currBlurRadius.toFloat() == to) notStart = true
+
                 alphaAnimator.setFloatValues(
                     currBlurRadius.toFloat(),
-                    when (type) {
-                        EventType.HOME -> onHomeSettings.transDegree.toFloat()
-                        EventType.NORMAL -> normalSettings.transDegree.toFloat()
-                        else -> pressedSettings.transDegree.toFloat()
-                    }
+                    to
                 )
+
             } else {
                 // Normal alpha
+                val to = when (type) {
+                    EventType.HOME -> 1 - (onHomeSettings.transDegree.toFloat() / 100)
+                    EventType.NORMAL -> 1 - (normalSettings.transDegree.toFloat() / 100)
+                    else -> 1 - (pressedSettings.transDegree.toFloat() / 100)
+                }
+                if (mHomeHandle.alpha == to) notStart = true
                 alphaAnimator.setFloatValues(
                     mHomeHandle.alpha,
-                    when (type) {
-                        EventType.HOME -> 1 - (onHomeSettings.transDegree.toFloat() / 100)
-                        EventType.NORMAL -> 1 - (normalSettings.transDegree.toFloat() / 100)
-                        else -> 1 - (pressedSettings.transDegree.toFloat() / 100)
-                    }
+                    to
                 )
             }
             alphaAnimator.duration = duration
 
-            mHandler?.removeCallbacks(opacityHomeHandleRunnable)
-            if (type == EventType.NORMAL && !mIsInHome) {
-                mHandler?.postDelayed(opacityHomeHandleRunnable, 5000)
-            } else {
-                mHandler?.post(opacityHomeHandleRunnable)
+            if (!notStart) {
+                mHandler?.removeCallbacks(opacityHomeHandleRunnable)
+                if (lastOpacityType == EventType.PRESSED && type == EventType.NORMAL && !mIsInHome) {
+                    mHandler?.postDelayed(opacityHomeHandleRunnable, 5000)
+                } else {
+                    mHandler?.post(opacityHomeHandleRunnable)
+                }
             }
 
             when (type) {
@@ -323,17 +360,19 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 else -> animateZoomTo(pressedSettings.scaleX, pressedSettings.scaleY, pressedSettings.scaleAnimDuration)
             }
         }
-
+        var motionTriggered = false
         fun leaveHome() {
             opacityHomeHandle(EventType.NORMAL)
         }
         fun enterHome() {
-            opacityHomeHandle(EventType.HOME)
+            // Opacity after current motion released
+            if (!motionTriggered)
+                opacityHomeHandle(EventType.HOME)
         }
 
         var baseX = -1f
         var baseY = -1f
-        var motionTriggered = false
+
         val isBoostMode = mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)
         var orientation = 0
         // Cache Screen Height. IPC is expensive
@@ -349,40 +388,48 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
 //                        )
                 if (mHandler != null) {
                     mHandler!!.post {
-                        if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN && mHomeHandle.alpha == 0f) {
+                        if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN
+                            && (mHomeHandle.alpha == 0f || (mHomeHandle.windowVisibility != View.VISIBLE || isHidden))) {
                             // drop if home handle is transparent.
+                            return@post
+                        }
+
+                        if (disableHomeHandleMovement && motionEvent.actionMasked == MotionEvent.ACTION_MOVE) {
+                            // drop if disable home handle movement
                             return@post
                         }
 
                         screenRealHeight = getScreenRealHeight(mContext!!)
                         screenHeight = getScreenHeight(mContext!!)
-                        // onInputEvent will be done if mHandler post, so the original motionEvent will be recycled, so that we use the copy of event and recycle by ourself
+                        // onInputEvent will be done if mHandler post, so the original motionEvent will be recycled,
+                        // so that we use the copy of event and recycle by ourself
                         val isNavigationBarArea: Boolean =
                             if (!isAboveU && screenRealHeight - screenHeight > 1) {
                                 motionEvent.y > screenHeight
                             } else {
                                 // on U, look like the real height - orig bar height is better
-                                if (!isAboveU) {
-                                    Log.v(
-                                        "Art_Chen",
-                                        "Screen Height incorrect to calculate nav bar height, using fallback, value: ${
-                                            screenRealHeight - origBarHeight
-                                        }"
-                                    )
-                                }
+
+                                // Remove useless logs
+//                                if (!isAboveU) {
+//                                    Log.v(
+//                                        "Art_Chen",
+//                                        "Screen Height incorrect to calculate nav bar height, using fallback, value: ${
+//                                            screenRealHeight - origBarHeight
+//                                        }"
+//                                    )
+//                                }
                                 motionEvent.y > screenRealHeight - origBarHeight
                             }
 
                         if (isNavigationBarArea) {
                             if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                                Log.v(
-                                    "Art_Chen",
-                                    "current touch is in navigation area! motionTriggered!"
-                                )
+//                                Log.v(
+//                                    "Art_Chen",
+//                                    "current touch is in navigation area! motionTriggered!"
+//                                )
                                 if (!mIsInHome || mHomeHandle.alpha != 0f) {
                                     opacityHomeHandle(EventType.PRESSED)
                                 }
-//                                animateZoomTo()
 
                                 baseX = motionEvent.x
                                 baseY = motionEvent.y
@@ -398,6 +445,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         }
 
                         if (motionEvent.actionMasked == MotionEvent.ACTION_MOVE && motionTriggered) {
+                            cancelHomeHandleXYAnim()
                             if (isBoostMode && orientation == 0) {
                                 val offsetNeeded =
                                     -(baseY - motionEvent.y) * 0.2f + yOffset.toFloat()
@@ -420,7 +468,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                             if (!mIsInHome) {
                                 // Pressed to Normal
                                 opacityHomeHandle(EventType.NORMAL)
-                            } else if (onHomeSettings.transDegree == 100 && mHomeHandle.alpha != 0f) {
+                            } else {
                                 opacityHomeHandle(EventType.HOME)
                             }
                             motionTriggered = false
@@ -455,6 +503,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     mHandler = Handler(Looper.getMainLooper())
 
                     appClassLoader?.let { ChenInputEventDispatcher.init(mContext!!, it) }
+                    updateSettings(true)
 
                     if (ChenInputEventDispatcher.isInited()) {
                         ChenInputEventDispatcher.registerInputEventListener(object : ChenInputEventListener {
@@ -519,7 +568,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     }
 
                     if (isTurboMode && orientationFor == 0) {
-                        lp.height = lp.height * 2
+                        lp.height *= 2
                     }
 
                     lateinit var inset: Insets
@@ -643,6 +692,30 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 }
             }
         }
+
+        if (mainPrefs.getBoolean("chen_home_handle_no_space", false)) {
+            // Workaround immersive mode can not hide the handle
+            "com.android.systemui.navigationbar.NavigationBar".toClass().method {
+                name("setWindowState")
+                param(IntType, IntType, IntType)
+            }.hook {
+                after {
+                    isHidden = XposedHelpers.getBooleanField(
+                        this.instance,
+                        "mShowOrientedHandleForImmersiveMode"
+                    )
+                    if (lastIsHidden == isHidden) return@after
+
+                    if (isHidden) {
+//                        opacityTo(0f, 300, forceAlpha = true)
+                        mHomeHandle.alpha = 0f
+                    } else {
+                        opacityHomeHandle(EventType.NORMAL)
+                    }
+                    lastIsHidden = isHidden
+                }
+            }
+        }
     }
 
     private fun getScreenHeight(context: Context): Int {
@@ -677,7 +750,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
     }
 
 
-    fun extractButton(str: String): String {
+    private fun extractButton(str: String): String {
         return if (!str.contains("[")) str else str.substring(0, str.indexOf("["))
     }
 

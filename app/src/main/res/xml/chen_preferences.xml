@@ -48,8 +48,7 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="color_fade_anim_smoothly"
-            app:title="@string/color_fade_anim_smoothly_title"
-            app:summary="@string/color_fade_anim_smoothly_summary"/>
+            app:title="@string/color_fade_anim_smoothly_title" />
 
         <SeekBarPreference
             android:max="2000"
@@ -146,35 +145,21 @@
             app:title="@string/chen_home_handle_no_space_title"
             app:summary="@string/chen_home_handle_no_space_summary"/>
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="chen_home_handle_auto_transparent"
+        <Preference
+            app:key="home_handle_anim_custom"
             app:dependency="chen_home_handle_anim"
-            app:title="@string/chen_home_handle_auto_transparent_title"
-            app:summary="@string/chen_home_handle_auto_transparent_summary"/>
-
-        <SeekBarPreference
-            android:max="100"
-            app:key="home_handle_auto_trans_alpha_val"
-            app:dependency="chen_home_handle_auto_transparent"
-            app:defaultValue="30"
-            app:min="1"
-            app:updatesContinuously="true"
-            app:title="@string/home_handle_auto_trans_alphaval_title" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="chen_home_handle_full_transparent_at_miuihome"
-            app:dependency="chen_home_handle_anim"
-            app:title="@string/chen_home_handle_full_transparent_at_miuihome_title" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="home_handle_scale_on_full_transparent"
-            app:dependency="chen_home_handle_anim"
-            app:title="@string/chen_home_handle_scale_on_full_transparent_title" />
+            app:title="@string/home_handle_anim_custom_title"
+            app:useSimpleSummaryProvider="true" />
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="chen_home_handle_blur_effect"
             app:dependency="chen_home_handle_anim"
             app:title="@string/chen_home_handle_blur_effect_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="home_handle_disable_move_event"
+            app:dependency="chen_home_handle_anim"
+            app:title="@string/home_handle_disable_move_event_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/music_notification_header">
