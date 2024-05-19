@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp' version '1.9.10-1.0.13'
+    id 'com.google.devtools.ksp' version '1.9.23-1.0.20'
 }
 
 android {
@@ -64,6 +64,5 @@ dependencies {
     compileOnly("de.robv.android.xposed:api:82")
     implementation 'com.highcapable.yukihookapi:api:1.2.0'
     ksp 'com.highcapable.yukihookapi:ksp-xposed:1.2.0'
-//    implementation("com.highcapable.yukireflection:api:1.0.3")
 
 }

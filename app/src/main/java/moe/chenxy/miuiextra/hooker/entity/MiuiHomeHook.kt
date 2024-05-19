@@ -1,6 +1,7 @@
 package moe.chenxy.miuiextra.hooker.entity
 
 import android.util.Log
+import android.view.View
 import androidx.dynamicanimation.animation.SpringAnimation
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
@@ -51,11 +52,15 @@ object MiuiHomeHook : YukiBaseHooker() {
             }.hook {
                 after {
                     mainPrefs.reload()
+                    val view = this.args[0] as View
+                    val id = this.args[1] as Int
                     val mode = mainPrefs.getString("miui_unlock_anim_enhance_menu", "0")?.toInt()
+                    if (mode == 0) return@after
+
                     val springAnimation = this.result
                     if (this.args[2] == -1500.0f) {
-                        var dumping = 0.78f
-                        var response = 0.35f
+                        var dumping = this.args[4]
+                        var response = this.args[5]
                         when (mode) {
                             1 -> {
                                 dumping = 0.68f
@@ -72,8 +77,8 @@ object MiuiHomeHook : YukiBaseHooker() {
                             dumping,
                             response
                         )
-
                     }
+                    view.setTag(id, springAnimation)
                     this.result = springAnimation
                 }
             }
