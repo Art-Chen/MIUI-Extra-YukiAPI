@@ -90,6 +90,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var isHidden = false
         var lastIsHidden = false
         var disableHomeHandleMovement = mainPrefs.getBoolean("home_handle_disable_move_event", false)
+        var forceAlphaAtHome = mainPrefs.getBoolean("home_handle_force_alpha_at_home", false)
 
         fun getSetting(type: EventType): HomeHandleSettings {
             return HomeHandleSettings(
@@ -113,6 +114,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
 
                 disableHomeHandleMovement = mainPrefs.getBoolean("home_handle_disable_move_event", false)
                 useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
+                forceAlphaAtHome = mainPrefs.getBoolean("home_handle_force_alpha_at_home", false)
             }
         }
 
@@ -146,21 +148,6 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             zoomXAnimator.start()
             zoomYAnimator.start()
         }
-
-//        fun animateHomeHandleZoom(zoomType: ZoomType) {
-//            val duration =
-//                when (zoomType) {
-//                    ZoomType.ZOOM_IN -> 600
-//                    ZoomType.NORMAL_FOR_OPACITY, ZoomType.ZOOM_OUT -> 800
-//                    else -> 400
-//                }
-//            zoomValueAnimator!!.setFloatValues(mHomeHandle.scaleX, if (zoomType == ZoomType.ZOOM_IN) 1.05f else if (zoomType == ZoomType.ZOOM_OUT) 0.9f else 1.0f)
-//
-//
-//            zoomValueAnimator!!.start()
-//            animateZoomTo()
-//        }
-
 
         fun animateHomeHandleX(duration: Long, offset: Float) {
             if (!this::xAnimator.isInitialized) {
@@ -209,6 +196,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         }
 
         var currBlurRadius = 0
+        var lastBlurRadius = 0
         val opacityHomeHandleRunnable = Runnable {
             if (alphaAnimator.isRunning) {
                 alphaAnimator.cancel()
@@ -223,25 +211,31 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             } else {
                 // Adjust Blur Radius
                 currBlurRadius = (it.animatedValue as Float).toInt()
-                mHomeHandle.setMiBackgroundBlurRadius(currBlurRadius)
+                // setRadius is expensive
+                if (currBlurRadius != lastBlurRadius)
+                    mHomeHandle.setMiBackgroundBlurRadius(currBlurRadius)
+                lastBlurRadius = currBlurRadius
             }
         }
 
-        fun opacityTo(to: Float, duration: Long, forceAlpha: Boolean = false) {
+        fun opacityTo(to: Float, duration: Long) {
             if (!this::alphaAnimator.isInitialized) {
                 alphaAnimator = ValueAnimator()
             }
             if (alphaAnimator.isRunning) alphaAnimator.end()
 
             alphaAnimator.duration = duration
+            alphaAnimator.setFloatValues(mHomeHandle.alpha, to)
 
-            if (forceAlpha)
-                alphaAnimator.addUpdateListener {
-                    mHomeHandle.alpha = it.animatedValue as Float
-                }
-            else
-                alphaAnimator.addUpdateListener(doOnOpacityUpdate)
-
+            if (currBlurRadius != 0) {
+                currBlurRadius = 0
+                mHomeHandle.setMiBackgroundBlurRadius(currBlurRadius)
+                mHomeHandle.setPassWindowBlurEnabledCompat(false)
+            }
+            alphaAnimator.removeAllListeners()
+            alphaAnimator.addUpdateListener {
+                mHomeHandle.alpha = it.animatedValue as Float
+            }
             alphaAnimator.start()
         }
 
@@ -256,8 +250,15 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 alphaAnimator = ValueAnimator()
             }
 
+            if (forceAlphaAtHome && useMiBlur && type == EventType.HOME) {
+                // Force Alpha At Home
+                opacityTo(1 - (onHomeSettings.transDegree.toFloat() / 100), onHomeSettings.alphaAnimDuration)
+                animateZoomTo(onHomeSettings.scaleX, onHomeSettings.scaleY, onHomeSettings.scaleAnimDuration)
+                return
+            }
+
             if (alphaAnimator.isRunning) {
-                if (mIsInHome) {
+                if (type == EventType.HOME) {
                     alphaAnimator.cancel()
                 } else {
                     alphaAnimator.doOnEnd {
@@ -389,7 +390,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 if (mHandler != null) {
                     mHandler!!.post {
                         if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN
-                            && (mHomeHandle.alpha == 0f || (mHomeHandle.windowVisibility != View.VISIBLE || isHidden))) {
+                            && (mHomeHandle.alpha == 0f || mHomeHandle.scaleX <= 0f || mHomeHandle.scaleY <= 0f
+                                    || (mHomeHandle.windowVisibility != View.VISIBLE || isHidden))) {
                             // drop if home handle is transparent.
                             return@post
                         }
@@ -693,7 +695,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             }
         }
 
-        if (mainPrefs.getBoolean("chen_home_handle_no_space", false)) {
+        if (mainPrefs.getBoolean("home_handle_wa_no_space_not_hide", false)) {
             // Workaround immersive mode can not hide the handle
             "com.android.systemui.navigationbar.NavigationBar".toClass().method {
                 name("setWindowState")
@@ -707,8 +709,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     if (lastIsHidden == isHidden) return@after
 
                     if (isHidden) {
-//                        opacityTo(0f, 300, forceAlpha = true)
-                        mHomeHandle.alpha = 0f
+                        opacityTo(0f, 300)
                     } else {
                         opacityHomeHandle(EventType.NORMAL)
                     }

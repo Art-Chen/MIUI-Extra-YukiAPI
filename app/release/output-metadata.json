@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 16,
-      "versionName": "2.6.9.2-U-Pre_Hyper",
+      "versionCode": 18,
+      "versionName": "2.6.9.4-U-HyperOS",
       "outputFile": "app-release.apk"
     }
   ],

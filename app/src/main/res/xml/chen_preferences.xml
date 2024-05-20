@@ -145,6 +145,11 @@
             app:title="@string/chen_home_handle_no_space_title"
             app:summary="@string/chen_home_handle_no_space_summary"/>
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="home_handle_wa_no_space_not_hide"
+            app:dependency="chen_home_handle_no_space"
+            app:title="@string/home_handle_wa_no_space_not_hide_title" />
+
         <Preference
             app:key="home_handle_anim_custom"
             app:dependency="chen_home_handle_anim"

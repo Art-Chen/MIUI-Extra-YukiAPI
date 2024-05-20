@@ -9,6 +9,7 @@ import android.os.Binder
 import android.os.Parcel
 import android.os.VibrationEffect
 import android.util.Log
+import android.view.Display
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.IBinderClass
@@ -33,7 +34,7 @@ object SystemHooker : YukiBaseHooker() {
     override fun onHook() {
         // Vibrator Mapper
         loadHooker(VibratorMapHooker)
-        loadHooker(StartingWindowOptimize)
+//        loadHooker(StartingWindowOptimize)
 
         // Hook for Wallpaper Scale Settings
         "com.android.server.wm.WallpaperController".toClass().method {
@@ -82,33 +83,33 @@ object SystemHooker : YukiBaseHooker() {
 
         // ColorFade Animation Customize
         if (mainPrefs.getBoolean("color_fade_anim_smoothly", false)) {
-            "com.android.server.display.DisplayPowerController".toClass().method {
-                        name = "initialize"
-                        param(IntType)
-            }.hook {
-                after {
-                    mainPrefs.reload()
-                    val mContext =
-                        XposedHelpers.getObjectField(this.instance, "mContext") as Context
-                    val mColorFadeOffAnimator = XposedHelpers.getObjectField(
-                        this.instance,
-                        "mColorFadeOffAnimator"
-                    ) as ObjectAnimator
-                    mColorFadeOffAnimator.duration =
-                        mainPrefs.getInt("screen_off_color_fade_anim_val", 450).toLong()
-
-                    val broadcastReceiver = object : BroadcastReceiver() {
-                        override fun onReceive(p0: Context?, p1: Intent?) {
-                            mainPrefs.reload()
-                            mColorFadeOffAnimator.duration =
-                                mainPrefs.getInt("screen_off_color_fade_anim_val", 450).toLong()
+            "com.android.server.display.DisplayPowerController".toClass().apply {
+                method {
+                    name = "initialize"
+                    param(IntType)
+                }.hook {
+                    after {
+                        mainPrefs.reload()
+                        val mContext =
+                            XposedHelpers.getObjectField(this.instance, "mContext") as Context
+                        val mColorFadeOffAnimator = XposedHelpers.getObjectField(
+                            this.instance,
+                            "mColorFadeOffAnimator"
+                        ) as ObjectAnimator
+                        mColorFadeOffAnimator.duration =
+                            mainPrefs.getInt("screen_off_color_fade_anim_val", 450).toLong()
+                        val broadcastReceiver = object : BroadcastReceiver() {
+                            override fun onReceive(p0: Context?, p1: Intent?) {
+                                mainPrefs.reload()
+                                mColorFadeOffAnimator.duration =
+                                    mainPrefs.getInt("screen_off_color_fade_anim_val", 450).toLong()
+                            }
                         }
-
+                        mContext.registerReceiver(
+                            broadcastReceiver,
+                            IntentFilter("chen.miui.extra.update.colorfade")
+                        )
                     }
-                    mContext.registerReceiver(
-                        broadcastReceiver,
-                        IntentFilter("chen.miui.extra.update.colorfade")
-                    )
                 }
             }
         }

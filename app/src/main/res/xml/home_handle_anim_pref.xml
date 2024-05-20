@@ -132,5 +132,9 @@
             app:min="0"
             app:updatesContinuously="true"
             app:title="@string/home_handle_anim_duration_xy" />
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="home_handle_force_alpha_at_home"
+            app:title="@string/home_handle_force_alpha_at_home_title"
+            app:summary="@string/home_handle_force_alpha_at_home_summary" />
     </PreferenceCategory>
 </PreferenceScreen>
