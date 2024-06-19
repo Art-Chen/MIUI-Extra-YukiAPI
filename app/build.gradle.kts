@@ -63,6 +63,20 @@ android {
         abortOnError = true
         checkReleaseBuilds = false
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/**.version"
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+            excludes += "okhttp3/**"
+            excludes += "kotlin/**"
+            excludes += "org/**"
+            excludes += "**.properties"
+            excludes += "**.bin"
+            excludes += "kotlin-tooling-metadata.json"
+        }
+    }
 }
 
 configurations.configureEach {
