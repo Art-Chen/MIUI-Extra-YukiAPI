@@ -1,0 +1,46 @@
+[versions]
+agp = "8.5.0"
+kotlin = "1.9.23"
+ksp = "1.9.23-1.0.20"
+coordinatorlayout = "1.2.0"
+coreKtx = "1.13.1"
+material = "1.12.0"
+preferenceKtx = "1.2.1"
+rikkaxAppcompat = "1.6.1"
+rikkaxCore = "1.4.1"
+rikkaxInsets = "1.3.0"
+rikkaxMaterial = "2.7.0"
+rikkaxMaterialPreference = "2.0.0"
+rikkaxSimplemenuPreference = "1.0.3"
+rikkaxRecyclerviewKtx = "1.3.2"
+rikkaxBorderview = "1.1.0"
+rikkaxMainswitchbar = "1.0.2"
+rikkaxLayoutinflater = "1.3.0"
+xposedApi = "82"
+yukihookApi = "1.2.0"
+yukihookKsp = "1.2.0"
+
+[plugins]
+agp-app = { id = "com.android.application", version.ref = "agp" }
+agp-lib = { id = "com.android.library", version.ref = "agp" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+[libraries]
+coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout" }
+coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+preferenceKtx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
+rikkaxAppcompat = { group = "dev.rikka.rikkax.appcompat", name = "appcompat", version.ref = "rikkaxAppcompat" }
+rikkaxCore = { group = "dev.rikka.rikkax.core", name = "core", version.ref = "rikkaxCore" }
+rikkaxInsets = { group = "dev.rikka.rikkax.insets", name = "insets", version.ref = "rikkaxInsets" }
+rikkaxMaterial = { group = "dev.rikka.rikkax.material", name = "material", version.ref = "rikkaxMaterial" }
+rikkaxMaterialPreference = { group = "dev.rikka.rikkax.material", name = "material-preference", version.ref = "rikkaxMaterialPreference" }
+rikkaxSimplemenuPreference = { group = "dev.rikka.rikkax.preference", name = "simplemenu-preference", version.ref = "rikkaxSimplemenuPreference" }
+rikkaxRecyclerviewKtx = { group = "dev.rikka.rikkax.recyclerview", name = "recyclerview-ktx", version.ref = "rikkaxRecyclerviewKtx" }
+rikkaxBorderview = { group = "dev.rikka.rikkax.widget", name = "borderview", version.ref = "rikkaxBorderview" }
+rikkaxMainswitchbar = { group = "dev.rikka.rikkax.widget", name = "mainswitchbar", version.ref = "rikkaxMainswitchbar" }
+rikkaxLayoutinflater = { group = "dev.rikka.rikkax.layoutinflater", name = "layoutinflater", version.ref = "rikkaxLayoutinflater" }
+xposedApi = { group = "de.robv.android.xposed", name = "api", version.ref = "xposedApi" }
+yukihookApi = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookApi" }
+yukihookKsp = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookKsp" }

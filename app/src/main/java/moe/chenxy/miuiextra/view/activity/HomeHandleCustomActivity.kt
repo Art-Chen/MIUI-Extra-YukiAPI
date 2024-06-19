@@ -89,16 +89,16 @@ class HomeHandleCustomActivity : AppCompatActivity() {
 
         private fun bindAnimationSeekBar(preference: SeekBarPreference?, title: CharSequence, endsWith: String) {
             preference?.summary = "${(preference?.value as Int)} $endsWith"
-            preference.setOnPreferenceChangeListener { pref, newValue ->
+            preference?.setOnPreferenceChangeListener { pref, newValue ->
                 pref.summary = "${(newValue as Int)} $endsWith"
                 this.context?.let { ChenUtils.performVibrateClick(it) }
                 return@setOnPreferenceChangeListener true
             }
-            preference.setOnPreferenceClickListener {
+            preference?.setOnPreferenceClickListener {
                 val inputDialog = MaterialAlertDialogBuilder(this.requireContext())
                 val chenView = LayoutInflater.from(activity).inflate(R.layout.chen_edittext_dialog, null)
                 val editText = chenView.findViewById<EditText>(R.id.chen_edittext_dialog_edittext)
-                editText.hint = (preference.value).toString()
+                editText.hint = (preference?.value).toString()
                 inputDialog
                     .setTitle(title)
                     .setView(chenView)
