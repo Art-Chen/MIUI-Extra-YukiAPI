@@ -39,18 +39,14 @@ android {
 
     dependenciesInfo.includeInApk = false
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion)
+        }
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf(
-            "-Xno-param-assertions",
-            "-Xno-call-assertions",
-            "-Xno-receiver-assertions"
-        )
+    kotlin {
+        jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
     }
 
     namespace = "moe.chenxy.miuiextra"
