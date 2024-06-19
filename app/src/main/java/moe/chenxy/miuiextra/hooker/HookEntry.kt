@@ -33,7 +33,6 @@ object HookEntry : IYukiHookXposedInit {
     }
 
     override fun onInit() = configs {
-//        isDebug = BuildConfig.DEBUG
-        isDebug = false
+        isDebug = BuildConfig.DEBUG
     }
 }
