@@ -2,7 +2,15 @@ plugins {
     alias(libs.plugins.agp.app)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.lsplugin.apksign)
     alias(libs.plugins.lsplugin.resopt)
+}
+
+apksign {
+    storeFileProperty = "KEYSTORE_FILE"
+    storePasswordProperty = "KEYSTORE_PASSWORD"
+    keyAliasProperty = "KEY_ALIAS"
+    keyPasswordProperty = "KEY_PASSWORD"
 }
 
 android {
