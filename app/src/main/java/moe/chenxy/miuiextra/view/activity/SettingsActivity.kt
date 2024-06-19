@@ -227,7 +227,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun bindAnimationSeekBarNoEditText(preference: SeekBarPreference?, scale: Int) {
             preference?.summary = "${(preference?.value as Int).toFloat() / scale} f"
-            preference.setOnPreferenceChangeListener { pref, newValue ->
+            preference?.setOnPreferenceChangeListener { pref, newValue ->
                 pref.summary = "${(newValue as Int).toFloat() / scale} f"
                 ChenUtils.performVibrateHeavyClick(requireContext())
 

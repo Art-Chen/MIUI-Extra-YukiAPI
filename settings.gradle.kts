@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -5,15 +7,17 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://api.xposed.info/' }
-        maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
-        maven { url 'https://jitpack.io' }
+        maven("https://api.xposed.info/")
+        maven("https://s01.oss.sonatype.org/content/repositories/releases/")
+        maven("https://jitpack.io")
     }
 }
-rootProject.name = "Miui Extra"
-include ':app'
+
+rootProject.name = "MiuiExtra"
+include(":app")

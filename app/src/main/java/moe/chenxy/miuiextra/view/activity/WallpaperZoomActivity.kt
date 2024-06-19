@@ -59,12 +59,12 @@ class WallpaperZoomActivity : AppCompatActivity() {
 
             val wallpaperScalePerf = findPreference<SeekBarPreference>("wallpaper_scale_val")
             wallpaperScalePerf?.summary = formatWallpaperScaleVal(wallpaperScalePerf!!.value)
-            wallpaperScalePerf.setOnPreferenceChangeListener { preference, newValue ->
+            wallpaperScalePerf?.setOnPreferenceChangeListener { preference, newValue ->
                 preference.summary = formatWallpaperScaleVal(newValue as Int)
                 this.context?.let { ChenUtils.performVibrateClick(it) }
                 return@setOnPreferenceChangeListener true
             }
-            wallpaperScalePerf.setOnPreferenceClickListener {
+            wallpaperScalePerf?.setOnPreferenceClickListener {
                 val chenView = LayoutInflater.from(activity).inflate(R.layout.chen_edittext_dialog, null)
                 val editText = chenView.findViewById<EditText>(R.id.chen_edittext_dialog_edittext)
                 editText.hint = formatWallpaperScaleVal(wallpaperScalePerf.value)
@@ -166,12 +166,12 @@ class WallpaperZoomActivity : AppCompatActivity() {
 
         private fun bindAnimationSeekBar(preference: SeekBarPreference?, scale: Int, title: Int) {
             preference?.summary = "${(preference?.value as Int).toFloat() / scale} f"
-            preference.setOnPreferenceChangeListener { pref, newValue ->
+            preference?.setOnPreferenceChangeListener { pref, newValue ->
                 pref.summary = "${(newValue as Int).toFloat() / scale} f"
                 this.context?.let { ChenUtils.performVibrateClick(it) }
                 return@setOnPreferenceChangeListener true
             }
-            preference.setOnPreferenceClickListener {
+            preference?.setOnPreferenceClickListener {
                 val inputDialog = MaterialAlertDialogBuilder(this.requireContext())
                 val chenView = LayoutInflater.from(activity).inflate(R.layout.chen_edittext_dialog, null)
                 val editText = chenView.findViewById<EditText>(R.id.chen_edittext_dialog_edittext)
