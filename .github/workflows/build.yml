@@ -2,6 +2,7 @@ name: Build HyperExtra
 
 on:
   push:
+    tags: [ "*" ]
     branches: [ "yuki-api" ]
   pull_request:
     branches: [ "yuki-api" ]
@@ -41,7 +42,7 @@ jobs:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         if: ${{ env.SIGNING_KEY != '' }}
         continue-on-error: true
-        uses: kevin-david/zipalign-sign-android-release@v1.1
+        uses: kevin-david/zipalign-sign-android-release@v1
         id: sign_app
         with:
           releaseDirectory: app/build/outputs/apk/release
@@ -58,3 +59,16 @@ jobs:
         with:
           name: HyperExtra
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Release apk
+        env: 
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        if: ${{ env.SIGNING_KEY != '' && github.ref_type == 'tag' }}
+        continue-on-error: true
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ github.token }}
+          artifacts: ${{steps.sign_app.outputs.signedReleaseFile}}
+          generateReleaseNotes: true
+          makeLatest: true
+          replacesArtifacts: true
