@@ -99,7 +99,7 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                     XposedHelpers.callMethod(
                         mSpringAnimation,
                         "setMinimumVisibleChange",
-                        DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE
+                        0.01f
                     )
                     if (zoomIn) {
                         XposedHelpers.callMethod(
@@ -210,7 +210,7 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
 
                     val canStop = XposedHelpers.callMethod(mSpringAnimation, "isRunning") as Boolean
                             && XposedHelpers.callMethod(mSpringAnimation, "canSkipToEnd") as Boolean
-                    if (((mZoomedIn && mZoomedOut < zoomOut + 0.0015051) || (!mZoomedIn && mZoomedOut >= 0.9999999f)) && canStop) {
+                    if (((mZoomedIn && mZoomedOut < zoomOut + 0.01) || (!mZoomedIn && mZoomedOut >= 0.99f)) && canStop) {
                         mZoomedOut = if (mZoomedIn) zoomOut else 1f
                         XposedHelpers.callStaticMethod("com.miui.home.launcher.animate.SpringAnimationReflectUtils".toClass(), "cancel", mSpringAnimation)
                     }
