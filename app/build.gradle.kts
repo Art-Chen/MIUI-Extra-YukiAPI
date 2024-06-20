@@ -14,12 +14,12 @@ apksign {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "moe.chenxy.miuiextra"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 18
         versionName = "2.6.9.4-U-HyperOS"
     }
