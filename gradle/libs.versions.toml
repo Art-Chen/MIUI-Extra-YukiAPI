@@ -1,7 +1,7 @@
 [versions]
 agp = "8.5.0"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.22"
 coordinatorlayout = "1.2.0"
 coreKtx = "1.13.1"
 material = "1.12.0"
@@ -17,8 +17,7 @@ rikkaxBorderview = "1.1.0"
 rikkaxMainswitchbar = "1.0.2"
 rikkaxLayoutinflater = "1.3.0"
 xposedApi = "82"
-yukihookApi = "1.2.0"
-yukihookKsp = "1.2.0"
+yukihookApi = "1.2.1"
 
 [plugins]
 agp-app = { id = "com.android.application", version.ref = "agp" }
@@ -45,4 +44,4 @@ rikkaxMainswitchbar = { group = "dev.rikka.rikkax.widget", name = "mainswitchbar
 rikkaxLayoutinflater = { group = "dev.rikka.rikkax.layoutinflater", name = "layoutinflater", version.ref = "rikkaxLayoutinflater" }
 xposedApi = { group = "de.robv.android.xposed", name = "api", version.ref = "xposedApi" }
 yukihookApi = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookApi" }
-yukihookKsp = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookKsp" }
+yukihookKsp = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookApi" }
