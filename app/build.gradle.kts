@@ -50,12 +50,12 @@ android {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion)
+            languageVersion = JavaLanguageVersion.of(JavaVersion.VERSION_22.majorVersion)
         }
     }
 
     kotlin {
-        jvmToolchain(JavaVersion.VERSION_21.majorVersion.toInt())
+        jvmToolchain(JavaVersion.VERSION_22.majorVersion.toInt())
     }
 
     namespace = "moe.chenxy.miuiextra"
