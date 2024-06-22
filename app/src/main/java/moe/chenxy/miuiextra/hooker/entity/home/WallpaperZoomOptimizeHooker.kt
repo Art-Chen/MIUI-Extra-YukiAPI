@@ -1,14 +1,12 @@
 package moe.chenxy.miuiextra.hooker.entity.home
 
 import android.annotation.SuppressLint
-import android.app.WallpaperManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import android.view.Display
-import androidx.dynamicanimation.animation.DynamicAnimation
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.method
@@ -19,10 +17,8 @@ import com.highcapable.yukihookapi.hook.type.android.IntentClass
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.FloatType
-import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.hooker.entity.MiuiHomeHook
-import moe.chenxy.miuiextra.hooker.entity.systemui.SystemUIPluginHook.hook
 import moe.chenxy.miuiextra.utils.ChenUtils
 import java.util.concurrent.AbstractExecutorService
 
@@ -42,10 +38,50 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
     private var wallpaperZoomThiz: Any? = null
     private var mZoomedIn = false
     private var mZoomedOut = 1.0f
+    private var accuracyLevel = MiuiHomeHook.zoomPrefs.getInt("wallpaper_accuracy_val", 3)
+    private val minChange: Float
+        get() {
+            return when (accuracyLevel) {
+                1 -> 0.1f
+                2 -> 0.05f
+                3 -> 0.01f
+                4 -> 0.005f
+                5 -> 0.001f
+                6 -> 0.0005f
+                7 -> 0.0001f
+                8 -> 0.00005f
+                9 -> 0.00001f
+                else -> 0.1f
+            }
+        }
 
     private var isInHome = true
     private var lastScreenState = Display.STATE_ON
     private var disableCancelWallpaperAnim = false
+
+    private fun updateSettings() {
+        if (MiuiHomeHook.zoomPrefs.hasFileChanged()) {
+            MiuiHomeHook.zoomPrefs.reload()
+            zoomInStiffness =
+                MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_stiffness_val", 3263)
+                    .toFloat() / 100
+            zoomOutStiffness =
+                MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_stiffness_val", 3263)
+                    .toFloat() / 100
+            zoomOutStartVelocity =
+                MiuiHomeHook.zoomPrefs.getInt(
+                    "wallpaper_zoomOut_start_velocity_val",
+                    662
+                )
+                    .toFloat() / 1000
+            zoomOut =
+                MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_val", 1).toFloat() / 10
+            zoomInStartVelocity =
+                MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_start_velocity_val", 0)
+                    .toFloat() / 1000
+            accuracyLevel = MiuiHomeHook.zoomPrefs.getInt("wallpaper_accuracy_val", 2)
+        }
+    }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onHook() {
@@ -65,26 +101,7 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                     }
                     XposedHelpers.setObjectField(this.instance, "mZoomOut", mZoomedOut)
 
-                    if (MiuiHomeHook.zoomPrefs.hasFileChanged()) {
-                        MiuiHomeHook.zoomPrefs.reload()
-                        zoomInStiffness =
-                            MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_stiffness_val", 3263)
-                                .toFloat() / 100
-                        zoomOutStiffness =
-                            MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_stiffness_val", 3263)
-                                .toFloat() / 100
-                        zoomOutStartVelocity =
-                            MiuiHomeHook.zoomPrefs.getInt(
-                                "wallpaper_zoomOut_start_velocity_val",
-                                662
-                            )
-                                .toFloat() / 1000
-                        zoomOut =
-                            MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_val", 1).toFloat() / 10
-                        zoomInStartVelocity =
-                            MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_start_velocity_val", 0)
-                                .toFloat() / 1000
-                    }
+                    updateSettings()
 
                     if (f == 0.6f) {
                         f = zoomOut
@@ -99,7 +116,7 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                     XposedHelpers.callMethod(
                         mSpringAnimation,
                         "setMinimumVisibleChange",
-                        0.01f
+                        minChange
                     )
                     if (zoomIn) {
                         XposedHelpers.callMethod(
@@ -193,26 +210,37 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                 }
             }
 
-
             method {
                 name = "setWallpaperZoomOut"
                 param(FloatType)
             }.hook {
                 replaceUnit {
-                    val mSpringAnimation = XposedHelpers.getObjectField(this.instance, "mSpringAnimation")
+                    val mSpringAnimation =
+                        XposedHelpers.getObjectField(this.instance, "mSpringAnimation")
                     disableCancelWallpaperAnim = true
                     val f = this.args[0] as Float
                     mZoomedOut = f.coerceIn(0f, 1f)
-                    val mWallpaperManager = XposedHelpers.getObjectField(this.instance, "mWallpaperManager")
+                    val mWallpaperManager =
+                        XposedHelpers.getObjectField(this.instance, "mWallpaperManager")
                     val mWindowToken = XposedHelpers.getObjectField(this.instance, "mWindowToken")
-                    XposedHelpers.callMethod(mWallpaperManager, "setWallpaperZoomOut", arrayOf(IBinderClass, FloatType), mWindowToken, mZoomedOut)
+                    XposedHelpers.callMethod(
+                        mWallpaperManager,
+                        "setWallpaperZoomOut",
+                        arrayOf(IBinderClass, FloatType),
+                        mWindowToken,
+                        mZoomedOut
+                    )
                     disableCancelWallpaperAnim = false
 
                     val canStop = XposedHelpers.callMethod(mSpringAnimation, "isRunning") as Boolean
                             && XposedHelpers.callMethod(mSpringAnimation, "canSkipToEnd") as Boolean
                     if (((mZoomedIn && mZoomedOut < zoomOut + 0.01) || (!mZoomedIn && mZoomedOut >= 0.99f)) && canStop) {
                         mZoomedOut = if (mZoomedIn) zoomOut else 1f
-                        XposedHelpers.callStaticMethod("com.miui.home.launcher.animate.SpringAnimationReflectUtils".toClass(), "cancel", mSpringAnimation)
+                        XposedHelpers.callStaticMethod(
+                            "com.miui.home.launcher.animate.SpringAnimationReflectUtils".toClass(),
+                            "cancel",
+                            mSpringAnimation
+                        )
                     }
                 }
             }

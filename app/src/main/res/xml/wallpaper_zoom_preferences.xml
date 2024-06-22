@@ -40,7 +40,13 @@
             app:min="1"
             app:updatesContinuously="true"
             app:title="@string/wallpaper_zoomOut_summary" />
-
+        <SeekBarPreference
+            android:max="9"
+            app:key="wallpaper_accuracy_val"
+            app:defaultValue="3"
+            app:min="1"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_accuracy_title" />
 <!--        <rikka.material.preference.MaterialSwitchPreference-->
 <!--            app:key="wallpaper_auto_zoom_on_lockscreen"-->
 <!--            app:title="@string/wallpaper_auto_zoom_on_lockscreen_title"-->

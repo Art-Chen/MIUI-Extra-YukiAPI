@@ -110,6 +110,9 @@ class WallpaperZoomActivity : AppCompatActivity() {
             bindAnimationSeekBar(findPreference("wallpaper_zoomOut_val"), 10,
                 R.string.wallpaper_zoomOut_summary
             )
+            bindAnimationSeekBar(findPreference("wallpaper_accuracy_val"), 1,
+                R.string.wallpaper_accuracy_title
+            )
 
             val mainSwitch = findPreference<MainSwitchPreference>("enable_wallpaper_zoom_optimize")
             val category = findPreference<PreferenceCategory>("wallpaper_zoom_anim_custom_category")

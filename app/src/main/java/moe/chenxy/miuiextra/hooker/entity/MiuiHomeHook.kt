@@ -1,12 +1,9 @@
 package moe.chenxy.miuiextra.hooker.entity
 
-import android.util.Log
 import android.view.View
-import androidx.dynamicanimation.animation.SpringAnimation
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import de.robv.android.xposed.XSharedPreferences
@@ -84,127 +81,6 @@ object MiuiHomeHook : YukiBaseHooker() {
             }
         }
 
-//        // RectFSpringAnim Optimizer
-//        "com.miui.home.recents.util.RectFSpringAnim".hook {
-//            injectMember {
-//                method {
-//                    name = "setAnimParamByType"
-//                    param("com.miui.home.recents.util.RectFSpringAnim\$AnimType")
-//                }
-//                afterHook {
-//                    val animTypesEnumCls = "com.miui.home.recents.util.RectFSpringAnim\$AnimType".toClass()
-//                    val animTypesEnum = animTypesEnumCls.enumConstants
-//                    val animType = this.args[0]
-//
-//                    if (animType == animTypesEnum[AnimType.BREAK_OPEN.ordinal]) return@afterHook
-//
-//                    val mCenterXStiffness =
-//                        XposedHelpers.getObjectField(this.instance, "mCenterXStiffness") as Float
-//                    val mCenterYStiffness =
-//                        XposedHelpers.getObjectField(this.instance, "mCenterYStiffness") as Float
-//                    val mAlphaStiffness =
-//                        XposedHelpers.getObjectField(this.instance, "mAlphaStiffness") as Float
-//                    val mRatioVelocity =
-//                        XposedHelpers.getObjectField(this.instance, "mRatioVelocity") as Float
-//                    val mRatioStiffness =
-//                        XposedHelpers.getObjectField(this.instance, "mRatioStiffness") as Float
-//                    val mWidthStiffness =
-//                        XposedHelpers.getObjectField(this.instance, "mWidthStiffness") as Float
-//                    val mRatioMinVisibleChange =
-//                        XposedHelpers.getObjectField(this.instance, "mRatioMinVisibleChange") as Float
-//                    val mWidthMinVisibleChange =
-//                        XposedHelpers.getObjectField(this.instance, "mWidthMinVisibleChange") as Float
-//                    val mCenterYMinVisibleChange =
-//                        XposedHelpers.getObjectField(this.instance, "mCenterYMinVisibleChange") as Float
-//                    val mCenterXMinVisibleChange =
-//                        XposedHelpers.getObjectField(this.instance, "mCenterXMinVisibleChange") as Float
-//                    val mLeftVelocity =
-//                        XposedHelpers.getObjectField(this.instance, "mLeftVelocity") as Float
-//                    val mTopVelocity =
-//                        XposedHelpers.getObjectField(this.instance, "mTopVelocity") as Float
-//                    val mWidthVelocity =
-//                        XposedHelpers.getObjectField(this.instance, "mWidthVelocity") as Float
-//
-//                    Log.i("Art_Chen", "setAnimParamByType: " +
-//                            "mCenterXStiffness: $mCenterXStiffness, " +
-//                            "mCenterYStiffness $mCenterYStiffness " +
-//                            "mAlphaStiffness $mAlphaStiffness " +
-//                            "mRatioVelocity $mRatioVelocity " +
-//                            "mRatioStiffness $mRatioStiffness " +
-//                            "mRatioMinVisibleChange $mRatioMinVisibleChange " +
-//                            "mWidthMinVisibleChange $mWidthMinVisibleChange " +
-//                            "mCenterYMinVisibleChange $mCenterYMinVisibleChange " +
-//                            "mCenterXMinVisibleChange $mCenterXMinVisibleChange " +
-//                            "mLeftVelocity $mLeftVelocity " +
-//                            "mTopVelocity $mTopVelocity " +
-//                            "mWidthVelocity $mWidthVelocity " +
-//                            "mWidthStiffness $mWidthStiffness "
-//                    )
-//                    this.field {
-//                        name("mWidthMinVisibleChange")
-//                    }.get(this.instance).set(0.0001f)
-//                    this.field {
-//                        name("mRatioMinVisibleChange")
-//                    }.get(this.instance).set(0.0001f)
-//                    this.field {
-//                        name("mCenterYMinVisibleChange")
-//                    }.get(this.instance).set(0.0001f)
-//                    this.field {
-//                        name("mCenterXMinVisibleChange")
-//                    }.get(this.instance).set(0.0001f)
-//
-//                    if (animType == animTypesEnum[AnimType.OPEN_FROM_HOME.ordinal]) {
-//                        XposedHelpers.setObjectField(
-//                            this.instance,
-//                            "mCenterXStiffness",
-//                            mCenterXStiffness * 1.05f
-//                        )
-//                        XposedHelpers.setObjectField(
-//                            this.instance,
-//                            "mCenterYStiffness",
-//                            mCenterYStiffness * 1.25f
-//                        )
-////                        this.field {
-////                            name("mLeftVelocity")
-////                        }.get(this.instance).set(500f)
-////                        this.field {
-////                            name("mTopVelocity")
-////                        }.get(this.instance).set(500f)
-//                        this.field {
-//                            name("mWidthVelocity")
-//                        }.get(this.instance).set(11000f)
-//                        this.field {
-//                            name("mWidthStiffness")
-//                        }.get(this.instance).set(mWidthStiffness * 0.4273504273504274)
-//                    } else if (animType == animTypesEnum[AnimType.CLOSE_TO_HOME.ordinal]) {
-////                        XposedHelpers.setObjectField(
-////                            this.instance,
-////                            "mCenterXStiffness",
-////                            mCenterXStiffness * 1.2f
-////                        )
-////                        XposedHelpers.setObjectField(
-////                            this.instance,
-////                            "mCenterYStiffness",
-////                            mCenterYStiffness * 2f
-////                        )
-//                        this.field {
-//                            name("mWidthStiffness")
-//                        }.get(this.instance).set(mWidthStiffness * 2f)
-//                        this.field {
-//                            name("mLeftVelocity")
-//                        }.get(this.instance).set(0f)
-//                        this.field {
-//                            name("mTopVelocity")
-//                        }.get(this.instance).set(
-//                            mTopVelocity * 1.3f
-//                        )
-//                        this.field {
-//                            name("mWidthVelocity")
-//                        }.get(this.instance).set(mWidthVelocity / 1.4f)
-//                    }
-//                }
-//            }
-//        }
 
     }
 }
