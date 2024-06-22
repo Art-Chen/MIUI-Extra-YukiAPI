@@ -6,6 +6,7 @@ import com.highcapable.yukihookapi.hook.core.YukiMemberHookCreator
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.MotionEventClass
+import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.hooker.entity.MiuiHomeHook
 

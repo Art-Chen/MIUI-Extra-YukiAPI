@@ -11,6 +11,7 @@ import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
 import moe.chenxy.miuiextra.hooker.entity.home.AnimationEnhanceHooker
 import moe.chenxy.miuiextra.hooker.entity.home.IconLaunchAnimHooker
+import moe.chenxy.miuiextra.hooker.entity.home.ViewBlurHooker
 import moe.chenxy.miuiextra.hooker.entity.home.WallpaperZoomOptimizeHooker
 import moe.chenxy.miuiextra.utils.ChenUtils
 
@@ -40,6 +41,8 @@ object MiuiHomeHook : YukiBaseHooker() {
         if (zoomPrefs.getBoolean("enable_wallpaper_zoom_optimize", false)) {
             loadHooker(WallpaperZoomOptimizeHooker)
         }
+
+        loadHooker(ViewBlurHooker)
 
 
         "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Phone".toClass().apply {

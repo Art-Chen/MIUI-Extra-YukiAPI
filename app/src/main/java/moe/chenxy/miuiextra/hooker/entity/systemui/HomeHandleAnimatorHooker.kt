@@ -2,9 +2,11 @@ package moe.chenxy.miuiextra.hooker.entity.systemui
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Handler
@@ -230,7 +232,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             if (currBlurRadius != 0) {
                 currBlurRadius = 0
                 mHomeHandle.setMiBackgroundBlurRadius(currBlurRadius)
-                mHomeHandle.setPassWindowBlurEnabledCompat(false)
+//                mHomeHandle.setPassWindowBlurEnabledCompat(false)
+                mHomeHandle.setMiBackgroundBlurModeCompat(0)
             }
             alphaAnimator.removeAllListeners()
             alphaAnimator.addUpdateListener {
@@ -303,7 +306,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     alphaAnimator.doOnEnd {
                         if (currBlurRadius == 0) {
                             // Clear Blur if radius == 0
-                            mHomeHandle.setPassWindowBlurEnabledCompat(false)
+//                            mHomeHandle.setPassWindowBlurEnabledCompat(false)
+                            mHomeHandle.setMiBackgroundBlurModeCompat(0)
                         }
                     }
                 }
@@ -369,6 +373,12 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             // Opacity after current motion released
             if (!motionTriggered)
                 opacityHomeHandle(EventType.HOME)
+        }
+        fun onHomeBlurChanged(active: Boolean) {
+//            Log.i("Art_Chen", "Home Blur State changed: $active")
+            if (!useMiBlur) return
+
+            mHomeHandle.setMiBackgroundBlurModeCompat(if (active) 0 else 1)
         }
 
         var baseX = -1f
@@ -515,6 +525,18 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         })
                         Log.i("Art_Chen", "ChenInputEventDispatcher registered!")
                     }
+
+                    // Register Home Blur State Changed Event Listener
+                    val blurEventListener = object : BroadcastReceiver() {
+                        override fun onReceive(p0: Context?, p1: Intent?) {
+                            val isActive = p1?.getBooleanExtra("active", false)
+                            isActive?.let {
+                                onHomeBlurChanged(it)
+                            }
+                        }
+                    }
+
+                    mContext!!.registerReceiver(blurEventListener, IntentFilter("chen.action.home.blur.state.switched"))
                 }
             }
 
