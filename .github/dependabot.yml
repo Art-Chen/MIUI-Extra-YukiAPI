@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-    target-branch: main
+    target-branch: yuki-api
     registries:
       - maven-google
       - gradle-plugin
@@ -14,7 +14,7 @@ updates:
           - "*"
 
   - package-ecosystem: github-actions
-    target-branch: main
+    target-branch: yuki-api
     directory: /
     schedule:
       interval: daily
