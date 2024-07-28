@@ -20,8 +20,8 @@ android {
         applicationId = "moe.chenxy.miuiextra"
         minSdk = 31
         targetSdk = 35
-        versionCode = 18
-        versionName = "2.6.9.4-U-HyperOS"
+        versionCode = 19
+        versionName = "2.6.9.5-U-HyperOS"
     }
 
     buildTypes {
