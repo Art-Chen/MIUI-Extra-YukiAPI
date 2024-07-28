@@ -1,9 +1,12 @@
 package moe.chenxy.miuiextra.hooker.entity
 
+import android.graphics.Color
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.IntType
@@ -89,6 +92,28 @@ object MiuiHomeHook : YukiBaseHooker() {
                     }
                     view.setTag(id, springAnimation)
                     this.result = springAnimation
+                }
+            }
+        }
+
+        "com.miui.home.launcher.DeviceConfig".toClass().apply {
+            method {
+                name = "checkDarkenWallpaperSupport"
+                param(ContextClass)
+            }.hook {
+                replaceTo(!mainPrefs.getBoolean("disable_wallpaper_auto_darken", false))
+            }
+        }
+
+        "com.miui.home.launcher.common.Utilities".toClass().apply {
+            method {
+                name = "setTitleShadow"
+                paramCount = 3
+            }.hook {
+                after {
+                    val textView = this.args[1] as TextView
+//                    val color = this.args[2] as Int
+                    textView.setShadowLayer(30.0f, 0f, 0f, Color.rgb(10,10,10))
                 }
             }
         }
