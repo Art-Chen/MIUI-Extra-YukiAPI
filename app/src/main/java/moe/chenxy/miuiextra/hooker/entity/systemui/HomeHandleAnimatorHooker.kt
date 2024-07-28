@@ -217,7 +217,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 mHomeHandle.alpha = it.animatedValue as Float
             } else {
                 // Adjust Blur Radius
-                currBlurRadius = (it.animatedValue as Float).toInt()
+                currBlurRadius = (it.animatedValue as Float).toInt() * 10
                 // setRadius is expensive
                 if (currBlurRadius != lastBlurRadius)
                     mHomeHandle.setMiBackgroundBlurRadius(currBlurRadius)
@@ -337,8 +337,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 if (currBlurRadius.toFloat() == to) notStart = true
 
                 alphaAnimator.setFloatValues(
-                    currBlurRadius.toFloat(),
-                    to
+                    currBlurRadius.toFloat() / 10,
+                    to / 10
                 )
 
             } else {
