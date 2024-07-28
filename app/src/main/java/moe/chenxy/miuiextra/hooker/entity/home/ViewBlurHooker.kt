@@ -26,7 +26,7 @@ object ViewBlurHooker : YukiBaseHooker() {
                     if ((this.instance as View).getMiViewBlurModeCompat() != 1) {
                         return@before
                     }
-                    Log.i("Art_Chen", "setMiBackgroundBlurRadius ${this.args[0]}")
+
                     val isActive = this.args[0] as Int > 0
 //                    if (isActive == launcherBlurActivated) return@before
 //
