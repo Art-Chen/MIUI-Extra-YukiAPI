@@ -28,6 +28,10 @@ object MiBlurCompatUtils {
         this, "setMiBackgroundBlurMode", mode)
 
     @JvmStatic
+    fun View.getMiBackgroundBlurModeCompat() : Int = XposedHelpers.callMethod(
+        this, "getMiBackgroundBlurMode") as Int
+
+    @JvmStatic
     fun View.setMiBackgroundBlurRadius(radius: Int) =
         XposedHelpers.callMethod(this, "setMiBackgroundBlurRadius", radius)
 

@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Handler
@@ -15,11 +16,13 @@ import android.util.Log
 import android.view.InputEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.method
@@ -33,6 +36,8 @@ import com.highcapable.yukihookapi.hook.type.java.StringClass
 import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.getMiBackgroundBlurModeCompat
+import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.getPassWindowBlurEnabled
 import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.isSupportMiBlur
 import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.setMiBackgroundBlurModeCompat
 import moe.chenxy.miuiextra.hooker.entity.systemui.MiBlurCompatUtils.setMiBackgroundBlurRadius
@@ -242,15 +247,13 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             alphaAnimator.start()
         }
 
-        var lastOpacityType: EventType
         fun opacityHomeHandle(type: EventType) {
             var notStart = false
             updateSettings()
 
-            lastOpacityType = type
-
             if (!this::alphaAnimator.isInitialized) {
                 alphaAnimator = ValueAnimator()
+                alphaAnimator.addUpdateListener(doOnOpacityUpdate)
             }
 
             if (forceAlphaAtHome && useMiBlur && type == EventType.HOME) {
@@ -293,10 +296,10 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                 }
 
             if (useMiBlur) {
-                if (mHomeHandle.isSupportMiBlur()) {
+                if (mHomeHandle.isSupportMiBlur() && mHomeHandle.getMiBackgroundBlurModeCompat() == 0) {
                     mHomeHandle.alpha = 1f
-                    mDarkColor = 0x55191919
-                    mLightColor = 0x77ffffff
+                    mDarkColor = Color.argb(0x55, mDarkColor.red, mDarkColor.green, mDarkColor.blue)
+                    mLightColor = Color.argb(0x77, mLightColor.red, mLightColor.green, mLightColor.blue)
                     mHomeHandle.setMiBackgroundBlurModeCompat(1)
                     mHomeHandle.setMiViewBlurMode(2)
                     mHomeHandle.setMiBackgroundBlurRadius(normalSettings.transDegree)
@@ -312,12 +315,17 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     }
                 }
             } else {
-                mDarkColor = 0xee191919.toInt()
-                mLightColor = 0xddffffff.toInt()
+                if (mDarkColor != -1 && mLightColor != -1) {
+                    // Reset Color Alpha by orig color
+                    mDarkColor = Color.argb(0xee, mDarkColor.red, mDarkColor.green, mDarkColor.blue)
+                    mLightColor = Color.argb(0xdd, mLightColor.red, mLightColor.green, mLightColor.blue)
+                }
 //                mHomeHandle.setMiBackgroundBlurModeCompat(0)
 //                mHomeHandle.setMiViewBlurMode(2)
-                mHomeHandle.setMiBackgroundBlurRadius(0)
-                mHomeHandle.setPassWindowBlurEnabledCompat(false)
+                if (mHomeHandle.isSupportMiBlur() && mHomeHandle.getPassWindowBlurEnabled()) {
+                    mHomeHandle.setMiBackgroundBlurRadius(0)
+                    mHomeHandle.setPassWindowBlurEnabledCompat(false)
+                }
             }
 
             if (useMiBlur) {
@@ -350,11 +358,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
 
             if (!notStart) {
                 mHandler?.removeCallbacks(opacityHomeHandleRunnable)
-                if (lastOpacityType == EventType.PRESSED && type == EventType.NORMAL && !mIsInHome) {
-                    mHandler?.postDelayed(opacityHomeHandleRunnable, 5000)
-                } else {
-                    mHandler?.post(opacityHomeHandleRunnable)
-                }
+                mHandler?.post(opacityHomeHandleRunnable)
             }
 
             when (type) {
@@ -378,7 +382,10 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
 //            Log.i("Art_Chen", "Home Blur State changed: $active")
             if (!useMiBlur) return
 
-            mHomeHandle.setMiBackgroundBlurModeCompat(if (active) 0 else 1)
+            val mode = if (active) 0 else 1
+            if (mHomeHandle.getMiBackgroundBlurModeCompat() == mode) return
+
+            mHomeHandle.setMiBackgroundBlurModeCompat(mode)
         }
 
         var baseX = -1f
@@ -670,29 +677,36 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             } else {
                 // on U
                 "com.miui.systemui.functions.MiuiTopActivityObserver".toClass().method {
-                    name = "notifyListeners"
+                    name = "onTaskMovedToFront"
+                    paramCount = 1
                 }
             }
 
+        var mLastTopActivity: ComponentName? = null
+        var mLastInSmallWindow: Boolean = false
         activityChangedNotify.hook {
             after {
-                mainPrefs.reload()
                 val currentTopActivity = XposedHelpers.getObjectField(
                     this.instance,
                     "mTopActivity"
                 ) as ComponentName
+
+                val mInSmallWindow = XposedHelpers.getBooleanField(this.instance, "mInSmallWindow")
+
+                if (mLastInSmallWindow == mInSmallWindow && mLastTopActivity == currentTopActivity) return@after
+                mLastInSmallWindow = mInSmallWindow
+                mLastTopActivity = currentTopActivity
+
                 val intent = Intent("chen.action.top_activity.switched")
                 intent.`package`= "com.miui.home"
                 val mUtilsContext =
                     XposedHelpers.getObjectField(this.instance, "mContext") as Context
 
                 if (currentTopActivity.packageName == "com.miui.home") {
-//                        Log.i("Art_Chen", "Current Top Activity is MiuiHome, do sth")
                     intent.putExtra("isEnteredHome", true)
                     mIsInHome = true
                     enterHome()
                 } else {
-//                        Log.i("Art_Chen", "Current Top Activity is Not MiuiHome!")
                     intent.putExtra("isEnteredHome", false)
                     mIsInHome = false
                     leaveHome()
