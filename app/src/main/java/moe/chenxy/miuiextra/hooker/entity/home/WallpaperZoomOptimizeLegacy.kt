@@ -23,7 +23,7 @@ import moe.chenxy.miuiextra.utils.ChenUtils
 import java.util.concurrent.AbstractExecutorService
 
 
-object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
+object WallpaperZoomOptimizeLegacy : YukiBaseHooker() {
     private var mSpringAnimation: Any? = null
     private var zoomInStiffness =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_stiffness_val", 3263).toFloat() / 100
@@ -35,6 +35,9 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_start_velocity_val", 0).toFloat() / 1000
     private var zoomOut =
         MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_val", 4).toFloat() / 10
+    private var zoomInDampingRatio = MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_damping_ratio_val", 100).toFloat() / 100
+    private var zoomOutDampingRatio = MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_damping_ratio_val", 100).toFloat() / 100
+
     private var wallpaperZoomThiz: Any? = null
     private var mZoomedIn = false
     private var mZoomedOut = 1.0f
@@ -80,6 +83,8 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                 MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_start_velocity_val", 0)
                     .toFloat() / 1000
             accuracyLevel = MiuiHomeHook.zoomPrefs.getInt("wallpaper_accuracy_val", 2)
+            zoomInDampingRatio = MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomIn_damping_ratio_val", 100).toFloat() / 100
+            zoomOutDampingRatio = MiuiHomeHook.zoomPrefs.getInt("wallpaper_zoomOut_damping_ratio_val", 100).toFloat() / 100
         }
     }
 
@@ -131,7 +136,7 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                             "setStiffness",
                             zoomInStiffness
                         )
-                        XposedHelpers.callMethod(mZoomInSpringForce, "setDampingRatio", 1.5f)
+                        XposedHelpers.callMethod(mZoomInSpringForce, "setDampingRatio", zoomInDampingRatio)
 
                         XposedHelpers.callMethod(mZoomInSpringForce, "setFinalPosition", f)
                         XposedHelpers.callMethod(
@@ -154,7 +159,7 @@ object WallpaperZoomOptimizeHooker : YukiBaseHooker() {
                             "setStiffness",
                             zoomOutStiffness
                         )
-                        XposedHelpers.callMethod(mZoomOutSpringForce, "setDampingRatio", 1.5f)
+                        XposedHelpers.callMethod(mZoomOutSpringForce, "setDampingRatio", zoomOutDampingRatio)
 
                         XposedHelpers.callMethod(mZoomOutSpringForce, "setFinalPosition", f)
                         XposedHelpers.callMethod(

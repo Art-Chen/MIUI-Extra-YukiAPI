@@ -20,6 +20,13 @@
             app:updatesContinuously="true"
             app:title="@string/wallpaper_zoomIn_start_velocity_summary" />
         <SeekBarPreference
+            android:max="300"
+            app:key="wallpaper_zoomIn_damping_ratio_val"
+            app:defaultValue="100"
+            app:min="100"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomIn_damping_ratio_summary" />
+        <SeekBarPreference
             android:max="30000"
             app:key="wallpaper_zoomOut_stiffness_val"
             app:defaultValue="3263"
@@ -33,6 +40,13 @@
             app:min="-3000"
             app:updatesContinuously="true"
             app:title="@string/wallpaper_zoomOut_start_velocity_summary" />
+        <SeekBarPreference
+            android:max="300"
+            app:key="wallpaper_zoomOut_damping_ratio_val"
+            app:defaultValue="100"
+            app:min="100"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_zoomOut_damping_ratio_summary" />
         <SeekBarPreference
             android:max="10"
             app:key="wallpaper_zoomOut_val"

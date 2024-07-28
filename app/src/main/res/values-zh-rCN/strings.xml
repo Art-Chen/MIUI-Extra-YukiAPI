@@ -58,8 +58,8 @@
     <string name="wallpaper_zoom_anim_custom_header">自定义壁纸缩放动画</string>
     <string name="wallpaper_zoom_anim_common_header">通用</string>
     <string name="wallpaper_zoomOut_start_velocity_summary">缩小动画开始速度</string>
-    <string name="wallpaper_zoomOut_stiffness_summary">缩小动画 Stiffness</string>
-    <string name="wallpaper_zoomIn_stiffness_summary">放大动画 Stiffness</string>
+    <string name="wallpaper_zoomOut_stiffness_summary">缩小动画阻力</string>
+    <string name="wallpaper_zoomIn_stiffness_summary">放大动画阻力</string>
     <string name="wallpaper_zoomIn_start_velocity_summary">放大动画开始速度</string>
     <string name="wallpaper_zoomOut_summary">缩小动画程度</string>
     <string name="wallpaper_auto_zoom_on_lockscreen_title">锁屏时自动缩放壁纸</string>
@@ -128,4 +128,6 @@
     <string name="home_handle_force_alpha_at_home_summary">透明动画将调整透明度而不是模糊级别，并将去除模糊材质</string>
     <string name="home_handle_wa_no_space_not_hide_title">手势栏隐藏时隐藏小白条</string>
     <string name="wallpaper_accuracy_title">动画精度等级</string>
+    <string name="wallpaper_zoomIn_damping_ratio_summary">放大动画回弹系数</string>
+    <string name="wallpaper_zoomOut_damping_ratio_summary">缩小动画回弹系数</string>
 </resources>

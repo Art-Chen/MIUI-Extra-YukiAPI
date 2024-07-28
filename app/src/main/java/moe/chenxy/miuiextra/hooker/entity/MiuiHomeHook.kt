@@ -1,5 +1,6 @@
 package moe.chenxy.miuiextra.hooker.entity
 
+import android.util.Log
 import android.view.View
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
@@ -12,7 +13,8 @@ import moe.chenxy.miuiextra.BuildConfig
 import moe.chenxy.miuiextra.hooker.entity.home.AnimationEnhanceHooker
 import moe.chenxy.miuiextra.hooker.entity.home.IconLaunchAnimHooker
 import moe.chenxy.miuiextra.hooker.entity.home.ViewBlurHooker
-import moe.chenxy.miuiextra.hooker.entity.home.WallpaperZoomOptimizeHooker
+import moe.chenxy.miuiextra.hooker.entity.home.WallpaperZoomOptimizeLegacy
+import moe.chenxy.miuiextra.hooker.entity.home.WallpaperZoomOptimizeOS1NewArch
 import moe.chenxy.miuiextra.utils.ChenUtils
 
 
@@ -39,7 +41,14 @@ object MiuiHomeHook : YukiBaseHooker() {
 
 
         if (zoomPrefs.getBoolean("enable_wallpaper_zoom_optimize", false)) {
-            loadHooker(WallpaperZoomOptimizeHooker)
+            val wallpaperElem = "com.miui.home.recents.anim.WallpaperElement".toClassOrNull()
+            if (wallpaperElem != null) {
+                Log.i("Art_Chen", "WallpaperZoomOptimizer: OS1 New Arch Home detected!")
+                loadHooker(WallpaperZoomOptimizeOS1NewArch)
+            } else {
+                Log.i("Art_Chen", "WallpaperZoomOptimizer: Legacy Arch Home detected!")
+                loadHooker(WallpaperZoomOptimizeLegacy)
+            }
         }
 
         loadHooker(ViewBlurHooker)

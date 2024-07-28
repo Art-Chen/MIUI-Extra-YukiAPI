@@ -240,4 +240,6 @@
   <string name="want_to_map_id">新しいマップを追加</string>
   <string name="weibo_title">Weibo</string>
   <string name="xposed_desc">HyperOS の世界へ出かけよう！ @ Art_Chen</string>
+    <string name="wallpaper_zoomIn_damping_ratio_summary">Zoom In Animation Damping Ratio</string>
+  <string name="wallpaper_zoomOut_damping_ratio_summary">Zoom Out Animation Damping Ratio</string>
 </resources>
