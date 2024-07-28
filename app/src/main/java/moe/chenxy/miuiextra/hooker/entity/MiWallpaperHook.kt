@@ -1,26 +1,17 @@
 package moe.chenxy.miuiextra.hooker.entity
 
-import android.R.attr.classLoader
 import android.animation.ValueAnimator
-import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.Rect
-import android.opengl.GLES20
-import android.os.Build
 import android.os.Handler
 import android.util.Log
 import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.ValueAnimatorClass
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
-import com.highcapable.yukihookapi.hook.type.java.IntType
-import de.robv.android.xposed.*
+import de.robv.android.xposed.XSharedPreferences
+import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
-import moe.chenxy.miuiextra.data.AnimFragmentShaderChen
 import java.lang.reflect.Method
 
 
@@ -33,46 +24,46 @@ object MiWallpaperHook : YukiBaseHooker() {
         var mIsShowingRevealBlack = false
         var mClassName = ""
 
-        "com.miui.miwallpaper.container.openGL.AnimImageWallpaperRenderer".toClass().apply {
-//            injectMember {
-//                method {
-//                    name = "startRevealAnim"
-//                    param(BooleanType)
-//                }
-//                replaceUnit {
-//                    mainPrefs.reload()
-//                    val awake = this.args[0] as Boolean
-//                    val mRevealAnimator = XposedHelpers.findField(
-//                        this.instance.javaClass.superclass,
-//                        "mRevealAnimator"
-//                    ).get(this.instance) as ValueAnimator
-//                    val i: Int
-//                    val f: Float
-//
+        "com.miui.miwallpaper.opengl.AnimatorProgram".toClass().apply {
+            method {
+                name = "startRevealAnim"
+                param(BooleanType)
+            }.hook {
+                replaceUnit {
+                    mainPrefs.reload()
+                    val awake = this.args[0] as Boolean
+                    val mRevealAnimator = XposedHelpers.findField(
+                        this.instance.javaClass,
+                        "mRevealAnimator"
+                    ).get(this.instance) as ValueAnimator
+                    val i: Int
+                    val f: Float
+
 //                    if (!mIsShowingRevealBlack == awake && mClassName == this.instance.javaClass.name) {
 //                        Log.i("Art_Chen", "awake animation already started! ignored this start")
 //                        XposedHelpers.callMethod(this.instance, "refresh")
 //                        return@replaceUnit
 //                    }
 //                    mClassName = this.instance.javaClass.name
-//
-//                    if (mRevealAnimator.isRunning) {
-//                        mRevealAnimator.cancel()
-//                    }
-//
-//                    if (awake) {
-//                        i = mainPrefs.getInt("screen_on_color_fade_anim_val", 800)
-//                        f = 0.0f
-//                    } else {
-//                        i = if (mUseChenScreenOnAnim) {
-//                            80
-//                        } else {
-//                            400
-//                        }
-//                        f = 1.0f
-//                    }
-//                    mIsShowingRevealBlack = !awake
-//                    val mRevealValue = XposedHelpers.getFloatField(this.instance, "mRevealValue")
+
+                    if (mRevealAnimator.isRunning) {
+                        mRevealAnimator.cancel()
+                    }
+
+                    if (awake) {
+                        i = mainPrefs.getInt("screen_on_color_fade_anim_val", 800)
+                        f = 0.0f
+                    } else {
+                        i = if (mUseChenScreenOnAnim) {
+                            80
+                        } else {
+                            200
+                        }
+                        f = 1.0f
+                    }
+                    mIsShowingRevealBlack = !awake
+                    val mProgram = XposedHelpers.getObjectField(this.instance, "mProgram")
+                    val mRevealValue = XposedHelpers.getFloatField(mProgram, "mRevealValue")
 //                    if (mRevealValue == f) {
 //                        Log.i(
 //                            "Art_Chen",
@@ -87,25 +78,24 @@ object MiWallpaperHook : YukiBaseHooker() {
 //                        XposedHelpers.callMethod(this.instance, "refresh")
 //                        return@replaceUnit
 //                    }
-//                    Log.i(
-//                        "Art_Chen",
-//                        "startRevealAnim: awake = $awake, current duration $i, from $mRevealValue to $f"
-//                    )
-//                    mRevealAnimator.duration = i.toLong()
-//                    mRevealAnimator.setFloatValues(mRevealValue, f)
+                    Log.i(
+                        "Art_Chen",
+                        "startRevealAnim: awake = $awake, current duration $i, from $mRevealValue to $f"
+                    )
+                    mRevealAnimator.duration = i.toLong()
+                    mRevealAnimator.setFloatValues(mRevealValue, f)
 //                    if (mUseChenScreenOnAnim) {
-//                        mRevealAnimator.interpolator =
-//                            if (awake)
-//                                PathInterpolator(0.54f, 0f, 0f, 1f)
-//                            else
-//                                PathInterpolator(0f, 0f, 0.11f, 1f)
+                        mRevealAnimator.interpolator =
+                            if (awake)
+                                PathInterpolator(0.54f, 0f, 0f, 1f)
+                            else
+                                PathInterpolator(0f, 0f, 0.11f, 1f)
 //                    }
-//                    mRevealAnimator.start()
-//                    currentRevealValue = f
-//                    Log.i("Art_Chen", "startRevealAnim: run!")
-//                    Exception().printStackTrace()
-//                }
-//            }
+                    mRevealAnimator.start()
+                    currentRevealValue = f
+                    Log.i("Art_Chen", "startRevealAnim: run!")
+                }
+            }
 
             method {
                 name = "updateMaskLayerStatus"
