@@ -20,6 +20,7 @@ import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
+import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -196,9 +197,9 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             animateHomeHandleY(normalSettings.xyAnimDuration, yOffset.toFloat())
         }
 
-        fun setDarkIntensity(int: Int) {
+        fun setDarkIntensity(f: Float) {
             if (mNavigationHandle != null) {
-                XposedHelpers.callMethod(mNavigationHandle, "setDarkIntensity", int)
+                XposedHelpers.callMethod(mNavigationHandle, "setDarkIntensity", f)
             }
         }
 
@@ -298,13 +299,10 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             if (useMiBlur) {
                 if (mHomeHandle.isSupportMiBlur() && mHomeHandle.getMiBackgroundBlurModeCompat() == 0) {
                     mHomeHandle.alpha = 1f
-                    mDarkColor = Color.argb(0x55, mDarkColor.red, mDarkColor.green, mDarkColor.blue)
-                    mLightColor = Color.argb(0x77, mLightColor.red, mLightColor.green, mLightColor.blue)
                     mHomeHandle.setMiBackgroundBlurModeCompat(1)
                     mHomeHandle.setMiViewBlurMode(2)
                     mHomeHandle.setMiBackgroundBlurRadius(normalSettings.transDegree)
                     mHomeHandle.setPassWindowBlurEnabledCompat(true)
-//                        setDarkIntensity(currentIntensity)
 
                     alphaAnimator.doOnEnd {
                         if (currBlurRadius == 0) {
@@ -314,8 +312,13 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         }
                     }
                 }
+
+                if (mDarkColor != -1 && mLightColor != -1 && mDarkColor != 0x55) {
+                    mDarkColor = Color.argb(0x55, mDarkColor.red, mDarkColor.green, mDarkColor.blue)
+                    mLightColor = Color.argb(0x77, mLightColor.red, mLightColor.green, mLightColor.blue)
+                }
             } else {
-                if (mDarkColor != -1 && mLightColor != -1) {
+                if (mDarkColor != -1 && mLightColor != -1 && mDarkColor != 0xee) {
                     // Reset Color Alpha by orig color
                     mDarkColor = Color.argb(0xee, mDarkColor.red, mDarkColor.green, mDarkColor.blue)
                     mLightColor = Color.argb(0xdd, mLightColor.red, mLightColor.green, mLightColor.blue)
