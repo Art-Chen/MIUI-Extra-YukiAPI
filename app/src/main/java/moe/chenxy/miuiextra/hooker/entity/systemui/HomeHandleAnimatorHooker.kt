@@ -100,6 +100,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var disableHomeHandleMovement = mainPrefs.getBoolean("home_handle_disable_move_event", false)
         var forceAlphaAtHome = mainPrefs.getBoolean("home_handle_force_alpha_at_home", false)
 
+        var topActivityObserver: Any? = null
+
         fun getSetting(type: EventType): HomeHandleSettings {
             return HomeHandleSettings(
                 mainPrefs.getInt("home_handle_setting_transdegree_${type.name.lowercase()}", 30),
@@ -501,6 +503,17 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             }
         }
 
+        fun onUserPresent() {
+            if (topActivityObserver == null) return
+
+            val currentTopActivity = XposedHelpers.getObjectField(
+                topActivityObserver,
+                "mTopActivity"
+            ) as ComponentName
+
+            if (currentTopActivity.packageName == "com.miui.home") enterHome()
+        }
+
         // Hooks
         "com.android.systemui.navigationbar.NavigationBarInflaterView".toClass().apply {
             if (!isAboveU) {
@@ -537,16 +550,20 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     }
 
                     // Register Home Blur State Changed Event Listener
-                    val blurEventListener = object : BroadcastReceiver() {
+                    val eventListener = object : BroadcastReceiver() {
                         override fun onReceive(p0: Context?, p1: Intent?) {
-                            val isActive = p1?.getBooleanExtra("active", false)
-                            isActive?.let {
-                                onHomeBlurChanged(it)
+                            when (p1?.action) {
+                                Intent.ACTION_USER_PRESENT ->
+                                    onUserPresent()
+                                "chen.action.home.blur.state.switched" ->
+                                    onHomeBlurChanged(p1.getBooleanExtra("active", false))
                             }
                         }
                     }
 
-                    mContext!!.registerReceiver(blurEventListener, IntentFilter("chen.action.home.blur.state.switched"))
+                    val eventFilter = IntentFilter("chen.action.home.blur.state.switched")
+                    eventFilter.addAction(Intent.ACTION_USER_PRESENT)
+                    mContext!!.registerReceiver(eventListener, eventFilter)
                 }
             }
 
@@ -689,9 +706,11 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             }
 
         var mLastTopActivity: ComponentName? = null
-        var mLastInSmallWindow: Boolean = false
+        var mLastInSmallWindow = false
         activityChangedNotify.hook {
             after {
+                if (topActivityObserver == null) topActivityObserver = this.instance
+
                 val currentTopActivity = XposedHelpers.getObjectField(
                     this.instance,
                     "mTopActivity"
