@@ -575,9 +575,12 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     pressedSettings = getSetting(EventType.PRESSED)
                     onHomeSettings = getSetting(EventType.HOME)
 
-                    opacityHomeHandle(EventType.NORMAL)
-                    animateHomeHandleXYToNormal()
-                    animateZoomTo(normalSettings.scaleX, normalSettings.scaleY, normalSettings.scaleAnimDuration)
+                    // Run async
+                    mHandler?.post {
+                        opacityHomeHandle(EventType.NORMAL)
+                        animateHomeHandleXYToNormal()
+                        animateZoomTo(normalSettings.scaleX, normalSettings.scaleY, normalSettings.scaleAnimDuration)
+                    }
                 }
             }
         }
