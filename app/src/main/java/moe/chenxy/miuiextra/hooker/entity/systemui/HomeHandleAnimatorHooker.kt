@@ -19,6 +19,8 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
@@ -579,7 +581,15 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         mHomeHandleId =
                             appResources!!.getIdentifier("home_handle", "id", appContext?.packageName)
                     }
+
                     mHomeHandle = mHorizontal.findViewById(mHomeHandleId)
+
+                    if (XposedHelpers.getIntField(this.instance, "mNavBarMode") != 2) {
+                        // Not supported. set mHomeHandle to stub view to prevent crash
+                        mHomeHandle = TextView(mContext)
+                        Toast.makeText(mContext, "MIUI Extra: Please disable Home Handle Anim on Virtual Key Mode !! * 3", Toast.LENGTH_LONG).show()
+                    }
+
 //                    mHomeHandle.translationY = yOffset.toFloat()
                     // Let's Animate to our preset value
                     if (useMiBlur && mHomeHandle.isSupportMiBlur()){
@@ -611,11 +621,15 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     val orientationFor = this.args[0] as Int
                     val isTurboMode =
                         mainPrefs.getBoolean("chen_home_handle_anim_turbo_mode", false)
+
+                    val lp = this.result as WindowManager.LayoutParams
                     if (XposedHelpers.getIntField(this.instance, "mNavBarMode") != 2) {
+                        if (origBarHeight > 0) {
+                            lp.height = origBarHeight
+                        }
                         return@after
                     }
 
-                    val lp = this.result as WindowManager.LayoutParams
 
                     if (orientationFor == 0) {
                         origBarHeight = lp.height
