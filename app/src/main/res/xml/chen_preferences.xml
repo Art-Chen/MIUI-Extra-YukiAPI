@@ -69,6 +69,10 @@
             app:title="@string/screen_off_color_fade_anim_val_title" />
 
         <rikka.material.preference.MaterialSwitchPreference
+            app:key="override_linkage_wallpaper_anim"
+            app:title="@string/override_linkage_wallpaper_anim_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
             app:key="do_not_override_pending_transition"
             app:title="@string/do_not_override_pending_transition_title"
             app:summary="@string/do_not_override_pending_transition_summary"/>

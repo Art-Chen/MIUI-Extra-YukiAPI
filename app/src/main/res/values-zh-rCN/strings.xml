@@ -130,4 +130,5 @@
     <string name="wallpaper_accuracy_title">动画精度等级</string>
     <string name="wallpaper_zoomIn_damping_ratio_summary">放大动画回弹系数</string>
     <string name="wallpaper_zoomOut_damping_ratio_summary">缩小动画回弹系数</string>
+    <string name="override_linkage_wallpaper_anim_title">覆盖联动息屏壁纸动画参数</string>
 </resources>

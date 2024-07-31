@@ -26,5 +26,9 @@ object SystemUIMainHooker : YukiBaseHooker() {
         }
 
         loadHooker(StatusBarBlurUtilsHooker)
+
+        if (mainPrefs.getBoolean("override_linkage_wallpaper_anim", false)) {
+            loadHooker(LinkageAnimCustomer)
+        }
     }
 }
