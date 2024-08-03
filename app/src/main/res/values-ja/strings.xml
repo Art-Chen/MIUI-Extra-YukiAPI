@@ -243,4 +243,5 @@
     <string name="wallpaper_zoomIn_damping_ratio_summary">Zoom In Animation Damping Ratio</string>
   <string name="wallpaper_zoomOut_damping_ratio_summary">Zoom Out Animation Damping Ratio</string>
   <string name="override_linkage_wallpaper_anim_title">Override Linkage Wallpaper Anim</string>
+    <string name="disable_wallpaper_auto_darken_summary">This will also add a beautiful text shadow on miui home icon title to enhance text visibility</string>
 </resources>

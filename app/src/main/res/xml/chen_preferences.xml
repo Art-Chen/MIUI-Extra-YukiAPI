@@ -104,7 +104,8 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="disable_wallpaper_auto_darken"
-            app:title="@string/disable_wallpaper_auto_darken_title"/>
+            app:title="@string/disable_wallpaper_auto_darken_title"
+            app:summary="@string/disable_wallpaper_auto_darken_summary" />
 
 <!--        <rikka.material.preference.MaterialSwitchPreference-->
 <!--            app:key="miui_unlock_wallpaper_anim_fade"-->

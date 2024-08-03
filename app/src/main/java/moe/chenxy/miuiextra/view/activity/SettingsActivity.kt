@@ -3,7 +3,6 @@ package moe.chenxy.miuiextra.view.activity
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -13,13 +12,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.Nullable
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.WindowCompat
@@ -34,14 +30,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import moe.chenxy.miuiextra.R
 import moe.chenxy.miuiextra.utils.ChenUtils
-import rikka.preference.SimpleMenuPreference
-import kotlin.system.exitProcess
 
-private var isActivated = false
 const val SHELL_RESTART_MIUI_HOME = "am force-stop com.miui.home"
 const val SHELL_RESTART_SYSTEMUI = "killall com.android.systemui"
 const val SHELL_RESTART_MI_WALLPAPER = "killall com.miui.miwallpaper"
+private const val ALIAS_ACTIVITY_NAME = "moe.chenxy.miuiextra.SettingsActivityAlias"
+
+private var isActivated = false
+
 class SettingsActivity : AppCompatActivity() {
+
     @SuppressLint("WorldReadableFiles")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +82,18 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            // getSharedPreferences will hooked by LSPosed and change xml file path to /data/misc/**
+            // will not throw SecurityException
+            getSharedPreferences("chen_main_settings", Context.MODE_WORLD_READABLE)
+            isActivated = true
+        } catch (exception: SecurityException) {
+            isActivated = false
+        }
+    }
+
     class SettingsFragment : PreferenceFragmentCompat() {
         private fun setActivateStatus(isActivated: Boolean, preference: Preference) {
             if (!isActivated) {
@@ -111,6 +121,16 @@ class SettingsActivity : AppCompatActivity() {
                 this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
             }
             return super.onPreferenceTreeClick(preference)
+        }
+
+        override fun onResume() {
+            super.onResume()
+            findPreference<Preference>("activate_status")?.let {
+                setActivateStatus(
+                    isActivated,
+                    it
+                )
+            }
         }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -166,6 +186,17 @@ class SettingsActivity : AppCompatActivity() {
 
             colorFadeCustom?.setOnPreferenceChangeListener { _, _ ->
                 showRebootSnackBar(null, null)
+                return@setOnPreferenceChangeListener true
+            }
+
+            findPreference<SwitchPreferenceCompat>("override_linkage_wallpaper_anim")?.setOnPreferenceChangeListener { _, _ ->
+                showRebootSnackBar(null, SHELL_RESTART_SYSTEMUI)
+                return@setOnPreferenceChangeListener true
+            }
+
+            findPreference<SwitchPreferenceCompat>("disable_wallpaper_auto_darken")?.setOnPreferenceChangeListener { _, _ ->
+                // MiuiHome use this feature toggle to inject hook when on load, Wallpaper app check this feature toggle on every call
+                showRebootSnackBar(null, SHELL_RESTART_MIUI_HOME)
                 return@setOnPreferenceChangeListener true
             }
 
@@ -277,9 +308,6 @@ class SettingsActivity : AppCompatActivity() {
                 return@setOnPreferenceClickListener true
             }
         }
-
-
-        private val ALIAS_ACTIVITY_NAME = "moe.chenxy.miuiextra.SettingsActivityAlias"
 
         @SuppressLint("QueryPermissionsNeeded")
         private fun isLauncherIconVisible(): Boolean {

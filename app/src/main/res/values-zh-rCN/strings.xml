@@ -88,6 +88,7 @@
     <string name="do_not_override_pending_transition_title">阻止应用设置自己的Pending过渡动画</string>
     <string name="do_not_override_pending_transition_summary">将使用系统动画替换掉某些App设置的不优雅的过场动画(可能破坏应用本身的设计，慎用)</string>
     <string name="disable_wallpaper_auto_darken_title">禁用壁纸自动压暗</string>
+    <string name="disable_wallpaper_auto_darken_summary">这将同时在桌面图标标题上应用文字阴影效果来提高文本可见性</string>
     <string name="chen_home_handle_full_transparent_at_miuihome_title">回到桌面时隐藏小白条</string>
     <string name="home_handle_header">小白条与手势栏</string>
     <string name="music_notification_header">音乐通知</string>
