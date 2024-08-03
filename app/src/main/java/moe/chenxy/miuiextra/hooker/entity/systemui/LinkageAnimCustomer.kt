@@ -72,13 +72,17 @@ object LinkageAnimCustomer : YukiBaseHooker() {
                         XposedHelpers.callMethod(mWallpaperHideEase, "setDuration", off.toLong())
                     } else {
                         initAnim()
+                        XposedHelpers.setBooleanField(this.instance, "mToAod", toAod)
+                        XposedHelpers.setBooleanField(this.instance, "mHasNotification", hasNotification)
+
+                        Log.d("Art_Chen", "ClockBaseAnimation-LinkageAnim: toLock start! hasNotification $hasNotification")
 
                         XposedHelpers.callMethod(showEase, "setDuration", on.toLong())
                         val stateStyle = XposedHelpers.callStaticMethod("miuix.animation.Folme".toClass(), "useValue", arrayOf("WallpaperParam"))
                         XposedHelpers.callMethod(animConfig, "setEase", showEase)
                         XposedHelpers.callMethod(stateStyle, "to", arrayOf("wallpaperBlack", 0f, animConfig))
 
-                        XposedHelpers.callMethod(this.instance, "doAnimationToAod", false, true)
+                        XposedHelpers.callMethod(this.instance, "doAnimationToAod", false, hasNotification)
                         this.result = null
                     }
                 }
