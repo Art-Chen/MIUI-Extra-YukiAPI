@@ -50,7 +50,7 @@ jobs:
           BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
         if: ${{ env.SIGNING_KEY != '' }}
         continue-on-error: true
-        uses: kevin-david/zipalign-sign-android-release@v1
+        uses: kevin-david/zipalign-sign-android-release@v2
         id: sign_app
         with:
           releaseDirectory: app/build/outputs/apk/release
