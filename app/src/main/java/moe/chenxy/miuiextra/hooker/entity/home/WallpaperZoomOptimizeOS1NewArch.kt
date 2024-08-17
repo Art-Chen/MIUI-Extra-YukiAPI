@@ -80,14 +80,19 @@ object WallpaperZoomOptimizeOS1NewArch : YukiBaseHooker() {
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onHook() {
+        var mWallpaperElement: Any? = null
+        var currentZoom = 0f
         "com.miui.home.recents.anim.WallpaperElement".toClass().method {
             name = "animTo"
             paramCount = 1
         }.hook {
             before {
+                mWallpaperElement = this.instance
                 val param = this.args[0] ?: return@before
 
-                updateSettings(this.instance, XposedHelpers.callMethod(param, "getZoomOut") as Float == 1.0f)
+                currentZoom = XposedHelpers.callMethod(param, "getZoomOut") as Float
+
+                updateSettings(this.instance, currentZoom == 1.0f)
             }
         }
 
@@ -96,6 +101,22 @@ object WallpaperZoomOptimizeOS1NewArch : YukiBaseHooker() {
         }.hook {
             after {
                 if (this.result == 0.6f) this.result = mZoomOut
+            }
+        }
+
+        "com.miui.home.launcher.common.UnlockAnimationStateMachine".toClass().apply {
+            method {
+                name = "onScreenOff"
+            }.hook {
+                after {
+                    // reset
+                    mWallpaperElement?.apply {
+                        if (currentZoom < 1f) {
+                            XposedHelpers.callMethod(this, "updateElementProperty", 1f)
+                        }
+                    }
+
+                }
             }
         }
     }
