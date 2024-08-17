@@ -113,6 +113,11 @@ class SettingsActivity : AppCompatActivity() {
 
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
             if (preference is TwoStatePreference) {
+                when (preference.key) {
+                    "override_linkage_wallpaper_anim", "disable_wallpaper_auto_darken" -> {
+                        return true
+                    }
+                }
                 val category = preference.parent as PreferenceCategory
                 when (category.key) {
                     "wallpaper_settings" -> showRebootSnackBar(R.string.may_need_reboot, SHELL_RESTART_MI_WALLPAPER)

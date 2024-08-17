@@ -35,6 +35,7 @@ object ViewBlurHooker : YukiBaseHooker() {
                     val mContext = XposedHelpers.getObjectField(this.instance, "mContext") as Context
                     val intent = Intent("chen.action.home.blur.state.switched")
                     intent.`package`= "com.android.systemui"
+                    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
                     intent.putExtra("active", isActive)
                     mContext.sendBroadcast(intent)
                 }

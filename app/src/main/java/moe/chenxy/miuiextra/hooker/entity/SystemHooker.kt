@@ -23,7 +23,6 @@ import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.BuildConfig
 import moe.chenxy.miuiextra.hooker.entity.SystemHooker.toClass
-import moe.chenxy.miuiextra.hooker.entity.framework.StartingWindowOptimize
 import moe.chenxy.miuiextra.hooker.entity.framework.VibratorMapHooker
 
 object SystemHooker : YukiBaseHooker() {

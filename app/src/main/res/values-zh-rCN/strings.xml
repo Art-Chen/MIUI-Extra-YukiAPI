@@ -132,4 +132,6 @@
     <string name="wallpaper_zoomIn_damping_ratio_summary">放大动画回弹系数</string>
     <string name="wallpaper_zoomOut_damping_ratio_summary">缩小动画回弹系数</string>
     <string name="override_linkage_wallpaper_anim_title">覆盖联动息屏壁纸动画参数</string>
+    <string name="lineage_aod_wallpaper_anim_title">联动息屏和琛的壁纸动画</string>
+    <string name="lineage_aod_wallpaper_anim_summary">警告：长亮AOD时有烧屏风险</string>
 </resources>
