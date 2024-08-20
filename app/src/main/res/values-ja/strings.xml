@@ -212,7 +212,7 @@
   <string name="try_effect">効果を試す</string>
   <string name="unsupported_android_version">Android T(13) 以降にのみ対応しています！一部の機能が正常に動作しない場合があります！！</string>
   <string name="unsupported_xposed_version">サポートされていない Xposed が検出されました！LSPosed をインストールして有効化してください！</string>
-  <string name="use_chen_screen_on_anim_summary">MIUI の純正アニメーションを置き換えるために、愛を込めてスケール + グレー効果を使用します</string>
+  <string name="use_chen_screen_on_anim_summary">HyperOS の純正アニメーションを置き換えるために、愛を込めてスケール + グレー効果を使用します</string>
   <string name="use_chen_screen_on_anim_title">アニメーションで Chen の画面の最適化を使用する</string>
   <string name="use_chen_volume_animation_summary">音量の表示を滑らかにしよう！</string>
   <string name="use_chen_volume_animation_title">Chen の音量表示アニメーションを使用する</string>

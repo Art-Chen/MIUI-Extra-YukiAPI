@@ -77,7 +77,7 @@
     <string name="no_zoom_out_when_recent_out_title">Don\'t Zoom out when Enter App from Recent</string>
     <string name="no_zoom_out_when_recent_out_summary">(Has BUG) May not Zoom Back if click too fast when anim not done</string>
     <string name="use_chen_screen_on_anim_title">Use Chen Optimized Screen On Animation</string>
-    <string name="use_chen_screen_on_anim_summary">Will use scale + grey effect with love to replace MIUI Stock Animation</string>
+    <string name="use_chen_screen_on_anim_summary">Will use scale + grey effect with love to replace the Original Animation</string>
     <string name="chen_home_handle_anim_title">Enable Chen Gesture Line Animation</string>
     <string name="chen_home_handle_anim_summary">Enable the smooth gesture line animation with Love by Art_Chen</string>
     <string name="home_handle_y_val_title">Home Handle Default offset-Y</string>
