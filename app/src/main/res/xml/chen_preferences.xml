@@ -112,7 +112,12 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="disable_wallpaper_auto_darken"
-            app:title="@string/disable_wallpaper_auto_darken_title"
+            app:title="@string/disable_wallpaper_auto_darken_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="enable_home_text_shadow"
+            app:dependency="disable_wallpaper_auto_darken"
+            app:title="@string/enable_home_text_shadow_title"
             app:summary="@string/disable_wallpaper_auto_darken_summary" />
 
 <!--        <rikka.material.preference.MaterialSwitchPreference-->

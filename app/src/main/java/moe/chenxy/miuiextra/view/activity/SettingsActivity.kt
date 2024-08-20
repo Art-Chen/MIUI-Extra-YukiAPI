@@ -114,7 +114,8 @@ class SettingsActivity : AppCompatActivity() {
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
             if (preference is TwoStatePreference) {
                 when (preference.key) {
-                    "override_linkage_wallpaper_anim", "disable_wallpaper_auto_darken" -> {
+                    "override_linkage_wallpaper_anim", "enable_home_text_shadow" -> {
+                        this.context?.let { ChenUtils.performVibrateHeavyClick(it) }
                         return true
                     }
                 }
@@ -199,7 +200,7 @@ class SettingsActivity : AppCompatActivity() {
                 return@setOnPreferenceChangeListener true
             }
 
-            findPreference<SwitchPreferenceCompat>("disable_wallpaper_auto_darken")?.setOnPreferenceChangeListener { _, _ ->
+            findPreference<SwitchPreferenceCompat>("enable_home_text_shadow")?.setOnPreferenceChangeListener { _, _ ->
                 // MiuiHome use this feature toggle to inject hook when on load, Wallpaper app check this feature toggle on every call
                 showRebootSnackBar(null, SHELL_RESTART_MIUI_HOME)
                 return@setOnPreferenceChangeListener true

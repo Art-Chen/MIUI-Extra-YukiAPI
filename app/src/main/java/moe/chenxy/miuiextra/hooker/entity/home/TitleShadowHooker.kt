@@ -13,7 +13,7 @@ import kotlin.math.abs
 
 object TitleShadowHooker : YukiBaseHooker() {
     override fun onHook() {
-        val enableShadow = mainPrefs.getBoolean("disable_wallpaper_auto_darken", false)
+        val enableShadow = mainPrefs.getBoolean("disable_wallpaper_auto_darken", false) && mainPrefs.getBoolean("enable_home_text_shadow", false)
         "com.miui.home.launcher.DeviceConfig".toClass().apply {
             method {
                 name = "checkDarkenWallpaperSupport"

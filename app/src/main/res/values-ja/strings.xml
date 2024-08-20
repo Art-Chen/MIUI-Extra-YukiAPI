@@ -247,4 +247,5 @@
   <string name="disable_wallpaper_auto_darken_summary">This will also add a beautiful text shadow on miui home icon title to enhance text visibility</string>
   <string name="lineage_aod_wallpaper_anim_title">Lineage Aod and Chen Wallpaper Anim</string>
   <string name="lineage_aod_wallpaper_anim_summary">WARNING: May cause screen burn if AOD Always mode</string>
+  <string name="enable_home_text_shadow_title">Enable Home Text Shadow</string>
 </resources>

@@ -134,4 +134,5 @@
     <string name="override_linkage_wallpaper_anim_title">覆盖联动息屏壁纸动画参数</string>
     <string name="lineage_aod_wallpaper_anim_title">联动息屏和琛的壁纸动画</string>
     <string name="lineage_aod_wallpaper_anim_summary">警告：长亮AOD时有烧屏风险</string>
+    <string name="enable_home_text_shadow_title">启用桌面文字阴影效果</string>
 </resources>

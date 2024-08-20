@@ -84,7 +84,7 @@ object IconLaunchAnimHooker : YukiBaseHooker() {
 
         // Don't run PerformClickRunnable early
         "com.miui.home.launcher.ItemIcon".toClass().method {
-                    name = "initPerformClickRunnable"
+            name = "initPerformClickRunnable"
         }.hook {
             replaceUnit {
                 XposedHelpers.setObjectField(instance, "mPerformClickRunnable", mRunnable)
