@@ -137,4 +137,5 @@
     <string name="lineage_aod_wallpaper_anim_title">Lineage Aod and Chen Wallpaper Anim</string>
     <string name="lineage_aod_wallpaper_anim_summary">WARNING: May cause screen burn if AOD Always mode</string>
     <string name="enable_home_text_shadow_title">Enable Home Text Shadow</string>
+    <string name="wallpaper_black_alpha_title">Wallpaper Darkness</string>">
 </resources>

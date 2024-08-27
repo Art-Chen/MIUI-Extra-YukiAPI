@@ -95,6 +95,8 @@ object LinkageAnimCustomer : YukiBaseHooker() {
                     val off =
                         MiWallpaperHook.mainPrefs.getInt("screen_off_color_fade_anim_val", 450)
                     val chenAnimLinkage = MiWallpaperHook.mainPrefs.getBoolean("lineage_aod_chen_wallpaper_anim", false)
+                    val wallpaperBlackAlpha = MiWallpaperHook.mainPrefs.getInt("wallpaper_black_alpha", 80)
+                        .toFloat() / 100
 
                     initAnim()
                     Log.d("Art_Chen", "ClockBaseAnimation-LinkageAnim: start! toAod $toAod hasNotification $hasNotification")
@@ -108,7 +110,7 @@ object LinkageAnimCustomer : YukiBaseHooker() {
 
                         val stateStyle = XposedHelpers.callStaticMethod("miuix.animation.Folme".toClass(), "useValue", arrayOf("WallpaperParam"))
                         XposedHelpers.callMethod(toAodAnimConfig, "setEase", mWallpaperHideEase)
-                        XposedHelpers.callMethod(stateStyle, "to", arrayOf("wallpaperBlack", if (chenAnimLinkage) 0.8f else 1f, toAodAnimConfig))
+                        XposedHelpers.callMethod(stateStyle, "to", arrayOf("wallpaperBlack", if (chenAnimLinkage) wallpaperBlackAlpha else 1f, toAodAnimConfig))
                     } else {
                         XposedHelpers.callMethod(showEase, "setDuration", on.toLong())
                         val stateStyle = XposedHelpers.callStaticMethod("miuix.animation.Folme".toClass(), "useValue", arrayOf("WallpaperParam"))
