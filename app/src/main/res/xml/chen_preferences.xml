@@ -109,6 +109,14 @@
             app:title="@string/lineage_aod_wallpaper_anim_title"
             app:summary="@string/lineage_aod_wallpaper_anim_summary"/>
 
+        <SeekBarPreference
+            android:max="100"
+            app:key="wallpaper_black_alpha"
+            app:dependency="lineage_aod_chen_wallpaper_anim"
+            app:defaultValue="80"
+            app:min="0"
+            app:updatesContinuously="true"
+            app:title="@string/wallpaper_black_alpha_title" />
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="disable_wallpaper_auto_darken"
