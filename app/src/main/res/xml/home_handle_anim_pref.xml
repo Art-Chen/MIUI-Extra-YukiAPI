@@ -31,7 +31,7 @@
             app:updatesContinuously="true"
             app:title="@string/home_handle_offset_x_title" />
         <SeekBarPreference
-            android:max="20"
+            android:max="50"
             app:key="home_handle_setting_offsety_normal"
             app:defaultValue="0"
             app:min="-15"
@@ -89,7 +89,7 @@
             app:updatesContinuously="true"
             app:title="@string/home_handle_offset_x_title" />
         <SeekBarPreference
-            android:max="20"
+            android:max="50"
             app:key="home_handle_setting_offsety_pressed"
             app:defaultValue="0"
             app:min="-15"
@@ -147,7 +147,7 @@
             app:updatesContinuously="true"
             app:title="@string/home_handle_offset_x_title" />
         <SeekBarPreference
-            android:max="20"
+            android:max="50"
             app:key="home_handle_setting_offsety_home"
             app:defaultValue="0"
             app:min="-15"
