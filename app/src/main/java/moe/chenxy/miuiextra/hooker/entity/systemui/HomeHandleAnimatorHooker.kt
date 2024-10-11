@@ -66,6 +66,8 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         val transDegree: Int,
         val scaleX: Float,
         val scaleY: Float,
+        val offsetX: Float,
+        val offsetY: Float,
         val alphaAnimDuration: Long,
         val scaleAnimDuration: Long,
         val xyAnimDuration: Long,
@@ -92,7 +94,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var mHomeHandleId: Int = -1
         var barHeight = 0
         var origBarHeight = 0
-        val yOffset = mainPrefs.getInt("home_handle_y_val", 7)
+        var yOffset = 0f
         var useMiBlur = mainPrefs.getBoolean("chen_home_handle_blur_effect", false)
         var mLightColor = -1
         var mDarkColor = -1
@@ -111,6 +113,10 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     .toFloat() / 100,
                 mainPrefs.getInt("home_handle_setting_scaley_${type.name.lowercase()}", 100)
                     .toFloat() / 100,
+                mainPrefs.getInt("home_handle_setting_offsetx_${type.name.lowercase()}", 0)
+                    .toFloat(),
+                mainPrefs.getInt("home_handle_setting_offsety_${type.name.lowercase()}", 0)
+                    .toFloat(),
                 mainPrefs.getInt("home_handle_setting_duration_alpha_${type.name.lowercase()}", 600).toLong(),
                 mainPrefs.getInt("home_handle_setting_duration_scale_${type.name.lowercase()}", 600).toLong(),
                 mainPrefs.getInt("home_handle_setting_duration_xy_${type.name.lowercase()}", 600).toLong(),
@@ -196,9 +202,15 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
             yAnimator.cancel()
         }
 
-        fun animateHomeHandleXYToNormal() {
-            animateHomeHandleX(normalSettings.xyAnimDuration, 0f)
-            animateHomeHandleY(normalSettings.xyAnimDuration, yOffset.toFloat())
+        fun animateHomeHandleXYToNormal(type: EventType) {
+            val setting = when (type) {
+                EventType.NORMAL -> normalSettings
+                EventType.HOME -> onHomeSettings
+                EventType.PRESSED -> pressedSettings
+            }
+            yOffset = setting.offsetY
+            animateHomeHandleX(setting.xyAnimDuration, setting.offsetX)
+            animateHomeHandleY(setting.xyAnimDuration, setting.offsetY)
         }
 
         fun setDarkIntensity(f: Float) {
@@ -379,11 +391,14 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
         var motionTriggered = false
         fun leaveHome() {
             opacityHomeHandle(EventType.NORMAL)
+            animateHomeHandleXYToNormal(EventType.NORMAL)
         }
         fun enterHome() {
             // Opacity after current motion released
-            if (!motionTriggered)
+            if (!motionTriggered) {
                 opacityHomeHandle(EventType.HOME)
+                animateHomeHandleXYToNormal(EventType.HOME)
+            }
         }
         fun onHomeBlurChanged(active: Boolean) {
 //            Log.i("Art_Chen", "Home Blur State changed: $active")
@@ -454,7 +469,9 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
 //                                    "current touch is in navigation area! motionTriggered!"
 //                                )
                                 if (!mIsInHome || mHomeHandle.alpha != 0f) {
+                                    // TODO: Move to 'animateTo'
                                     opacityHomeHandle(EventType.PRESSED)
+                                    animateHomeHandleXYToNormal(EventType.PRESSED)
                                 }
 
                                 baseX = motionEvent.x
@@ -463,7 +480,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                             }
                             if (motionEvent.actionMasked == MotionEvent.ACTION_MOVE && motionTriggered && (!isBoostMode && orientation == 0)) {
                                 val offsetNeeded =
-                                    -(baseY - motionEvent.y) * 0.15f + yOffset.toFloat()
+                                    -(baseY - motionEvent.y) * 0.15f + yOffset
                                 if (abs(offsetNeeded) < barHeight / 2 - 6) {
                                     mHomeHandle.translationY = offsetNeeded
                                 }
@@ -474,14 +491,14 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                             cancelHomeHandleXYAnim()
                             if (isBoostMode && orientation == 0) {
                                 val offsetNeeded =
-                                    -(baseY - motionEvent.y) * 0.2f + yOffset.toFloat()
+                                    -(baseY - motionEvent.y) * 0.2f + yOffset
                                 if (abs(offsetNeeded) < barHeight / 2 + 6) {
                                     mHomeHandle.translationY = offsetNeeded
                                 }
                             } else if (orientation != 0) {
                                 // Let the Landscape has a little move effect instead of zero y offset.
                                 val offsetNeeded =
-                                    -(baseY - motionEvent.y) * 0.02f + yOffset.toFloat()
+                                    -(baseY - motionEvent.y) * 0.02f + yOffset
                                 if (abs(offsetNeeded) < barHeight / 2 + 6) {
                                     mHomeHandle.translationY = offsetNeeded
                                 }
@@ -490,13 +507,9 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         }
 
                         if (motionEvent.actionMasked == MotionEvent.ACTION_UP && motionTriggered) {
-                            animateHomeHandleXYToNormal()
-                            if (!mIsInHome) {
-                                // Pressed to Normal
-                                opacityHomeHandle(EventType.NORMAL)
-                            } else {
-                                opacityHomeHandle(EventType.HOME)
-                            }
+                            val eventType = if (!mIsInHome) EventType.NORMAL else EventType.HOME
+                            opacityHomeHandle(eventType)
+                            animateHomeHandleXYToNormal(eventType)
                             motionTriggered = false
                         }
                         motionEvent.recycle()
@@ -590,7 +603,6 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                         Toast.makeText(mContext, "MIUI Extra: Please disable Home Handle Anim on Virtual Key Mode !! * 3", Toast.LENGTH_LONG).show()
                     }
 
-//                    mHomeHandle.translationY = yOffset.toFloat()
                     // Let's Animate to our preset value
                     if (useMiBlur && mHomeHandle.isSupportMiBlur()){
                         // Blur Mode
@@ -605,7 +617,7 @@ object HomeHandleAnimatorHooker : YukiBaseHooker() {
                     // Run async
                     mHandler?.post {
                         opacityHomeHandle(EventType.NORMAL)
-                        animateHomeHandleXYToNormal()
+                        animateHomeHandleXYToNormal(EventType.NORMAL)
                         animateZoomTo(normalSettings.scaleX, normalSettings.scaleY, normalSettings.scaleAnimDuration)
                     }
                 }

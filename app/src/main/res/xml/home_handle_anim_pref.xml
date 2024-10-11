@@ -24,6 +24,20 @@
             app:updatesContinuously="true"
             app:title="@string/home_handle_scale_y_title" />
         <SeekBarPreference
+            android:max="1000"
+            app:key="home_handle_setting_offsetx_normal"
+            app:defaultValue="0"
+            app:min="-1000"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_offset_x_title" />
+        <SeekBarPreference
+            android:max="20"
+            app:key="home_handle_setting_offsety_normal"
+            app:defaultValue="0"
+            app:min="-15"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_offset_y_title" />
+        <SeekBarPreference
             android:max="3000"
             app:key="home_handle_setting_duration_alpha_normal"
             app:defaultValue="600"
@@ -68,6 +82,20 @@
             app:updatesContinuously="true"
             app:title="@string/home_handle_scale_y_title" />
         <SeekBarPreference
+            android:max="1000"
+            app:key="home_handle_setting_offsetx_pressed"
+            app:defaultValue="0"
+            app:min="-1000"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_offset_x_title" />
+        <SeekBarPreference
+            android:max="20"
+            app:key="home_handle_setting_offsety_pressed"
+            app:defaultValue="0"
+            app:min="-15"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_offset_y_title" />
+        <SeekBarPreference
             android:max="3000"
             app:key="home_handle_setting_duration_alpha_pressed"
             app:defaultValue="600"
@@ -111,6 +139,20 @@
             app:min="0"
             app:updatesContinuously="true"
             app:title="@string/home_handle_scale_y_title" />
+        <SeekBarPreference
+            android:max="1000"
+            app:key="home_handle_setting_offsetx_home"
+            app:defaultValue="0"
+            app:min="-1000"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_offset_x_title" />
+        <SeekBarPreference
+            android:max="20"
+            app:key="home_handle_setting_offsety_home"
+            app:defaultValue="0"
+            app:min="-15"
+            app:updatesContinuously="true"
+            app:title="@string/home_handle_offset_y_title" />
         <SeekBarPreference
             android:max="3000"
             app:key="home_handle_setting_duration_alpha_home"

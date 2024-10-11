@@ -133,4 +133,6 @@
     <string name="lineage_aod_wallpaper_anim_summary">警告：長亮AOD時有燒屏風險</string>
     <string name="enable_home_text_shadow_title">啟用桌面文字陰影效果</string>
     <string name="wallpaper_black_alpha_title">桌布壓暗程度</string>
+    <string name="home_handle_offset_x_title">X軸偏移</string>
+    <string name="home_handle_offset_y_title">Y軸偏移</string>
 </resources>

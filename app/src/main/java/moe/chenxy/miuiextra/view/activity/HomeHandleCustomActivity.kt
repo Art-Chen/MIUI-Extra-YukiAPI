@@ -66,7 +66,12 @@ class HomeHandleCustomActivity : AppCompatActivity() {
                                 bindAnimationSeekBar(
                                     pref1,
                                     it,
-                                    if (pref1.key.contains("duration")) "ms" else "%"
+                                    if (pref1.key.contains("duration"))
+                                        "ms"
+                                    else if (pref1.key.contains("offset"))
+                                        "px"
+                                    else
+                                        "%"
                                 )
                             }
                         }
