@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.agp.app)
     alias(libs.plugins.kotlin)
@@ -20,8 +22,8 @@ android {
         applicationId = "moe.chenxy.miuiextra"
         minSdk = 31
         targetSdk = 35
-        versionCode = 19
-        versionName = "2.6.9.5-U-HyperOS"
+        versionCode = 20
+        versionName = "2.7.0-U-HyperOS"
     }
 
     buildTypes {
@@ -56,6 +58,9 @@ android {
 
     kotlin {
         jvmToolchain(JavaVersion.VERSION_22.majorVersion.toInt())
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_22
+        }
     }
 
     namespace = "moe.chenxy.miuiextra"
