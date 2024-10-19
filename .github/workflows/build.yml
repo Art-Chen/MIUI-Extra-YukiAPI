@@ -80,3 +80,4 @@ jobs:
           generateReleaseNotes: true
           makeLatest: true
           replacesArtifacts: true
+          
