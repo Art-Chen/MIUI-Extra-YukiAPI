@@ -14,10 +14,13 @@ import com.highcapable.yukihookapi.hook.type.java.IntType
 import com.highcapable.yukihookapi.hook.type.java.ObjectsClass
 import de.robv.android.xposed.XposedHelpers
 import moe.chenxy.miuiextra.hooker.entity.MiWallpaperHook
+import moe.chenxy.miuiextra.utils.ChenUtils
 import java.util.Objects
 
 
 object LinkageAnimCustomer : YukiBaseHooker() {
+
+    private val isAboveV = ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.V)
 
     override fun onHook() {
         "com.android.keyguard.clock.animation.ClockBaseAnimation".toClass().apply {
@@ -64,22 +67,25 @@ object LinkageAnimCustomer : YukiBaseHooker() {
                     mContext!!.sendBroadcast(intent)
 
                     MiWallpaperHook.mainPrefs.reload()
-                    val on = MiWallpaperHook.mainPrefs.getInt("screen_on_color_fade_anim_val", 800)
+                    val defaultOnDuration = if (isAboveV) 1000 else 800
+                    val defaultOffDuration = if (isAboveV) 600 else 450
+                    val on = MiWallpaperHook.mainPrefs.getInt("screen_on_color_fade_anim_val", defaultOnDuration)
                     val off =
-                        MiWallpaperHook.mainPrefs.getInt("screen_off_color_fade_anim_val", 450)
+                        MiWallpaperHook.mainPrefs.getInt("screen_off_color_fade_anim_val", defaultOffDuration)
                     val chenAnimLinkage = MiWallpaperHook.mainPrefs.getBoolean("lineage_aod_chen_wallpaper_anim", false)
                     val wallpaperBlackAlpha = MiWallpaperHook.mainPrefs.getInt("wallpaper_black_alpha", 80)
                         .toFloat() / 100
 
                     initAnim()
-                    Log.d("Art_Chen", "ClockBaseAnimation-LinkageAnim: start! toAod $toAod hasNotification $hasNotification")
+                    Log.d("Art_Chen", "ClockBaseAnimation-LinkageAnim: start! toAod $toAod hasNotification $hasNotification isAboveV $isAboveV")
                     XposedHelpers.setBooleanField(this.instance, "mToAod", toAod)
                     XposedHelpers.setBooleanField(this.instance, "mHasNotification", hasNotification)
 
                     if (toAod) {
                         val mWallpaperHideEase =
                             XposedHelpers.getObjectField(this.instance, "mWallpaperHideEase")
-                        XposedHelpers.callMethod(mWallpaperHideEase, "setDuration", if (chenAnimLinkage) off.toLong() * 2 else off.toLong())
+                        val offDuration = if (chenAnimLinkage) off.toLong() * 2 else off.toLong()
+                        XposedHelpers.callMethod(mWallpaperHideEase, "setDuration", offDuration)
 
                         val stateStyle = XposedHelpers.callStaticMethod("miuix.animation.Folme".toClass(), "useValue", arrayOf("WallpaperParam"))
                         XposedHelpers.callMethod(toAodAnimConfig, "setEase", mWallpaperHideEase)

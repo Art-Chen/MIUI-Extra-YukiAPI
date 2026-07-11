@@ -26,6 +26,7 @@ import moe.chenxy.miuiextra.hooker.entity.MiWallpaperHook.ChenAnimationNew.hook
 import moe.chenxy.miuiextra.hooker.entity.MiWallpaperHook.ChenAnimationNew.onScreenOff
 import moe.chenxy.miuiextra.hooker.entity.MiWallpaperHook.ChenAnimationNew.onUserPresent
 import moe.chenxy.miuiextra.hooker.entity.MiWallpaperHook.ChenAnimationNew.startScaleAnim
+import moe.chenxy.miuiextra.utils.ChenUtils
 import java.lang.reflect.Method
 import kotlin.random.Random
 
@@ -39,6 +40,8 @@ object MiWallpaperHook : YukiBaseHooker() {
 
     @Volatile
     private var mScaleValue = 0f
+
+    private val isAboveV = ChenUtils.isAboveAndroidVersion(ChenUtils.Companion.AndroidVersion.V)
 
     override fun onHook() {
         var mIsShowingRevealBlack = false
@@ -135,10 +138,19 @@ object MiWallpaperHook : YukiBaseHooker() {
                     mRevealAnimator.setFloatValues(mRevealValue, f)
 //                    if (mUseChenScreenOnAnim) {
                     mRevealAnimator.interpolator =
-                        if (awake)
-                            PathInterpolator(0.54f, 0f, 0f, 1f)
-                        else
-                            PathInterpolator(0f, 0f, 0f, 1f)
+                        if (awake) {
+                            if (isAboveV) {
+                                PathInterpolator(0.4f, 0f, 0.2f, 1f)
+                            } else {
+                                PathInterpolator(0.54f, 0f, 0f, 1f)
+                            }
+                        } else {
+                            if (isAboveV) {
+                                PathInterpolator(0.16f, 1f, 0.3f, 1f)
+                            } else {
+                                PathInterpolator(0f, 0f, 0f, 1f)
+                            }
+                        }
 //                    }
                     mRevealAnimator.start()
                     currentRevealValue = f
@@ -146,7 +158,7 @@ object MiWallpaperHook : YukiBaseHooker() {
                         startScaleAnim(awake)
                     }
 
-                    Log.i("Art_Chen", "startRevealAnim: run!")
+                    Log.i("Art_Chen", "startRevealAnim: run! isAboveV $isAboveV")
                 }
             }
 
@@ -338,7 +350,11 @@ object MiWallpaperHook : YukiBaseHooker() {
                                 mScaleValue = it.animatedValue as Float
                             }
 
-                            scaleAnimator!!.interpolator = PathInterpolator(0.23f, 0.6f, 0.38f, 1f)
+                            scaleAnimator!!.interpolator = if (isAboveV) {
+                                PathInterpolator(0.34f, 1.56f, 0.64f, 1f)
+                            } else {
+                                PathInterpolator(0.23f, 0.6f, 0.38f, 1f)
+                            }
                         }
                         scaleAnimator!!.addUpdateListener {
                             handler!!.post {
