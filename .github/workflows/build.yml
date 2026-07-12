@@ -3,9 +3,10 @@ name: Build HyperExtra
 on:
   push:
     tags: [ "*" ]
-    branches: [ "yuki-api" ]
+    branches: [ "yuki-api", "trae/*" ]
   pull_request:
     branches: [ "yuki-api" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -67,6 +68,15 @@ jobs:
         with:
           name: HyperExtra
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Upload unsigned artifact
+        env: 
+           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        if: ${{ env.SIGNING_KEY == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: HyperExtra-unsigned
+          path: app/build/outputs/apk/release/*.apk
 
       - name: Release apk
         env: 

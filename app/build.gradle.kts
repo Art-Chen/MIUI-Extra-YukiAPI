@@ -51,7 +51,7 @@ android {
         minSdk = 31
         targetSdk = 35
         versionCode = 20
-        versionName = "2.7.1-V-HyperOS1"
+        versionName = "2.7.1-V-HyperOS3"
     }
 
     val gitCode = getVersionCode()
